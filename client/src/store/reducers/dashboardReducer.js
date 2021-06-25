@@ -4,6 +4,7 @@ const initialState = {
   userName: "",
   activeUsers: null,
   showParticipantModal: false,
+  user : null
 };
 
 const reducer = (state = initialState, action) => {
@@ -23,6 +24,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         showParticipantModal: action.show,
       };
+    case dashboardActions.DASHBOARD_LOGGED_USER:
+      return{
+        ...state,
+        user : action.user
+      }
     default:
       return state;
   }

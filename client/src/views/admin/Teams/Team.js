@@ -120,6 +120,15 @@ function Team({ user, cookies, history }) {
                       >
                         Files
                       </Button>
+                      {!Team.callActive ? (
+                        <Button primary style={{ marginLeft: "10px" }}>
+                          Start meeting
+                        </Button>
+                      ) : (
+                        <Button primary style={{ marginLeft: "10px" }}>
+                          Join meeting
+                        </Button>
+                      )}
                     </Box>
                   </Box>
                 }

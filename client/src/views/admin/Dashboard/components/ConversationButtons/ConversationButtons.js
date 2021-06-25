@@ -12,7 +12,7 @@ import ConversationButton from "./ConversationButton";
 import { callStates } from "store/actions/callActions";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import { endCall } from "utils/websocketclient/clientSocket.js";
-
+import { leaveMeeting } from "utils/websocketclient/groupCallHandler";
 const styles = {
   buttonContainer: {
     display: "flex",
@@ -39,6 +39,7 @@ const ConversationButtons = (props) => {
     callState,
     setShowModal,
     showParticipantModal,
+    groupCallActive,
   } = props;
 
   const handleMicButtonPressed = () => {
@@ -58,7 +59,11 @@ const ConversationButtons = (props) => {
   };
 
   const handleHangUpButtonPressed = () => {
-    endCall();
+    if (!groupCallActive) endCall();
+    else {
+      const roomId = window.location.pathname.split("/")[2];
+      leaveMeeting(roomId);
+    }
   };
 
   const handleAddParticipant = () => {
@@ -93,9 +98,11 @@ const ConversationButtons = (props) => {
           <MdVideoLabel style={styles.icon} />
         )}
       </ConversationButton>
-      <ConversationButton onClickHandler={handleAddParticipant}>
-        <GroupAddIcon size="large" />
-      </ConversationButton>
+      {!groupCallActive ? (
+        <ConversationButton onClickHandler={handleAddParticipant}>
+          <GroupAddIcon size="large" />
+        </ConversationButton>
+      ) : null}
     </div>
   );
 };

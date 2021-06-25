@@ -20,7 +20,7 @@ import {
   InputBase,
 } from "@material-ui/core";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
-
+import { createGroupMeeting } from "./../../../../utils/websocketclient/groupCallHandler";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(componentStyles);
@@ -101,6 +101,9 @@ const CreateTeam = ({ user, createTeam, redirectToCall }) => {
     handleClose();
   };
 
+  const createMeeting = () => {
+    createGroupMeeting();
+  };
   let formDialog = (
     <Dialog
       open={open}
@@ -263,6 +266,13 @@ const CreateTeam = ({ user, createTeam, redirectToCall }) => {
         onClick={redirectToCall}
       >
         <Typography style={{ fontSize: "15px" }}>Call others</Typography>
+      </Button>
+      <Button
+        className={classes.buttonContainedInfo}
+        startIcon={<GroupAddIcon className={classes.icon} />}
+        onClick={createMeeting}
+      >
+        <Typography style={{ fontSize: "15px" }}>Group meeting</Typography>
       </Button>
       <Button
         className={classes.buttonContainedInfo}

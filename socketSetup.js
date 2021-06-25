@@ -1,6 +1,6 @@
 // Imports
 const socket = require("socket.io");
-
+const { v4: uuidv4 } = require("uuid");
 const app = require("./app");
 
 //Exports
@@ -101,6 +101,31 @@ module.exports.socketSetup = (server) => {
 
     socket.on("user-hanged-up", (data) => {
       io.to(data.connectedUserSocketId).emit("user-hanged-up");
+    });
+
+    socket.on("create-meeting", (data) => {
+      console.log(data);
+      const roomId = uuidv4();
+      socket.join(roomId);
+      io.to(socket.id).emit("roomId-for-group-call", {
+        roomId: roomId,
+      });
+    });
+
+    socket.on("join-meeting", (data) => {
+      console.log(data);
+      const peerData = {
+        peerId: data.peerId,
+      };
+      io.to(data.roomId).emit("group-call-request", peerData);
+      socket.join(data.roomId);
+    });
+
+    socket.on("leave-meeting", (data) => {
+      socket.leave(data.roomId);
+      io.to(data.roomId).emit("group-call-user-left", {
+        streamId: data.streamId,
+      });
     });
   });
 };

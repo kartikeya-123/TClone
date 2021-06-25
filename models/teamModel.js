@@ -32,6 +32,10 @@ const teamSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    callActive: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },

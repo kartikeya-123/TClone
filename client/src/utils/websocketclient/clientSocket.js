@@ -2,7 +2,8 @@ import socketClient from "socket.io-client";
 import store from "../../store/store";
 import * as dashboardActions from "../../store/actions/dashboardActions";
 import * as callActions from "../../store/actions/callActions";
-import { call } from "ramda";
+import { connectToNewUser, removeVideoStream } from "./groupCallHandler";
+
 const SERVER = "/";
 
 const broadcastEventTypes = {
@@ -55,13 +56,42 @@ export const webSocketConnection = (user) => {
   socket.on("user-hanged-up", () => {
     resetCallDataAfterHangUp();
   });
+
+  socket.on("roomId-for-group-call", (data) => {
+    handleRoomId(data);
+  });
+
+  socket.on("group-call-request", (data) => {
+    connectToNewUser(data);
+  });
+
+  socket.on("group-call-user-left", (data) => {
+    removeVideoStream(data);
+  });
 };
 
+//Group calls
+export const registerGroupMeeting = (data) => {
+  socket.emit("create-meeting", data);
+};
+
+const handleRoomId = (data) => {
+  alert(data.roomId);
+};
+
+export const joinGroupCall = (data) => {
+  socket.emit("join-meeting", data);
+};
+
+export const leaveGroupCall = (data) => {
+  socket.emit("leave-meeting", data);
+};
 const registerNewUser = (user) => {
   store.dispatch(dashboardActions.setUsername(user.name));
   store.dispatch(
     callActions.setCallState(callActions.callStates.CALL_AVAILABLE)
   );
+  store.dispatch(dashboardActions.setLoggedUser(user));
   socket.emit("register-new-user", {
     username: user.name,
     email: user.email,
