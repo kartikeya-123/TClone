@@ -36,6 +36,9 @@ const teamSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    roomId: {
+      type: String,
+    },
   },
   {
     toJSON: { virtuals: true },

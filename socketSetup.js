@@ -23,6 +23,7 @@ module.exports.socketSetup = (server) => {
   });
 
   let peers = [];
+  let activeTeams = [];
 
   const broadcastEventTypes = {
     ACTIVE_USERS: "ACTIVE_USERS",
@@ -106,10 +107,18 @@ module.exports.socketSetup = (server) => {
     socket.on("create-meeting", (data) => {
       console.log(data);
       const roomId = uuidv4();
-      socket.join(roomId);
-      io.to(socket.id).emit("roomId-for-group-call", {
-        roomId: roomId,
-      });
+      if (data.teamId) {
+        const activeTeam = {
+          roomId: roomId,
+          teamId: data.teamId,
+        };
+        activeTeams.push(activeTeam);
+        console.log(activeTeams);
+        io.to(data.teamId).emit("team-meeting-started", activeTeam);
+      }
+      // io.to(socket.id).emit("roomId-for-group-call", {
+      //   roomId: roomId,
+      // });
     });
 
     socket.on("join-meeting", (data) => {
@@ -126,6 +135,18 @@ module.exports.socketSetup = (server) => {
       io.to(data.roomId).emit("group-call-user-left", {
         streamId: data.streamId,
       });
+    });
+
+    // Socket connection on entering a team
+    socket.on("team", (data) => {
+      socket.join(data.teamId);
+      const activeTeam = activeTeams.find(
+        (team) => team.teamId === data.teamId
+      );
+      if (activeTeam) {
+        io.to(socket.id).emit("team-meeting-started", activeTeam);
+      }
+      console.log(`connected with team ${data.teamId}`);
     });
   });
 };

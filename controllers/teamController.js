@@ -160,3 +160,22 @@ exports.addMembersToTeam = catchAsync(async (req, res, next) => {
     data: team,
   });
 });
+
+exports.startTeamCall = async (data) => {
+  try {
+    const { teamId, roomId } = data;
+    const team = await Team.findById(teamId);
+    if (!team) {
+      return new AppError("No team found", 404);
+    }
+
+    if (team.callActive) {
+      return new AppError("Team is already in call", 404);
+    }
+    team.callActive = true;
+    team.roomId = roomId;
+    await team.save({ runValidators: true });
+  } catch (err) {
+    return err;
+  }
+};

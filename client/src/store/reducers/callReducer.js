@@ -16,6 +16,7 @@ const initState = {
   screenSharingActive: false,
   groupCallActive: false,
   groupCallStreams: [],
+  activeTeams: [],
 };
 
 const reducer = (state = initState, action) => {
@@ -99,6 +100,11 @@ const reducer = (state = initState, action) => {
       return {
         ...state,
         groupCallStreams: action.groupStreams,
+      };
+    case callActions.CALL_SET_ACTIVE_TEAM:
+      return {
+        ...state,
+        activeTeams: action.activeTeams,
       };
     default:
       return state;

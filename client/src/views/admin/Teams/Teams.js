@@ -75,7 +75,6 @@ function Teams({ user, history, ...props }) {
       })
       .catch((err) => console.log(err));
   };
-
   useEffect(() => {
     getTeamsAsMember();
     getTeamsAsOwner();

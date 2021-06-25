@@ -38,12 +38,13 @@ export const connectWithPeer = () => {
   });
 };
 
-export const createGroupMeeting = () => {
+export const createGroupMeeting = (teamId) => {
   const groupHost = store.getState().dashboard.user;
   const groupHostDetails = {
     email: groupHost.email,
     name: groupHost.name,
     peerId: myPeerId,
+    teamId: teamId,
   };
 
   registerGroupMeeting(groupHostDetails);
@@ -51,7 +52,6 @@ export const createGroupMeeting = () => {
   store.dispatch(
     callActions.setCallState(callActions.callStates.CALL_IN_PROGRESS)
   );
-  store.dispatch(callActions.setGroupCallActive(true));
 };
 
 export const joinGroupMeeting = (roomId) => {

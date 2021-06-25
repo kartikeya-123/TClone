@@ -68,8 +68,19 @@ export const webSocketConnection = (user) => {
   socket.on("group-call-user-left", (data) => {
     removeVideoStream(data);
   });
+  socket.on("team-meeting-started", (data) => {
+    addActiveTeam(data);
+  });
 };
 
+const addActiveTeam = (activeTeam) => {
+  let activeTeams = store.getState().call.activeTeams;
+  if (!activeTeams.includes(activeTeam)) {
+    activeTeams.push(activeTeam);
+  }
+  console.log(activeTeams);
+  store.dispatch(callActions.setTeamToActive(activeTeams));
+};
 //Group calls
 export const registerGroupMeeting = (data) => {
   socket.emit("create-meeting", data);
@@ -86,6 +97,7 @@ export const joinGroupCall = (data) => {
 export const leaveGroupCall = (data) => {
   socket.emit("leave-meeting", data);
 };
+
 const registerNewUser = (user) => {
   store.dispatch(dashboardActions.setUsername(user.name));
   store.dispatch(
@@ -372,4 +384,11 @@ const resetCallDataAfterHangUp = () => {
 
 export const disconnectSocket = () => {
   socket.emit("disconnect");
+};
+
+export const connectWithTeam = (teamId) => {
+  const data = {
+    teamId: teamId,
+  };
+  socket.emit("team", data);
 };

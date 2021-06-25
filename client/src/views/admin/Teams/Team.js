@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
-
+import { connectWithTeam } from "utils/websocketclient/clientSocket";
+import { createGroupMeeting } from "utils/websocketclient/groupCallHandler";
 import "./Course.css";
-
+import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTheme } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
@@ -23,21 +23,42 @@ import { Avatar } from "@material-ui/core";
 import TeamDetails from "./components/TeamDetails";
 const useStyles = makeStyles(componentStyles);
 
-function Team({ user, cookies, history }) {
+function Team({ user, cookies, history, ...props }) {
   const classes = useStyles();
   const theme = useTheme();
   const [isLoading, setLoading] = useState(false);
+  const [meeting, setMeetingStarted] = useState(false);
+  const [roomId, setRoomId] = useState("");
+
+  const { activeTeams } = props;
 
   const [Team, setTeam] = useState(null);
   const [tab, setTab] = useState("Chat");
 
-  const getTeam = () => {
-    let id = window.location.pathname.split("/")[2];
+  const checkIfCallStarted = (teamId) => {
+    console.log(teamId);
+    const activeTeam = activeTeams.find((active) => active.teamId == teamId);
+    if (activeTeam) {
+      setMeetingStarted(true);
+      setRoomId(activeTeam.roomId);
+    }
+  };
 
+  const redirectToMeet = () => {
+    let url = `/call/${roomId}`;
+    history.push(url);
+  };
+
+  const startMeet = () => {
+    const teamId = Team._id;
+    createGroupMeeting(teamId);
+  };
+  const getTeam = (id) => {
     axios
       .get(`/api/v1/team/getTeam/${id}`)
       .then((res) => {
-        setTeam(res.data.data);
+        const team = res.data.data;
+        setTeam(team);
         console.log(res.data);
       })
       .catch((err) => {
@@ -46,9 +67,16 @@ function Team({ user, cookies, history }) {
       });
   };
   useEffect(() => {
-    getTeam();
+    let id = window.location.pathname.split("/")[2];
+    getTeam(id);
+    connectWithTeam(id);
+    // checkIfCallStarted(id);
   }, []);
 
+  // useEffect(() => {
+  //   let id = window.location.pathname.split("/")[2];
+  //   checkIfCallStarted(id);
+  // }, [activeTeams]);
   return (
     <div>
       <Header />
@@ -120,12 +148,20 @@ function Team({ user, cookies, history }) {
                       >
                         Files
                       </Button>
-                      {!Team.callActive ? (
-                        <Button primary style={{ marginLeft: "10px" }}>
+                      {!activeTeams.some((team) => team.teamId == Team._id) ? (
+                        <Button
+                          primary
+                          style={{ marginLeft: "10px" }}
+                          onClick={startMeet}
+                        >
                           Start meeting
                         </Button>
                       ) : (
-                        <Button primary style={{ marginLeft: "10px" }}>
+                        <Button
+                          primary
+                          style={{ marginLeft: "10px" }}
+                          onClick={redirectToMeet}
+                        >
                           Join meeting
                         </Button>
                       )}
@@ -149,5 +185,10 @@ function Team({ user, cookies, history }) {
     </div>
   );
 }
+function mapStoreStateToProps({ call, dashboard }) {
+  return {
+    ...call,
+  };
+}
 
-export default Team;
+export default connect(mapStoreStateToProps, null)(Team);

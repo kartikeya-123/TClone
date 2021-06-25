@@ -267,13 +267,13 @@ const CreateTeam = ({ user, createTeam, redirectToCall }) => {
       >
         <Typography style={{ fontSize: "15px" }}>Call others</Typography>
       </Button>
-      <Button
+      {/* <Button
         className={classes.buttonContainedInfo}
         startIcon={<GroupAddIcon className={classes.icon} />}
         onClick={createMeeting}
       >
         <Typography style={{ fontSize: "15px" }}>Group meeting</Typography>
-      </Button>
+      </Button> */}
       <Button
         className={classes.buttonContainedInfo}
         onClick={handleOpen}
