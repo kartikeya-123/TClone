@@ -33,7 +33,7 @@ class Wrapper extends Component {
           isLoading: false,
         });
         webSocketConnection(res.data.data.user);
-        // connectWithPeer();
+        connectWithPeer();
       })
       .catch((err) => {
         console.log(err);
@@ -57,7 +57,7 @@ class Wrapper extends Component {
   getLoggedInUser = (response) => {
     this.setState({ user: response.data.user, isLoggedIn: true });
     webSocketConnection(response.data.user);
-    // connectWithPeer();
+    connectWithPeer();
     //console.log(response.data.user);
     const userData = {
       name: response.data.user.name,
