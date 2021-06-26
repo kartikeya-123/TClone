@@ -16,7 +16,7 @@ export const connectWithPeer = () => {
 
   myPeer = new window.Peer(undefined, {
     path: "/api/v1/peerjs",
-    host: "/",
+    host: "teamclone-web.herokuapp.com",
     port: "3000",
   });
 
