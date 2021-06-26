@@ -26,6 +26,10 @@ const peerServer = ExpressPeerServer(server, {
 });
 app.use("/api/v1/peerjs", peerServer);
 
+app.get("*", (req, res, next) => {
+  res.sendFile(path.join(__dirname, "/client/public/index.html"));
+});
+
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
