@@ -12,7 +12,7 @@ import Header from "components/Headers/Header";
 
 const useStyles = makeStyles(componentStyles);
 
-const VideoLayout = ({ user }) => {
+const VideoLayout = ({ user, history }) => {
   const classes = useStyles();
   const [isLoading, setLoading] = useState(true);
   const [directCall, setDirectCall] = useState(true);
@@ -38,7 +38,11 @@ const VideoLayout = ({ user }) => {
       {!isLoading ? (
         <Grid sx={12} className={classes.root}>
           <Grid className={classes.layout}>
-            {directCall ? <DirectCall /> : <GroupCall />}
+            {directCall ? (
+              <DirectCall history={history} />
+            ) : (
+              <GroupCall history={history} />
+            )}
           </Grid>
         </Grid>
       ) : null}

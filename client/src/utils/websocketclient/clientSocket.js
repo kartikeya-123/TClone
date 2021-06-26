@@ -71,14 +71,31 @@ export const webSocketConnection = (user) => {
   socket.on("team-meeting-started", (data) => {
     addActiveTeam(data);
   });
+  socket.on("team-meeting-finished", (data) => {
+    removeActiveTeam(data);
+  });
+};
+
+const removeActiveTeam = (data) => {
+  let activeTeams = store.getState().call.activeTeams;
+  activeTeams = activeTeams.filter(
+    (activeTeam) => activeTeam.roomId !== data.roomId
+  );
+  console.log(activeTeams);
+  store.dispatch(callActions.setTeamToActive(activeTeams));
 };
 
 const addActiveTeam = (activeTeam) => {
   let activeTeams = store.getState().call.activeTeams;
-  if (!activeTeams.includes(activeTeam)) {
-    activeTeams.push(activeTeam);
+  if (
+    !activeTeams.some(
+      (active) =>
+        active.roomId === activeTeam.roomId &&
+        active.teamId === activeTeam.teamId
+    )
+  ) {
+    activeTeams = [...activeTeams, activeTeam];
   }
-  console.log(activeTeams);
   store.dispatch(callActions.setTeamToActive(activeTeams));
 };
 //Group calls

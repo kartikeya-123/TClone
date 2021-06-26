@@ -40,6 +40,7 @@ const ConversationButtons = (props) => {
     setShowModal,
     showParticipantModal,
     groupCallActive,
+    history,
   } = props;
 
   const handleMicButtonPressed = () => {
@@ -63,6 +64,7 @@ const ConversationButtons = (props) => {
     else {
       const roomId = window.location.pathname.split("/")[2];
       leaveMeeting(roomId);
+      history.goBack();
     }
   };
 

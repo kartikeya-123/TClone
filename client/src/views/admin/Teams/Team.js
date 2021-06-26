@@ -45,7 +45,9 @@ function Team({ user, cookies, history, ...props }) {
   };
 
   const redirectToMeet = () => {
-    let url = `/call/${roomId}`;
+    let meet = activeTeams.find((team) => team.teamId == Team._id);
+    console.log(meet);
+    let url = `/call/${meet.roomId}`;
     history.push(url);
   };
 

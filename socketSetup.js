@@ -113,7 +113,7 @@ module.exports.socketSetup = (server) => {
           teamId: data.teamId,
         };
         activeTeams.push(activeTeam);
-        console.log(activeTeams);
+        // console.log(activeTeams);
         io.to(data.teamId).emit("team-meeting-started", activeTeam);
       }
       // io.to(socket.id).emit("roomId-for-group-call", {
@@ -122,19 +122,38 @@ module.exports.socketSetup = (server) => {
     });
 
     socket.on("join-meeting", (data) => {
-      console.log(data);
+      // console.log(data);
       const peerData = {
         peerId: data.peerId,
       };
       io.to(data.roomId).emit("group-call-request", peerData);
       socket.join(data.roomId);
+      console.log(io.sockets.adapter.rooms.get(data.roomId).size);
     });
 
     socket.on("leave-meeting", (data) => {
-      socket.leave(data.roomId);
-      io.to(data.roomId).emit("group-call-user-left", {
-        streamId: data.streamId,
-      });
+      console.log(io.sockets.adapter.rooms.get(data.roomId).size);
+      if (io.sockets.adapter.rooms.get(data.roomId).size == 1) {
+        //If the size of room is 1
+        let teamId;
+        activeTeams = activeTeams.filter((activeTeam) => {
+          if (activeTeam.roomId !== data.roomId) return true;
+          else {
+            teamId = activeTeam.teamId;
+            return false;
+          }
+        });
+        // delete io.sockets.adapter.rooms[data.roomId];
+        io.to(teamId).emit("team-meeting-finished", {
+          roomId: data.roomId,
+        });
+        socket.leave(data.roomId);
+      } else {
+        socket.leave(data.roomId);
+        io.to(data.roomId).emit("group-call-user-left", {
+          streamId: data.streamId,
+        });
+      }
     });
 
     // Socket connection on entering a team
@@ -143,6 +162,7 @@ module.exports.socketSetup = (server) => {
       const activeTeam = activeTeams.find(
         (team) => team.teamId === data.teamId
       );
+      // console.log(activeTeams.length);
       if (activeTeam) {
         io.to(socket.id).emit("team-meeting-started", activeTeam);
       }
