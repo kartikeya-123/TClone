@@ -9,7 +9,7 @@ const middleware = require("./utils/middleware");
 const AppError = require("./utils/appError");
 const peerServer = require("./server");
 const globalErrorHandler = require("./controllers/errorController");
-
+const clientEndpoints = ["teams", "call", "team"];
 //routers
 const authRouter = require("./routes/authRoutes.js");
 const userRouter = require("./routes/userRoutes.js");
@@ -33,6 +33,14 @@ app.use(middleware.requestLogger);
 
 // Serving static files
 app.use(express.static(path.join(__dirname, "client/build")));
+
+app.get("/:clientEndpoint", (req, res, next) => {
+  if (clientEndpoints.includes(req.params.clientEndpoint)) {
+    res.sendFile(path.join(__dirname, "/client/build/index.html"));
+  } else {
+    next();
+  }
+});
 
 // API Endpoints
 app.use("/api/v1/auth", authRouter);

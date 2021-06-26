@@ -6,6 +6,8 @@ const { socketSetup } = require("./socketSetup");
 const config = require("./utils/config");
 const peerController = require("./controllers/peerController");
 const { ExpressPeerServer } = require("peer");
+const AppError = require("./utils/appError");
+
 // const server = http.createServer(app);
 
 // socketSetup(server);
@@ -23,6 +25,11 @@ const peerServer = ExpressPeerServer(server, {
   debug: true,
 });
 app.use("/api/v1/peerjs", peerServer);
+
+app.all("*", (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
 peerController.peerConnectionListeners(peerServer);
 
 mongoose
