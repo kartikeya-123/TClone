@@ -14,11 +14,11 @@ export const connectWithPeer = () => {
   //Creating a new Peer
   console.log("connecting with peer");
 
-  myPeer = new window.Peer(undefined, {
+  myPeer = new window.Peer("some-id", {
     path: "/api/v1/peerjs",
     secure: true,
     host: "teamclone-web.herokuapp.com",
-    port: "3000",
+    port: 443,
   });
 
   myPeer.on("open", (id) => {
