@@ -23,6 +23,7 @@ const server = app.listen(config.PORT, () => {
 });
 const peerServer = ExpressPeerServer(server, {
   debug: true,
+  proxied: true,
 });
 app.use("/api/v1/peerjs", peerServer);
 
