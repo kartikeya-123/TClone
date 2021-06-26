@@ -7,7 +7,7 @@ const config = require("./utils/config");
 const peerController = require("./controllers/peerController");
 const { ExpressPeerServer } = require("peer");
 const AppError = require("./utils/appError");
-
+const path = require("path");
 // const server = http.createServer(app);
 
 // socketSetup(server);
