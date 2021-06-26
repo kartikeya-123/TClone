@@ -18,17 +18,26 @@ const componentStyles = (theme) => ({
   },
 
   gridLayout: {
-    width: "180px",
+    width: "150px",
     position: "absolute",
     display: "flex",
     justifyContent: "flex-end",
     bottom: "15%",
     right: "5%",
-    height: "180px",
+    height: "140px",
   },
   localVideoLayout: {
     width: "100%",
     height: "100%",
+  },
+  videoCallGridLayout: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    marginLeft: "20px",
+    marginRight: "20px",
   },
 });
 

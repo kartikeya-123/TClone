@@ -145,7 +145,7 @@ const handleBroadcastEvents = (data) => {
 export const getLocaleStream = () => {
   console.log("Calling");
   navigator.mediaDevices
-    .getUserMedia({ video: true, audio: true })
+    .getUserMedia({ video: { width: 620, height: 520 }, audio: true })
     .then((stream) => {
       mediaStream = stream;
       store.dispatch(callActions.setLocalStream(stream));

@@ -1,14 +1,15 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from "react";
+import { Grid } from "@material-ui/core";
 
 const styles = {
   videoContainer: {
-    width: '300px',
-    height: '300px'
+    width: "200px",
+    height: "200px",
   },
   videoElement: {
-    width: '100%',
-    height: '100%'
-  }
+    width: "100%",
+    height: "100%",
+  },
 };
 
 const GroupCallVideo = ({ stream }) => {
@@ -23,9 +24,9 @@ const GroupCallVideo = ({ stream }) => {
   }, [stream]);
 
   return (
-    <div style={styles.videoContainer}>
+    <Grid style={styles.videoContainer}>
       <video ref={videoRef} autoPlay style={styles.videoElement} />
-    </div>
+    </Grid>
   );
 };
 
