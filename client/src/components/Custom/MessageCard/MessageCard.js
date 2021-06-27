@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   gridList: {
-    minHeight: "30vh",
+    // minHeight: "30vh",
     maxHeight: "60vh",
   },
   image: {
@@ -21,11 +21,13 @@ const useStyles = makeStyles((theme) => ({
   messageCard: {
     borderRadius: "10px",
     backgroundColor: "#F5F5F5",
+    display: "inline-block",
   },
   messageCardRight: {
     borderRadius: "10px",
     marginLeft: "50%",
     backgroundColor: "#E9EAF6",
+    display: "inline-block",
   },
   imageLayout: {
     justifyContent: "right",
@@ -61,8 +63,8 @@ const Messages = ({ chatMessages, user }) => {
     <div
       id="chat-elem"
       style={{
-        height: "100%",
         paddingTop: "0px",
+        minHeight: "60vh",
       }}
       // className={classes.root}
     >
