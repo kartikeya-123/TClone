@@ -2,7 +2,7 @@
 const socket = require("socket.io");
 const { v4: uuidv4 } = require("uuid");
 const app = require("./app");
-
+const { sendMessage } = require("./controllers/teamController");
 //Exports
 
 const broadcastEventTypes = {
@@ -156,7 +156,7 @@ module.exports.socketSetup = (server) => {
       }
     });
 
-    // Socket connection on entering a team
+    // Socket connection related to teams
     socket.on("team", (data) => {
       socket.join(data.teamId);
       const activeTeam = activeTeams.find(
@@ -167,6 +167,14 @@ module.exports.socketSetup = (server) => {
         io.to(socket.id).emit("team-meeting-started", activeTeam);
       }
       console.log(`connected with team ${data.teamId}`);
+    });
+
+    socket.on("message", async (chatDetails, callBack) => {
+      console.log(chatDetails);
+      await sendMessage(chatDetails);
+      const teamId = chatDetails.teamId;
+      io.to(teamId).emit("new-message", chatDetails);
+      callBack();
     });
   });
 };

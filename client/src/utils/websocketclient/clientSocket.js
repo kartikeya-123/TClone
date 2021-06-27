@@ -17,7 +17,7 @@ const preOfferAnswers = {
   CALL_NOT_AVAILABLE: "CALL_NOT_AVAILABLE",
 };
 
-let socket;
+export let socket;
 let mediaStream;
 export const webSocketConnection = (user) => {
   socket = socketClient(SERVER);

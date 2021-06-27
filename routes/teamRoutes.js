@@ -8,7 +8,7 @@ router.use(authController.verifyJwtToken, authController.loggedInUser);
 router.get("/memberTeams", teamController.getMyTeamsAsMember);
 
 router.get("/ownerTeams", teamController.getMyTeamsAsOwner);
-
+router.get("/chat-room/:teamId", teamController.getAllChatMessagesByTeam);
 router.get("/getTeam/:teamId", teamController.getTeam);
 router.post("/createTeam", teamController.createTeam);
 router.post("/addMember/:teamId", teamController.addMembersToTeam);

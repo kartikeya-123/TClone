@@ -1,5 +1,7 @@
 const User = require("./../models/userModel");
 const Team = require("./../models/teamModel");
+const Chat = require("./../models/chatModel");
+
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
@@ -179,3 +181,28 @@ exports.startTeamCall = async (data) => {
     return err;
   }
 };
+
+exports.sendMessage = catchAsync(async (chatMessage) => {
+  const newMessage = await Chat.create(chatMessage);
+
+  if (!newMessage) {
+    return new AppError("All required fields are not present", 404);
+  }
+});
+
+exports.getAllChatMessagesByTeam = catchAsync(async (req, res, next) => {
+  const teamId = req.params.teamId;
+  if (!teamId) return next(new AppError("No team ID provided!", 400));
+
+  const team = await Team.findById(teamId);
+  if (!team.Members.includes(req.user._id) && !team.Owner === req.user._id) {
+    return next(new AppError("You are not allowed to view this team!", 401));
+  }
+
+  const chatMessages = await Chat.find({ teamId: teamId });
+
+  res.status(200).json({
+    status: "success",
+    data: { results: chatMessages.length, chatMessages },
+  });
+});

@@ -15,6 +15,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
 import Classes from "./Classes";
+import ChatRomm from "./components/ChatRoom";
 import Header from "components/Headers/Header.js";
 import componentStyles from "assets/theme/views/admin/dashboard.js";
 
@@ -81,35 +82,35 @@ function Team({ user, cookies, history, ...props }) {
   // }, [activeTeams]);
   return (
     <div>
-      <Header />
+      <Header style={{ marginBottom: "0px" }} />
 
       {Team != null ? (
         <Grid
           item
           style={{
             width: "100%",
-            marginTop: "1rem",
-            marginBottom: "20px",
+            margin: "0px",
+            padding: "0px",
             display: "flex",
           }}
           component={Box}
-          key={Team.TeamCode}
+          key={Team._id}
         >
           <Grid>
             <TeamDetails Team={Team} />
           </Grid>
-          <Grid style={{ width: "100%" }}>
+          <Grid style={{ width: "100%", height: "100%" }}>
             <Card
               classes={classes.cardRoot}
               style={{
                 borderRadius: "0px",
-                height: "100vh",
+                height: "90vh",
                 boxShadow: "0px 0px 1rem rgba(136,152,170,0.35)",
               }}
             >
               <CardHeader
                 style={{
-                  minHeight: "140px",
+                  minHeight: "40px",
                   minWidth: "min(300px,80vw)",
                   border: 0,
                 }}
@@ -172,9 +173,9 @@ function Team({ user, cookies, history, ...props }) {
                 }
               ></CardHeader>
               <CardContent>
-                <div style={{ marginTop: "30px" }}>
+                <div>
                   {tab === "Chat" ? (
-                    <Classes Team={Team} />
+                    <ChatRomm Team={Team} user={user} />
                   ) : tab === "Files" ? (
                     <Classes Team={Team} />
                   ) : null}

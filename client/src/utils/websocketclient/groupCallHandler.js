@@ -2,6 +2,7 @@ import {
   registerGroupMeeting,
   joinGroupCall,
   leaveGroupCall,
+  stopLocaleStream,
 } from "./clientSocket";
 import store from "../../store/store";
 import * as callActions from "../../store/actions/callActions";
@@ -108,10 +109,7 @@ export const clearGroupData = () => {
   store.dispatch(callActions.clearGroupCallData());
   myPeer.destroy();
   connectWithPeer();
-
-  const localStream = store.getState().call.localStream;
-  localStream.getVideoTracks()[0].enabled = true;
-  localStream.getAudioTracks()[0].enabled = true;
+  stopLocaleStream();
 };
 
 const addVideoStream = (incomingStream) => {

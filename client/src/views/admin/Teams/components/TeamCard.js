@@ -29,11 +29,9 @@ const TeamCard = ({ team, clicked }) => {
       onClick={clicked}
     >
       <Card
-        classes={
-          {
-            // root: classes.cardRoot,
-          }
-        }
+        classes={{
+          root: classes.cardRoot,
+        }}
         style={{
           height: "100%",
           boxShadow: "0px 0px 1rem rgba(136,152,170,0.35)",

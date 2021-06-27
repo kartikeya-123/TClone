@@ -23,6 +23,7 @@ const componentStyles = (theme) => ({
   },
   cardHeaderRoot: {
     backgroundColor: "initial!important",
+    marginTop: "0px",
   },
   textUppercase: {
     textTransform: "uppercase",

@@ -23,7 +23,11 @@ const TeamDetails = ({ Team }) => {
 
   const getInitials = (name) => {
     let arr = name.split(" ");
-    let str = arr[0][0] + "" + arr[1][0];
+
+    let str;
+    if (arr.length > 1) str = arr[0][0] + "" + arr[1][0];
+    else str = arr[0][0] + arr[0][1];
+
     return str;
   };
   return (
@@ -32,7 +36,7 @@ const TeamDetails = ({ Team }) => {
         root: classes.cardRoot,
       }}
       style={{
-        height: "100vh",
+        height: "100%",
         borderRadius: "0px",
         width: "min(300px,80vw)",
       }}

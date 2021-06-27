@@ -34,13 +34,13 @@ app.use(middleware.requestLogger);
 // Serving static files
 app.use(express.static(path.join(__dirname, "client/build")));
 
-// app.get("/:clientEndpoint", (req, res, next) => {
-//   if (clientEndpoints.includes(req.params.clientEndpoint)) {
-//     res.sendFile(path.join(__dirname, "/client/build/index.html"));
-//   } else {
-//     next();
-//   }
-// });
+app.get("/:clientEndpoint", (req, res, next) => {
+  if (clientEndpoints.includes(req.params.clientEndpoint)) {
+    res.sendFile(path.join(__dirname, "/client/build/index.html"));
+  } else {
+    next();
+  }
+});
 
 // API Endpoints
 app.use("/api/v1/auth", authRouter);
