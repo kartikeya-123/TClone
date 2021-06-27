@@ -110,9 +110,10 @@ function Team({ user, cookies, history, ...props }) {
             >
               <CardHeader
                 style={{
-                  minHeight: "40px",
+                  minHeight: "30px",
                   minWidth: "min(300px,80vw)",
                   border: 0,
+                  paddingBottom: "0px",
                 }}
                 classes={{ root: classes.cardHeaderRoot }}
                 subheader={
@@ -172,7 +173,7 @@ function Team({ user, cookies, history, ...props }) {
                   </Box>
                 }
               ></CardHeader>
-              <CardContent>
+              <CardContent style={{ paddingLeft: "0px", paddingBottom: "0px" }}>
                 <div>
                   {tab === "Chat" ? (
                     <ChatRomm Team={Team} user={user} />

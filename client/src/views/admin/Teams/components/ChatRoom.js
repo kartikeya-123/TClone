@@ -128,7 +128,7 @@ const ChatRoom = ({ user, Team }) => {
           classes={{ root: classes.gridItemRoot + " " + classes.order2 }}
         >
           <Paper
-            style={{ padding: "2px 10px 2px 0px" }}
+            style={{ padding: "2px 10px 0px 0px" }}
             classes={{ root: classes.cardRoot }}
           >
             {chats}

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Avatar, Grid, GridList, Box } from "@material-ui/core";
+import { Avatar, Grid, GridList, Box, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -11,11 +11,27 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   gridList: {
-    height: "50vh",
+    minHeight: "30vh",
+    maxHeight: "60vh",
   },
   image: {
     width: "30px",
     height: "30px",
+  },
+  messageCard: {
+    borderRadius: "10px",
+    backgroundColor: "#F5F5F5",
+  },
+  messageCardRight: {
+    borderRadius: "10px",
+    marginLeft: "50%",
+    backgroundColor: "#E9EAF6",
+  },
+  imageLayout: {
+    justifyContent: "right",
+  },
+  gridLayout: {
+    alignItems: "right",
   },
 }));
 const urlify = (text) => {
@@ -46,14 +62,14 @@ const Messages = ({ chatMessages, user }) => {
       id="chat-elem"
       style={{
         height: "100%",
+        paddingTop: "0px",
       }}
       // className={classes.root}
     >
       <GridList cellHeight={40} className={classes.gridList} cols={1}>
         {chatMessages.map((chatMessage, index) => {
           let alignment = "left";
-          if (chatMessage.userId == user.id) {
-            console.log("Hi");
+          if (chatMessage.userId === user.id) {
             alignment = "right";
           }
           return (
@@ -64,34 +80,43 @@ const Messages = ({ chatMessages, user }) => {
                 spacing={1}
                 style={{
                   margin: "10px 5px",
+                  height: "auto",
                 }}
+                className={classes.gridLayout}
               >
-                <Grid item>
-                  <Avatar
-                    alt="avatar"
-                    src={chatMessage.userImage}
-                    className={classes.image}
-                  />
-                </Grid>
+                {alignment == "left" ? (
+                  <Grid item>
+                    <Avatar
+                      alt="avatar"
+                      src={chatMessage.userImage}
+                      className={classes.image}
+                    />
+                  </Grid>
+                ) : null}
                 <Grid
-                  style={{ justifyContent: "left", marginLeft: "5px" }}
+                  className={
+                    alignment === "right"
+                      ? classes.messageCardRight
+                      : classes.messageCard
+                  }
                   item
-                  xs
                   zeroMinWidth
+                  alignItems="flex-end"
+                  direction="reverse"
+                  justify="flex-end"
+                  //
+                  xs={6}
                 >
-                  <Box
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <h4 style={{ margin: 0, textAlign: "left" }}>
-                      {chatMessage.userName}
-                    </h4>
+                  <Box>
+                    <h4 style={{ margin: 0 }}>{chatMessage.userName}</h4>
+
+                    <p
+                      style={{ margin: "0px" }}
+                      dangerouslySetInnerHTML={{
+                        __html: urlify(chatMessage.message),
+                      }}
+                    ></p>
                   </Box>
-                  <p
-                    style={{ textAlign: "left", margin: "0px" }}
-                    dangerouslySetInnerHTML={{
-                      __html: urlify(chatMessage.message),
-                    }}
-                  ></p>
                 </Grid>
               </Grid>
             </React.Fragment>
