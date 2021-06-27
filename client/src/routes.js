@@ -39,7 +39,6 @@ var routes = [
     component: Team,
     layout: "/",
     show: false,
-    exact: true,
     role: ["user", "admin", "Teacher"],
   },
   {
