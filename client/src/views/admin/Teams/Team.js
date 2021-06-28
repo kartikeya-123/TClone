@@ -21,6 +21,10 @@ import componentStyles from "assets/theme/views/admin/dashboard.js";
 
 import axios from "axios";
 import { Avatar } from "@material-ui/core";
+import {
+  socket,
+  webSocketConnection,
+} from "utils/websocketclient/clientSocket";
 import TeamDetails from "./components/TeamDetails";
 const useStyles = makeStyles(componentStyles);
 
@@ -66,10 +70,13 @@ function Team({ user, cookies, history, ...props }) {
       })
       .catch((err) => {
         console.log(err);
-        history.push("/classroom");
+        history.push("/teams");
       });
   };
   useEffect(() => {
+    if (!socket) {
+      webSocketConnection(user);
+    }
     let id = window.location.pathname.split("/")[2];
     getTeam(id);
     connectWithTeam(id);
@@ -97,7 +104,7 @@ function Team({ user, cookies, history, ...props }) {
           key={Team._id}
         >
           <Grid>
-            <TeamDetails Team={Team} />
+            <TeamDetails Team={Team} user={user} />
           </Grid>
           <Grid style={{ width: "100%", height: "100%" }}>
             <Card

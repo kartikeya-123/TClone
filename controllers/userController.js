@@ -98,3 +98,21 @@ exports.seenNotifications = catchAsync(async (req, res, next) => {
     notifications: user.notifications,
   });
 });
+
+exports.getOutsideUsers = catchAsync(async (req, res, next) => {
+  const teamId = req.params.teamId;
+  if (!teamId) {
+    return next(new AppError("Team Id is not mentioned", 404));
+  }
+
+  //Get all users who doesn't belong to the team
+  const users = await User.find({
+    teamsEnrolled: { $nin: teamId },
+    teamsOwned: { $nin: teamId },
+  }).select("name email image");
+
+  res.status(200).json({
+    status: "success",
+    data: users,
+  });
+});

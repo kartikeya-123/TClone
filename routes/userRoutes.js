@@ -12,6 +12,7 @@ router.get("/profile", userController.aboutMe);
 //Other's profile
 router.get("/other", userController.getProfile);
 
+router.get("/otherUsers/:teamId", userController.getOutsideUsers);
 router.patch("/profile", userController.updateProfile);
 
 // router.get(

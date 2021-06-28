@@ -31,10 +31,15 @@ const userSchema = new mongoose.Schema(
     teamsEnrolled: [
       {
         type: mongoose.Schema.ObjectId,
-        ref: "User",
+        ref: "Team",
       },
     ],
-
+    teamsOwned: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Team",
+      },
+    ],
     // notifications: [
     //   {
     //     message: { type: String },

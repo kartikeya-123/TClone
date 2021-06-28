@@ -4,12 +4,11 @@ const componentStyles = (theme) => ({
   gridRoot: {
     paddingTop: "0px",
     margin: "10px auto 0px auto",
-    justifyContent: "space-evenly",
     width: "100%",
   },
   gridRootHeader: {
     marginLeft: "20px",
-    marginTop: "40px",
+    marginTop: "20px",
   },
   cardRootBgGradient: {
     background:

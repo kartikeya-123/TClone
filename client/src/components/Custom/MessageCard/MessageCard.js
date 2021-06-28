@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     justifyContent: "space-around",
     overflow: "hidden",
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "red",
   },
   gridList: {
     // minHeight: "30vh",
@@ -19,21 +19,28 @@ const useStyles = makeStyles((theme) => ({
     height: "30px",
   },
   messageCard: {
-    borderRadius: "10px",
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#ebebeb",
     display: "inline-block",
+    padding: "10px",
   },
   messageCardRight: {
-    borderRadius: "10px",
     marginLeft: "50%",
     backgroundColor: "#E9EAF6",
     display: "inline-block",
+    padding: "10px",
   },
   imageLayout: {
     justifyContent: "right",
   },
   gridLayout: {
     alignItems: "right",
+  },
+  span: {
+    color: "#5F5F5F",
+    float: "right",
+    fontSize: "12px",
+    textDecoration: "transparent",
+    fontWeight: 400,
   },
 }));
 const urlify = (text) => {
@@ -50,6 +57,24 @@ const Messages = ({ chatMessages, user }) => {
   const scrollToBottom = () => {
     const elem = document.getElementById("chat-elem");
     if (elem) elem.scrollTop = elem.scrollHeight;
+  };
+
+  const getDate = (date) => {
+    let day = new Date(date).toUTCString().substr(0, 3);
+    let messageTime = new Date(date).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    messageTime = messageTime.split(":");
+    let finalTime = day + ", ";
+    if (messageTime[0] <= 1) {
+      finalTime += messageTime[0] + "." + messageTime[1] + " AM";
+    } else {
+      finalTime += messageTime[0] - 12 + "." + messageTime[1] + " PM";
+    }
+
+    return finalTime;
   };
   useEffect(() => {
     scrollToBottom();
@@ -110,7 +135,12 @@ const Messages = ({ chatMessages, user }) => {
                   xs={6}
                 >
                   <Box>
-                    <h4 style={{ margin: 0 }}>{chatMessage.userName}</h4>
+                    <h4 style={{ margin: 0 }}>
+                      {chatMessage.userName}{" "}
+                      <span className={classes.span}>
+                        {getDate(chatMessage.createdAt)}
+                      </span>
+                    </h4>
 
                     <p
                       style={{ margin: "0px" }}

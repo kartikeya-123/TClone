@@ -65,13 +65,6 @@ exports.createTeam = catchAsync(async (req, res, next) => {
     next();
   } else {
     let memberIds;
-    if (req.body.members) {
-      memberIds = await User.find({ email: { $in: req.body.members } }).select(
-        "_id"
-      );
-      memberIds = memberIds.map((user) => user._id);
-      teamData.Members = memberIds;
-    }
     teamData.Owner = req.user.id;
 
     const newTeam = await Team.create(teamData).populate({
@@ -83,6 +76,10 @@ exports.createTeam = catchAsync(async (req, res, next) => {
     if (!newTeam) {
       return next(new AppError("Some error happened", 403));
     }
+
+    await User.findOneAndUpdate(req.user.id, {
+      $push: { teamsOwned: newTeam._id },
+    });
 
     res.status(200).json({
       status: "Success",
@@ -130,7 +127,8 @@ exports.addMembersToTeam = catchAsync(async (req, res, next) => {
   if (team.privacy) {
     //Team is private
     // Only team owner can add
-    if (team.Owner !== req.user.id) {
+
+    if (team.Owner != req.user.id) {
       return next(
         new AppError("Sorry you are not granted this permission", 404)
       );
@@ -138,18 +136,23 @@ exports.addMembersToTeam = catchAsync(async (req, res, next) => {
   } else {
     //Team is public
     //Group members can add another members
-    if (!team.Members.includes(req.user.id)) {
+    if (!team.Members.includes(req.user._id) && team.Owner != req.user.id) {
       return next(
         new AppError("Sorry you are not granted this permission", 404)
       );
     }
   }
 
-  const { memberIds } = req.body;
-
+  const memberIds = req.body;
+  console.log(req.body);
   if (memberIds.length === 0) {
     return next(new AppError("Atleast one member should be present", 404));
   }
+
+  await User.updateMany(
+    { _id: { $in: memberIds } },
+    { $push: { teamsEnrolled: team.id } }
+  );
 
   for (let member of memberIds) {
     if (!team.Members.includes(member)) team.Members.push(member);

@@ -20,11 +20,9 @@ const TeamCard = ({ team, clicked }) => {
       item
       style={{
         width: "340px",
-        marginBottom: "20px",
         cursor: "pointer",
       }}
       component={Box}
-      marginBottom="3rem!important"
       key={team._id}
       onClick={clicked}
     >

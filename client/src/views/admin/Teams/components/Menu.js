@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -7,28 +8,32 @@ import QueueIcon from "@material-ui/icons/Queue";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import AddMember from "./AddMember";
-
+import GroupAddIcon from "@material-ui/icons/GroupAdd";
 const menuItems = [
   {
-    icon: QueueIcon,
+    icon: <GroupAddIcon />,
     itemName: "Add member",
     id: 0,
+    privacy: true,
   },
   {
-    icon: QueueIcon,
+    icon: <QueueIcon />,
     itemName: "Leave team",
     id: 1,
+    privacy: false,
   },
   {
-    icon: QueueIcon,
+    icon: <QueueIcon />,
     itemName: "Edit Team",
     id: 2,
+    privacy: true,
   },
 ];
 
-const MenuBox = () => {
+const MenuBox = ({ Team, user }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showAddMember, showAddModal] = useState(false);
+  const [users, setUsers] = useState([]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -57,20 +62,29 @@ const MenuBox = () => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {menuItems.map((menuItem) => (
-          <MenuItem
-            style={{ display: "flex" }}
-            key={menuItem.id}
-            onClick={() => handleEvent(menuItem.id)}
-          >
-            <ListItemIcon style={{ color: "blue" }}>
-              <QueueIcon />
-            </ListItemIcon>
-            <ListItemText>{menuItem.itemName}</ListItemText>
-          </MenuItem>
-        ))}
+        {menuItems.map((menuItem) => {
+          if (menuItem.privacy) {
+            if (Team.privacy && Team.Owner.email !== user.email) return null;
+          }
+          return (
+            <MenuItem
+              style={{ display: "flex" }}
+              key={menuItem.id}
+              onClick={() => handleEvent(menuItem.id)}
+            >
+              <ListItemIcon style={{ color: "blue" }}>
+                {menuItem.icon}
+              </ListItemIcon>
+              <ListItemText>{menuItem.itemName}</ListItemText>
+            </MenuItem>
+          );
+        })}
       </Menu>
-      <AddMember show={showAddMember} handleEvent={() => handleEvent(0)} />
+      <AddMember
+        Team={Team}
+        show={showAddMember}
+        handleEvent={() => handleEvent(0)}
+      />
     </div>
   );
 };

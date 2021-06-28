@@ -20,7 +20,6 @@ import Typography from "@material-ui/core/Typography";
 // @material-ui/icons components
 import DirectionsRun from "@material-ui/icons/DirectionsRun";
 import Person from "@material-ui/icons/Person";
-import { disconnectSocket } from "utils/websocketclient/clientSocket.js";
 // core components
 import componentStyles from "../../assets/theme/components/navbar-dropdown.js";
 
@@ -52,7 +51,7 @@ export default function NavbarDropdown({ user, cookies, logOut }) {
         cookies.remove("isLoggedIn", { path: "/" });
         cookies.remove("userData", { path: "/" });
         window.location.reload(false);
-        disconnectSocket();
+        // disconnectSocket();
       })
       .catch((err) => {
         console.log(err);

@@ -17,7 +17,7 @@ import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(componentStyles);
 
-const TeamDetails = ({ Team }) => {
+const TeamDetails = ({ Team, user }) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -69,7 +69,7 @@ const TeamDetails = ({ Team }) => {
                 {Team.Name}
               </Box>
               <Box>
-                <MenuBox />
+                <MenuBox Team={Team} user={user} />
               </Box>
             </Box>
 
