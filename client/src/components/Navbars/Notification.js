@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import "./Notification.css";
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,14 +15,8 @@ import SvgIcon from "@material-ui/core/SvgIcon";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 
-import {
-  UserX,
-  Users,
-  UserCheck,
-  FileText,
-  Book,
-  Bookmark,
-} from "react-feather";
+import { Users, FileText, PhoneIncoming } from "react-feather";
+import { not } from "ramda";
 
 const useStyles = makeStyles({
   root: {
@@ -72,7 +66,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Notification = ({ user, history, color }) => {
+const Notification = ({ user, history, color, show, setNotification }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [notifications, setNotifications] = useState([
@@ -83,6 +77,10 @@ const Notification = ({ user, history, color }) => {
   ]);
 
   const [status, setNotificationStatus] = useState(user.notificationsSeen);
+
+  useEffect(() => {
+    setNotificationStatus(show);
+  }, [show]);
   // //console.log(status);
   const handleClick = (event) => {
     getNotifications();
@@ -94,6 +92,7 @@ const Notification = ({ user, history, color }) => {
   };
 
   const getNotifications = () => {
+    setNotification(true);
     axios
       .get("/api/v1/user/notifications", {
         withCredentials: true,
@@ -113,19 +112,9 @@ const Notification = ({ user, history, color }) => {
       });
   };
 
-  const redirectToProject = (projectId) => {
-    let projectUrl = `/projects/${projectId}`;
-    history.push(projectUrl);
-    // window.location.pathname = projectUrl;
-  };
-  const redirectToAssignment = (projectId) => {
-    let projectUrl = `/assignment/${projectId}`;
-    history.push(projectUrl);
-    // window.location.pathname = projectUrl;
-  };
-  const redirectToCourse = (course) => {
-    let courseUrl = `/courses/${course.code}/${course._id}`;
-    history.push(courseUrl);
+  const redirectToTeam = (teamId) => {
+    let teamUrl = `/team/${teamId}`;
+    history.push(teamUrl);
   };
 
   const open = Boolean(anchorEl);
@@ -136,33 +125,12 @@ const Notification = ({ user, history, color }) => {
       case "profileMatch":
         return <FileText color="darkblue" size={20} />;
       // break;
-      case "collaboratorAdd":
+      case "New Team":
         return <Users color="blue" size={20} />;
 
-      case "joinRequest":
-        return (
-          <Avatar
-            src={notification.requester.image}
-            style={{ height: "30px", width: "30px" }}
-          />
-        );
+      case "New Meeting":
+        return <PhoneIncoming color="blue" size={20} />;
 
-      case "requestAccept":
-        return <UserCheck color="green" size={20} />;
-
-      case "requestReject":
-        return <UserX color="#f54242" size={20} />;
-
-      case "courseCreated":
-        return (
-          <SupervisorAccountIcon style={{ height: "20px", width: "20px" }} />
-        );
-
-      case "courseEnrolled":
-        return <Book size={20} />;
-
-      case "assignment":
-        return <Bookmark size={20} />;
       default:
         return <FileText size={20} />;
     }
@@ -170,107 +138,23 @@ const Notification = ({ user, history, color }) => {
 
   const makeNotificationMessage = (notification) => {
     switch (notification.type) {
-      case "profileMatch":
+      case "New Team":
         return (
           <div>
             {" "}
-            <Typography className={classes.head}>
-              {notification.project.title}
-            </Typography>
-            <Typography className={classes.desc}>
-              Matches your profile.
-            </Typography>
-          </div>
-        );
-      // break;
-      case "collaboratorAdd":
-        return (
-          <div>
-            {" "}
-            <Typography className={classes.head}>
-              {notification.project.title}
-            </Typography>
-            <Typography className={classes.desc}>
-              You are added as a collaborator.
-            </Typography>
-          </div>
-        );
-
-      case "joinRequest":
-        return (
-          <div>
-            {" "}
-            <Typography className={classes.head}>
-              {notification.requester.name}
-            </Typography>
-            <Typography className={classes.desc}>
-              Requested to join your project
-              <br />
-              <b>{notification.project.title}</b>
-            </Typography>
-          </div>
-        );
-
-      case "requestAccept":
-        return (
-          <div>
-            {" "}
-            <Typography className={classes.head}>
-              {notification.project.title}
-            </Typography>
-            <Typography className={classes.desc}>
-              Your request is accepted by the owner.
-            </Typography>
-          </div>
-        );
-
-      case "requestReject":
-        return (
-          <div>
-            {" "}
-            <Typography className={classes.head}>
-              {notification.project.title}
-            </Typography>
-            <Typography className={classes.desc}>
-              Your request is rejected by the owner.
-            </Typography>
-          </div>
-        );
-      case "assignment":
-        return (
-          <div>
-            {" "}
-            <Typography className={classes.head}>
-              {notification.project.title}
-            </Typography>
+            <Typography className={classes.head}>"Team Update"</Typography>
             <Typography className={classes.desc}>
               {notification.message}
             </Typography>
           </div>
         );
-
-      case "courseCreated":
+      case "New Meeting":
         return (
           <div>
             {" "}
-            <Typography className={classes.head}>
-              {notification.course.name}
-            </Typography>
+            <Typography className={classes.head}>"Meeting Update"</Typography>
             <Typography className={classes.desc}>
-              Admin created course with you as teacher.
-            </Typography>
-          </div>
-        );
-
-      case "courseEnrolled":
-        return (
-          <div>
-            {" "}
-            <Typography className={classes.head}>
-              {notification.course.name}
-            </Typography>
-            <Typography className={classes.desc}>
-              You are enrolled in this course of {notification.course.teacher}
+              {notification.message}
             </Typography>
           </div>
         );
@@ -299,13 +183,7 @@ const Notification = ({ user, history, color }) => {
               className={classes.tile}
               onClick={() => {
                 //console.log(notification);
-                if (notification.type == "assignment") {
-                  redirectToAssignment(notification.project._id);
-                } else if (notification.project)
-                  redirectToProject(notification.project._id);
-                else if (notification.course)
-                  redirectToCourse(notification.course);
-                else redirectToProject(notification.projectId);
+                redirectToTeam(notification.teamId);
               }}
               key={key}
             >
@@ -334,13 +212,14 @@ const Notification = ({ user, history, color }) => {
         variant="dot"
         invisible={status}
       >
+        {console.log(status)}
         <SvgIcon
           style={{
             color: "white",
             width: "25px",
             height: "30px",
 
-            marginLeft: "10px",
+            // marginLeft: "10px",
             cursor: "pointer",
           }}
           onClick={handleClick}

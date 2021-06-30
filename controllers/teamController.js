@@ -4,7 +4,7 @@ const Chat = require("./../models/chatModel");
 
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
-
+const ObjectId = require("mongoose").Types.ObjectId;
 //Get My teams as member
 exports.getMyTeamsAsMember = catchAsync(async (req, res, next) => {
   const userId = req.user.id;
@@ -148,10 +148,17 @@ exports.addMembersToTeam = catchAsync(async (req, res, next) => {
   if (memberIds.length === 0) {
     return next(new AppError("Atleast one member should be present", 404));
   }
-
+  let notification = {
+    messsage: `Added into a new team ${team.Name} by ${req.user.name}`,
+    notificationType: "New Team",
+    teamId: team.id,
+  };
   await User.updateMany(
     { _id: { $in: memberIds } },
-    { $push: { teamsEnrolled: team.id } }
+    {
+      $push: { teamsEnrolled: team.id, notifications: notification },
+      notificationsSeen: false,
+    }
   );
 
   for (let member of memberIds) {
@@ -209,3 +216,36 @@ exports.getAllChatMessagesByTeam = catchAsync(async (req, res, next) => {
     data: { results: chatMessages.length, chatMessages },
   });
 });
+
+exports.meetingNotification = async ({ teamId, teamName, owner, ownerId }) => {
+  if (!teamId) {
+    return new AppError("Team Id is not mentioned", 404);
+  }
+  console.log(teamId);
+  const notification = {
+    message: `A new meeting started in ${teamName} by ${owner}`,
+    notificationType: "New Meeting",
+    teamId: teamId,
+  };
+  console.log(ownerId);
+  await User.updateMany(
+    {
+      _id: { $ne: ownerId },
+      $or: [
+        { teamsEnrolled: ObjectId(teamId) },
+        { teamsOwned: ObjectId(teamId) },
+      ],
+    },
+    { $push: { notifications: notification }, notificationsSeen: false }
+  );
+
+  const users = await User.find({
+    _id: { $ne: ownerId },
+    $or: [
+      { teamsEnrolled: ObjectId(teamId) },
+      { teamsOwned: ObjectId(teamId) },
+    ],
+  }).select("email");
+  console.log(users);
+  return users;
+};

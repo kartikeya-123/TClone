@@ -74,8 +74,13 @@ export const webSocketConnection = (user) => {
   socket.on("team-meeting-finished", (data) => {
     removeActiveTeam(data);
   });
+  socket.on("new-notification", () => {
+    createNotification();
+  });
 };
-
+const createNotification = () => {
+  store.dispatch(dashboardActions.setNotification(false));
+};
 const removeActiveTeam = (data) => {
   let activeTeams = store.getState().call.activeTeams;
   activeTeams = activeTeams.filter(

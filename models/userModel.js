@@ -40,22 +40,18 @@ const userSchema = new mongoose.Schema(
         ref: "Team",
       },
     ],
-    // notifications: [
-    //   {
-    //     message: { type: String },
-    //     type: {
-    //       type: String,
-    //       enum: [
-
-    //       ],
-    //     },
-    //     requester: { _id: String, name: String, image: String },
-    //     topic: {
-    //       type: String,
-    //     },
-    //     course: { _id: String, teacher: String, name: String, code: String },
-    //   },
-    // ],
+    notifications: [
+      {
+        message: { type: String },
+        notificationType: {
+          type: String,
+          enum: ["New Meeting", "New Team"],
+        },
+        teamId: {
+          type: String,
+        },
+      },
+    ],
     notificationsSeen: {
       type: Boolean,
       default: true,

@@ -1,10 +1,12 @@
+import { CardActions } from "@material-ui/core";
 import * as dashboardActions from "../actions/dashboardActions";
 
 const initialState = {
   userName: "",
   activeUsers: null,
   showParticipantModal: false,
-  user : null
+  user: null,
+  showNotifications: true,
 };
 
 const reducer = (state = initialState, action) => {
@@ -25,10 +27,15 @@ const reducer = (state = initialState, action) => {
         showParticipantModal: action.show,
       };
     case dashboardActions.DASHBOARD_LOGGED_USER:
-      return{
+      return {
         ...state,
-        user : action.user
-      }
+        user: action.user,
+      };
+    case dashboardActions.DASHBOARD_USER_NOTIFICATION_RECIVED:
+      return {
+        ...state,
+        showNotifications: action.show,
+      };
     default:
       return state;
   }

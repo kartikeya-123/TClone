@@ -26,7 +26,7 @@ class Wrapper extends Component {
     axios
       .get("/api/v1/user/profile")
       .then((res) => {
-        //console.log(res.data.data.user);
+        // console.log(res.data.data.user);
         this.setState({
           user: res.data.data.user,
           isLoggedIn: cookies ? cookies.isLoggedIn : this.state.isLoggedIn,
@@ -100,7 +100,7 @@ class Wrapper extends Component {
                     path="/"
                     render={(props) => (
                       <AdminLayout
-                        user={this.state.user}
+                        userdata={this.state.user}
                         cookies={this.props.cookies}
                         getUserAgain={this.getUser}
                         logOut={this.logOut}

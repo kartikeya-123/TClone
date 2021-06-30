@@ -21,6 +21,8 @@ export default function AdminNavbar({
   brandText,
   history,
   logOut,
+  showNotifications,
+  setNotification,
 }) {
   const classes = useStyles();
   return (
@@ -55,7 +57,12 @@ export default function AdminNavbar({
               </div>
               <Box display="flex" alignItems="center" width="auto">
                 <NavbarDropdown user={user} cookies={cookies} logOut={logOut} />
-                <Notification user={user} history={history} />
+                <Notification
+                  user={user}
+                  history={history}
+                  show={showNotifications}
+                  setNotification={setNotification}
+                />
               </Box>
             </Box>
           </Container>

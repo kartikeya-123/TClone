@@ -22,13 +22,20 @@ import routes from "routes.js";
 
 import componentStyles from "assets/theme/layouts/admin.js";
 import { callStates } from "store/actions/callActions";
+import { setNotification } from "store/actions/dashboardActions.js";
 const useStyles = makeStyles(componentStyles);
 
-const Admin = ({ user, cookies, getUserAgain, logOut, ...props }) => {
+const Admin = ({ userdata, cookies, getUserAgain, logOut, ...props }) => {
   const classes = useStyles();
   const location = useLocation();
   const history = useHistory();
-  const { callState, callerUsername, localStream } = props;
+  const {
+    callState,
+    callerUsername,
+    localStream,
+    showNotifications,
+    setNotification,
+  } = props;
 
   React.useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -38,13 +45,13 @@ const Admin = ({ user, cookies, getUserAgain, logOut, ...props }) => {
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/" && prop.role.includes(user.role)) {
+      if (prop.layout === "/" && prop.role.includes(userdata.role)) {
         return (
           <Route
             path={prop.layout + prop.path}
             render={() => (
               <prop.component
-                user={user}
+                user={userdata}
                 getUserAgain={getUserAgain}
                 history={history}
                 cookies={cookies}
@@ -72,9 +79,9 @@ const Admin = ({ user, cookies, getUserAgain, logOut, ...props }) => {
     <>
       <>
         <Sidebar
-          user={user}
+          user={userdata}
           history={history}
-          role={user.role}
+          role={userdata.role}
           routes={routes}
           logo={{
             innerLink: "/",
@@ -82,7 +89,7 @@ const Admin = ({ user, cookies, getUserAgain, logOut, ...props }) => {
               .default,
             imgAlt: "...",
           }}
-          dropdown={<NavbarDropdown user={user} logOut={logOut} />}
+          dropdown={<NavbarDropdown user={userdata} logOut={logOut} />}
           // input={
           //   <FormControl variant="outlined" fullWidth>
           //     <InputLabel htmlFor="outlined-adornment-search-responsive">
@@ -108,11 +115,13 @@ const Admin = ({ user, cookies, getUserAgain, logOut, ...props }) => {
         <Box position="relative" className={classes.mainContent}>
           <Box>
             <AdminNavbar
-              user={user}
+              user={userdata}
               cookies={cookies}
               brandText={getBrandText(location.pathname)}
               history={history}
               logOut={logOut}
+              showNotifications={showNotifications}
+              setNotification={setNotification}
             />
           </Box>
           {callState === callStates.CALL_REQUESTED ? (
@@ -136,7 +145,14 @@ const Admin = ({ user, cookies, getUserAgain, logOut, ...props }) => {
 function mapStoreStateToProps({ call, dashboard }) {
   return {
     ...call,
+    ...dashboard,
   };
 }
 
-export default connect(mapStoreStateToProps, null)(Admin);
+function mapDispatchToProps(dispatch) {
+  return {
+    setNotification: (show) => dispatch(setNotification(show)),
+  };
+}
+
+export default connect(mapStoreStateToProps, mapDispatchToProps)(Admin);

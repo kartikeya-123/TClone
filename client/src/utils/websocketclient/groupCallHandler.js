@@ -40,13 +40,16 @@ export const connectWithPeer = () => {
   });
 };
 
-export const createGroupMeeting = (teamId) => {
+export const createGroupMeeting = (teamId, teamName, meetingOwner, ownerId) => {
   const groupHost = store.getState().dashboard.user;
   const groupHostDetails = {
     email: groupHost.email,
     name: groupHost.name,
     peerId: myPeerId,
     teamId: teamId,
+    teamName: teamName,
+    owner: meetingOwner,
+    ownerId: ownerId,
   };
 
   registerGroupMeeting(groupHostDetails);

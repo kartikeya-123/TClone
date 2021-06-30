@@ -57,8 +57,11 @@ function Team({ user, cookies, history, ...props }) {
   };
 
   const startMeet = () => {
-    const teamId = Team._id;
-    createGroupMeeting(teamId);
+    const teamId = Team.id;
+    const teamName = Team.Name;
+    const meetingOwner = user.name;
+    const ownerId = user.id;
+    createGroupMeeting(teamId, teamName, meetingOwner, ownerId);
   };
   const getTeam = (id) => {
     axios

@@ -15,10 +15,6 @@ router.get("/other", userController.getProfile);
 router.get("/otherUsers/:teamId", userController.getOutsideUsers);
 router.patch("/profile", userController.updateProfile);
 
-// router.get(
-//   "/notifications",
-//   authController.restrictTo("user", "admin", "Teacher"),
-//   userController.getNotifications
-// );
+router.get("/notifications", userController.getNotifications);
 
 module.exports = router;

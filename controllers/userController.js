@@ -16,19 +16,19 @@ exports.aboutMe = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.getNotifications = catchAsync(async (req, res, next) => {
-//   if (!req.user) {
-//     return next(new AppError("This user is not present", 401));
-//   }
-//   req.user.notificationsSeen = true;
-//   await req.user.save();
-//   res.status(200).json({
-//     status: "suceess",
-//     data: {
-//       notifications: req.user.notifications,
-//     },
-//   });
-// });
+exports.getNotifications = catchAsync(async (req, res, next) => {
+  if (!req.user) {
+    return next(new AppError("This user is not present", 401));
+  }
+  req.user.notificationsSeen = true;
+  await req.user.save();
+  res.status(200).json({
+    status: "suceess",
+    data: {
+      notifications: req.user.notifications,
+    },
+  });
+});
 
 exports.getProfile = catchAsync(async (req, res, next) => {
   let user = await User.findOne({ _id: req.query.id })

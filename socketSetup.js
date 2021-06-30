@@ -2,7 +2,10 @@
 const socket = require("socket.io");
 const { v4: uuidv4 } = require("uuid");
 const app = require("./app");
-const { sendMessage } = require("./controllers/teamController");
+const {
+  sendMessage,
+  meetingNotification,
+} = require("./controllers/teamController");
 //Exports
 
 const broadcastEventTypes = {
@@ -104,7 +107,7 @@ module.exports.socketSetup = (server) => {
       io.to(data.connectedUserSocketId).emit("user-hanged-up");
     });
 
-    socket.on("create-meeting", (data) => {
+    socket.on("create-meeting", async (data) => {
       console.log(data);
       const roomId = uuidv4();
       if (data.teamId) {
@@ -115,6 +118,18 @@ module.exports.socketSetup = (server) => {
         activeTeams.push(activeTeam);
         // console.log(activeTeams);
         io.to(data.teamId).emit("team-meeting-started", activeTeam);
+
+        const users = await meetingNotification({
+          teamId: data.teamId,
+          teamName: data.teamName,
+          owner: data.owner,
+          ownerId: data.ownerId,
+        });
+        console.log(users);
+        for (let user of users) {
+          const activeUser = peers.find((peer) => peer.email === user.email);
+          io.to(activeUser.socketId).emit("new-notification");
+        }
       }
       // io.to(socket.id).emit("roomId-for-group-call", {
       //   roomId: roomId,
