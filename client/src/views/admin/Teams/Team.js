@@ -15,7 +15,8 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
 import Classes from "./Classes";
-import ChatRomm from "./components/ChatRoom";
+import Files from "./components/Files";
+import ChatRoom from "./components/ChatRoom";
 import Header from "components/Headers/Header.js";
 import componentStyles from "assets/theme/views/admin/dashboard.js";
 
@@ -186,9 +187,9 @@ function Team({ user, cookies, history, ...props }) {
               <CardContent style={{ paddingLeft: "0px", paddingBottom: "0px" }}>
                 <div>
                   {tab === "Chat" ? (
-                    <ChatRomm Team={Team} user={user} />
+                    <ChatRoom Team={Team} user={user} />
                   ) : tab === "Files" ? (
-                    <Classes Team={Team} />
+                    <Files user={user} teamId={Team._id} />
                   ) : null}
                 </div>
               </CardContent>

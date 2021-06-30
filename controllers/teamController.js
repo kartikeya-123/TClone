@@ -249,3 +249,54 @@ exports.meetingNotification = async ({ teamId, teamName, owner, ownerId }) => {
   console.log(users);
   return users;
 };
+
+exports.submitFile = catchAsync(async (req, res, next) => {
+  const teamId = req.params.teamId;
+  console.log(teamId);
+  let fileName = "";
+  let originalName = "";
+  if (req.file) {
+    fileName = req.file.filename;
+    originalName = req.file.originalname;
+  }
+
+  const submittedData = {
+    name: req.user.name,
+    email: req.user.email,
+    image: req.user.image,
+    id: req.user.id,
+  };
+
+  const fileData = {
+    fileName: fileName,
+    originalName: originalName,
+    submittedBy: submittedData,
+  };
+
+  const team = await Team.findByIdAndUpdate(
+    teamId,
+    {
+      $push: { files: fileData },
+    },
+    { new: true }
+  );
+
+  console.log(team);
+  res.status(200).json({
+    status: "success",
+    file: fileData,
+  });
+});
+
+exports.getAllFiles = catchAsync(async (req, res, next) => {
+  const teamId = req.params.teamId;
+  if (!teamId) {
+    return next(new AppError("Team ID is not present", 404));
+  }
+
+  const files = await Team.findById(ObjectId(teamId)).select("files");
+  res.status(200).json({
+    status: "success",
+    files: files,
+  });
+});

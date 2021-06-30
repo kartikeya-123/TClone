@@ -112,6 +112,14 @@ const componentStyles = (theme) => ({
     textTransform: "uppercase",
     fontSize: "20px",
   },
+  image: {
+    height: "150px",
+    width: "150px",
+    postion: "absolute",
+    float: "center",
+    textAlign: "center",
+    marginLeft: "40%",
+  },
 });
 
 export default componentStyles;

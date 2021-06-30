@@ -39,6 +39,23 @@ const teamSchema = new mongoose.Schema(
     roomId: {
       type: String,
     },
+    files: [
+      {
+        fileName: {
+          type: String,
+        },
+        originalName: {
+          type: String,
+        },
+        submittedBy: {
+          type: Object,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now(),
+        },
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },

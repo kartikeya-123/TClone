@@ -14,9 +14,9 @@ import axios from "axios";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
-
+import { Howl, Howler } from "howler";
 import { Users, FileText, PhoneIncoming } from "react-feather";
-import { not } from "ramda";
+import sound from "assets/sounds/notification.mp3";
 
 const useStyles = makeStyles({
   root: {
@@ -79,8 +79,21 @@ const Notification = ({ user, history, color, show, setNotification }) => {
   const [status, setNotificationStatus] = useState(user.notificationsSeen);
 
   useEffect(() => {
+    console.log(show);
     setNotificationStatus(show);
+    if (show == false) SoundPlay();
   }, [show]);
+
+  const SoundPlay = () => {
+    let Sounds = new Howl({
+      src: sound,
+      html5: true, // A live stream can only be played through HTML5 Audio.
+      format: ["mp3", "aac"],
+    });
+    Sounds.play();
+    console.log("sound");
+  };
+
   // //console.log(status);
   const handleClick = (event) => {
     getNotifications();
