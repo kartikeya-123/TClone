@@ -191,5 +191,10 @@ module.exports.socketSetup = (server) => {
       io.to(teamId).emit("new-message", chatDetails);
       callBack();
     });
+
+    socket.on("group-message", (chatDetails) => {
+      const roomId = chatDetails.roomId;
+      io.to(roomId).emit("group-message-recieved", chatDetails);
+    });
   });
 };

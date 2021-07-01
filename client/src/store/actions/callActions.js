@@ -22,6 +22,7 @@ export const CALL_SET_GROUP_CALL_ACTIVE = "CALL.SET_CALL_ACTIVE";
 export const CALL_SET_GROUP_STREAMS = "CALL.SET_GROUP_STREAMS";
 export const CALL_CLEAR_GROUP_CALL_DATA = "CALL.CLEAR_GROUP_DATA";
 export const CALL_SET_ACTIVE_TEAM = "CALL.SET_ACTIVE_TEAM";
+export const CALL_GROUP_MESSAGE = "CALL.GROUP_MESSAGE";
 
 export const setLocalStream = (localStream) => {
   return {
@@ -116,5 +117,12 @@ export const setTeamToActive = (activeTeams) => {
   return {
     type: CALL_SET_ACTIVE_TEAM,
     activeTeams: activeTeams,
+  };
+};
+
+export const setGroupMessage = (groupMessages) => {
+  return {
+    type: CALL_GROUP_MESSAGE,
+    groupMessages: groupMessages,
   };
 };

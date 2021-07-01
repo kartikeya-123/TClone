@@ -1,27 +1,37 @@
 import React from "react";
 import ConversationButtons from "../ConversationButtons/ConversationButtons";
-import { Grid } from "@material-ui/core";
-import "./GroupCallRoom.css";
+import { Grid, Box } from "@material-ui/core";
 import GroupCallVideo from "./GroupCallVideo";
-import compnentStyles from "assets/theme/views/admin/videoLayout";
+import componentStyles from "assets/theme/views/admin/videoLayout";
 import { makeStyles } from "@material-ui/core/styles";
-import componentStyles from "assets/theme/components/navbar-dropdown";
+import PropTypes from "prop-types";
+import GroupMessages from "../GroupMessages";
 
 const useStyles = makeStyles(componentStyles);
 
+const chatMessages = [
+  {
+    userId: "Kartikeya",
+    createdAt: Date.now(),
+    message: "qew",
+  },
+];
 const GroupCallRoom = (props) => {
   const classes = useStyles();
+  const { user } = props;
 
   const { groupCallStreams } = props;
   return (
-    <Grid>
+    <div>
       <Grid className={classes.videoCallGridLayout}>
-        {groupCallStreams.map((stream) => {
-          return <GroupCallVideo key={stream.id} stream={stream} />;
+        {groupCallStreams.map((stream, index) => {
+          return (
+            <GroupCallVideo key={stream.id} stream={stream} index={index} />
+          );
         })}
       </Grid>
-      <ConversationButtons {...props} groupCall />
-    </Grid>
+      {/* <ConversationButtons {...props} groupCall /> */}
+    </div>
   );
 };
 

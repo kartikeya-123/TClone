@@ -8,6 +8,7 @@ import {
   MdVideoLabel,
   MdCamera,
 } from "react-icons/md";
+import { BsChatDots } from "react-icons/bs";
 import ConversationButton from "./ConversationButton";
 import { callStates } from "store/actions/callActions";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
@@ -17,7 +18,7 @@ const styles = {
   buttonContainer: {
     display: "flex",
     position: "absolute",
-    bottom: "22%",
+    bottom: "5%",
     left: "35%",
     cursor: "pointer",
   },
@@ -41,6 +42,7 @@ const ConversationButtons = (props) => {
     showParticipantModal,
     groupCallActive,
     history,
+    showChat,
   } = props;
 
   const handleMicButtonPressed = () => {
@@ -103,6 +105,11 @@ const ConversationButtons = (props) => {
       {!groupCallActive ? (
         <ConversationButton onClickHandler={handleAddParticipant}>
           <GroupAddIcon size="large" />
+        </ConversationButton>
+      ) : null}
+      {groupCallActive ? (
+        <ConversationButton onClickHandler={showChat}>
+          <BsChatDots style={styles.icon} />
         </ConversationButton>
       ) : null}
     </div>

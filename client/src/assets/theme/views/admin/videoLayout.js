@@ -22,8 +22,8 @@ const componentStyles = (theme) => ({
     position: "absolute",
     display: "flex",
     justifyContent: "flex-end",
-    bottom: "15%",
-    right: "5%",
+    bottom: "5%",
+    left: "35px",
     height: "140px",
   },
   localVideoLayout: {
@@ -31,13 +31,12 @@ const componentStyles = (theme) => ({
     height: "100%",
   },
   videoCallGridLayout: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    justifyContent: "space-evenly",
+    width: "auto",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(min(200px,50vmin),1fr))",
+    gridAutoRows: "minmax(min(200px , 50vmin),1fr)",
+    overFlowX: "auto",
     alignItems: "center",
-    marginLeft: "20px",
-    marginRight: "20px",
   },
 });
 

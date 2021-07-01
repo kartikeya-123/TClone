@@ -25,7 +25,7 @@
     "mdb-react-ui-kit": "^1.0.0-beta5",
     "node-sass": "5.0.0",
     "nouislider": "14.6.3",
-    "prop-types": "15.7.2",
+    "prop-types": "^15.7.2",
     "ramda": "^0.27.1",
     "react": "17.0.1",
     "react-bootstrap-date-picker": "^5.1.0",

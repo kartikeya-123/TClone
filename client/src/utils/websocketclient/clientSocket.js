@@ -77,7 +77,17 @@ export const webSocketConnection = (user) => {
   socket.on("new-notification", () => {
     createNotification();
   });
+  socket.on("group-message-recieved", (data) => {
+    handleGroupMessage(data);
+  });
 };
+
+const handleGroupMessage = (data) => {
+  let groupMessages = store.getState().call.groupMessages;
+  groupMessages = [...groupMessages, data];
+  store.dispatch(callActions.setGroupMessage(groupMessages));
+};
+
 const createNotification = () => {
   store.dispatch(dashboardActions.setNotification(false));
 };
@@ -413,4 +423,8 @@ export const connectWithTeam = (teamId) => {
     teamId: teamId,
   };
   socket.emit("team", data);
+};
+
+export const sendGroupMessage = (chatDetails) => {
+  socket.emit("group-message", chatDetails);
 };

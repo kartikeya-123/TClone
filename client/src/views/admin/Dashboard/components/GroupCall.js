@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,15 +21,24 @@ import componentStyles from "assets/theme/views/admin/videoLayout";
 import GroupCallRoom from "./GroupCallRoom/GroupCallRoom";
 import { Grid } from "@material-ui/core";
 import { joinGroupMeeting } from "utils/websocketclient/groupCallHandler";
+import GroupMessages from "./GroupMessages";
 const useStyles = makeStyles(componentStyles);
 
-const DirectCall = (props) => {
+const GroupCall = (props) => {
   const localStreamRef = useRef();
   const remoteStreamRef = useRef();
 
   const classes = useStyles();
+  const [show, setShowGrid] = useState(false);
 
-  const { localStream, callState, groupCallActive, groupCallStreams } = props;
+  const {
+    localStream,
+    callState,
+    groupCallActive,
+    groupCallStreams,
+    user,
+    groupMessages,
+  } = props;
   // console.log(callerUsername);
 
   const getLocalStreamGrid = () => {
@@ -49,6 +58,7 @@ const DirectCall = (props) => {
   useEffect(() => {
     if (localStream) {
       // Local video element value is assigned localStream
+      window.scrollBy(0, 60);
       getLocalStreamGrid();
     }
   }, [localStream]);
@@ -64,12 +74,25 @@ const DirectCall = (props) => {
     </Grid>
   );
 
+  const showChatGrid = () => {
+    setShowGrid((show) => !show);
+  };
   return (
-    <>
-      {localStreamGrid}
+    <div>
       {!groupCallActive && <Button onClick={joinMeet}>JOIN</Button>}
       {groupCallActive && <GroupCallRoom {...props} />}
-    </>
+      <Grid>
+        {localStreamGrid}
+        {groupCallActive && (
+          <ConversationButtons {...props} groupCall showChat={showChatGrid} />
+        )}
+        <Grid>
+          {show ? (
+            <GroupMessages user={user} groupMessages={groupMessages} />
+          ) : null}
+        </Grid>
+      </Grid>
+    </div>
   );
 };
 
@@ -90,4 +113,4 @@ function mapDispatchToProps(dispatch) {
     setShowModal: (show) => dispatch(setParticpantModal(show)),
   };
 }
-export default connect(mapStoreStateToProps, mapDispatchToProps)(DirectCall);
+export default connect(mapStoreStateToProps, mapDispatchToProps)(GroupCall);

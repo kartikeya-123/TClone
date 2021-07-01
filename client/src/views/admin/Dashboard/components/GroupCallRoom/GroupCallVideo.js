@@ -1,18 +1,24 @@
 import React, { useRef, useEffect } from "react";
-import { Grid } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 
 const styles = {
   videoContainer: {
-    width: "200px",
-    height: "200px",
+    width: "auto",
+    height: "auto",
   },
   videoElement: {
-    width: "100%",
-    height: "100%",
+    maxHeight: "250px",
+    minWidth: "100%",
+    margin: "auto",
+    padding: "10px 10px",
+    boxSizing: "border-box",
+    objectFit: "contain",
+    transition: "0.4s ease-in-out",
   },
 };
 
-const GroupCallVideo = ({ stream }) => {
+const GroupCallVideo = ({ stream, index, ...props }) => {
+  const { sx, ...other } = props;
   const videoRef = useRef();
 
   useEffect(() => {
@@ -24,9 +30,9 @@ const GroupCallVideo = ({ stream }) => {
   }, [stream]);
 
   return (
-    <Grid style={styles.videoContainer}>
+    <Box>
       <video ref={videoRef} autoPlay style={styles.videoElement} />
-    </Grid>
+    </Box>
   );
 };
 

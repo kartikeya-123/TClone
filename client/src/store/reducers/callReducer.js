@@ -17,6 +17,7 @@ const initState = {
   groupCallActive: false,
   groupCallStreams: [],
   activeTeams: [],
+  groupMessages: [],
 };
 
 const reducer = (state = initState, action) => {
@@ -90,6 +91,7 @@ const reducer = (state = initState, action) => {
         callState: callActions.callStates.CALL_AVAILABLE,
         localMicrophoneEnabled: true,
         localCameraEnabled: true,
+        groupMessages: [],
       };
     case callActions.CALL_SET_GROUP_CALL_ACTIVE:
       return {
@@ -105,6 +107,11 @@ const reducer = (state = initState, action) => {
       return {
         ...state,
         activeTeams: action.activeTeams,
+      };
+    case callActions.CALL_GROUP_MESSAGE:
+      return {
+        ...state,
+        groupMessages: action.groupMessages,
       };
     default:
       return state;
