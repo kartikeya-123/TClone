@@ -10,7 +10,7 @@ const componentStyles = (theme) => ({
   },
   gridList: {
     // minHeight: "30vh",
-    maxHeight: "60vh",
+    maxHeight: "50vh",
   },
   image: {
     width: "30px",
