@@ -28,10 +28,6 @@ export const webSocketConnection = (user) => {
     console.log(socket.id);
   });
 
-  socket.on("broadcast", (data) => {
-    handleBroadcastEvents(data);
-  });
-
   socket.on("pre-offer", (data) => {
     handlePreOffer(data);
   });
@@ -144,19 +140,6 @@ const registerNewUser = (user) => {
   });
 };
 
-const handleBroadcastEvents = (data) => {
-  switch (data.event) {
-    case broadcastEventTypes.ACTIVE_USERS:
-      const activeUsers = data.activeUsers.filter(
-        (activeUser) => activeUser.socketId !== socket.id
-      );
-      store.dispatch(dashboardActions.setActiveUsers(activeUsers));
-      break;
-    default:
-      break;
-  }
-};
-
 export const getLocaleStream = () => {
   console.log("Calling");
   navigator.mediaDevices
@@ -195,18 +178,18 @@ const configuration = {
   ],
 };
 export const callOtherUser = (calleeDetails) => {
-  connectedUserSocketId = calleeDetails.socketId;
+  // connectedUserSocketId = calleeDetails.socketId;
   store.dispatch(
     callActions.setCallState(callActions.callStates.CALL_IN_PROGRESS)
   );
-  store.dispatch(callActions.setCalleeUsername(calleeDetails.username));
+  store.dispatch(callActions.setCalleeUsername(calleeDetails.name));
   store.dispatch(callActions.setCallingDialogVisible(true));
-  const user = store.getState().dashboard;
-  console.log(user);
+  const user = store.getState().dashboard.user;
+  // console.log(user);
   sendPreOffer({
     callee: calleeDetails,
     caller: {
-      username: store.getState().dashboard.userName,
+      username: user.name,
     },
   });
 };
@@ -332,6 +315,8 @@ const handlePreOfferAnswer = (data) => {
       rejectedMessage = "User is not available for the call";
     } else if (data.answer === preOfferAnswers.CALL_REJECTED) {
       rejectedMessage = "User rejected the call";
+    } else if (data.answer === "User is not online") {
+      rejectedMessage = "User is not online";
     }
     let callRejected = {
       rejected: true,
@@ -342,6 +327,8 @@ const handlePreOfferAnswer = (data) => {
 
     resetCallData();
   } else {
+    connectedUserSocketId = data.calleeSocketId;
+
     sendOffer();
   }
   store.dispatch(callActions.setCallingDialogVisible(false));
