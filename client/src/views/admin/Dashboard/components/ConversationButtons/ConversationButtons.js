@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   MdCallEnd,
   MdMic,
@@ -14,6 +14,8 @@ import { callStates } from "store/actions/callActions";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import { endCall } from "utils/websocketclient/clientSocket.js";
 import { leaveMeeting } from "utils/websocketclient/groupCallHandler";
+
+import ParticipantModal from "../ParticipantModal/ParticpantModal";
 const styles = {
   buttonContainer: {
     display: "flex",
@@ -38,12 +40,14 @@ const ConversationButtons = (props) => {
     setMicrophoneEnabled,
     screenSharingActive,
     callState,
-    setShowModal,
-    showParticipantModal,
     groupCallActive,
     history,
     showChat,
+    activeUsers,
+    user,
   } = props;
+
+  const [show, setShowModal] = useState(false);
 
   const handleMicButtonPressed = () => {
     const micEnabled = localMicrophoneEnabled;
@@ -71,7 +75,7 @@ const ConversationButtons = (props) => {
   };
 
   const handleAddParticipant = () => {
-    setShowModal(!showParticipantModal);
+    setShowModal(!show);
   };
 
   return (
@@ -112,6 +116,13 @@ const ConversationButtons = (props) => {
           <BsChatDots style={styles.icon} />
         </ConversationButton>
       ) : null}
+
+      <ParticipantModal
+        show={show}
+        activeUsers={activeUsers}
+        close={handleAddParticipant}
+        currentUser={user}
+      />
     </div>
   );
 };
