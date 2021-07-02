@@ -13,9 +13,7 @@ import {
   setRejectedReason,
   setLocalCameraEnabled,
 } from "store/actions/callActions";
-import { setParticpantModal } from "store/actions/dashboardActions";
 import ConversationButtons from "./ConversationButtons/ConversationButtons";
-import ParticpantModal from "./ParticipantModal/ParticpantModal";
 import componentStyles from "assets/theme/views/admin/videoLayout";
 
 import { Grid } from "@material-ui/core";
@@ -36,7 +34,6 @@ const DirectCall = (props) => {
     callerUsername,
     callRejected,
     hideCallRejectedDialog,
-    showParticipantModal,
     activeUsers,
     calleeUsername,
   } = props;
@@ -59,6 +56,7 @@ const DirectCall = (props) => {
     };
   };
   useEffect(() => {
+    window.scrollBy(0, 40);
     if (localStream) {
       // Local video element value is assigned localStream
       getLocalStreamGrid();
@@ -109,9 +107,6 @@ const DirectCall = (props) => {
         <CallingModal calleeUsername={calleeUsername} />
       ) : null}
       <ConversationButtons {...props} />
-      {showParticipantModal ? (
-        <ParticpantModal show={true} activeUsers={activeUsers} />
-      ) : null}
     </>
   );
 };
@@ -130,7 +125,6 @@ function mapDispatchToProps(dispatch) {
     setCameraEnabled: (enabled) => dispatch(setLocalCameraEnabled(enabled)),
     setMicrophoneEnabled: (enabled) =>
       dispatch(setLocalMicrophoneEnabled(enabled)),
-    setShowModal: (show) => dispatch(setParticpantModal(show)),
   };
 }
 export default connect(mapStoreStateToProps, mapDispatchToProps)(DirectCall);

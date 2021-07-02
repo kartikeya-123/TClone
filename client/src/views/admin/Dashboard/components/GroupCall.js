@@ -14,7 +14,6 @@ import {
   setRejectedReason,
   setLocalCameraEnabled,
 } from "store/actions/callActions";
-import { setParticpantModal } from "store/actions/dashboardActions";
 import ConversationButtons from "./ConversationButtons/ConversationButtons";
 import ParticpantModal from "./ParticipantModal/ParticpantModal";
 import componentStyles from "assets/theme/views/admin/videoLayout";
@@ -110,7 +109,6 @@ function mapDispatchToProps(dispatch) {
     setCameraEnabled: (enabled) => dispatch(setLocalCameraEnabled(enabled)),
     setMicrophoneEnabled: (enabled) =>
       dispatch(setLocalMicrophoneEnabled(enabled)),
-    setShowModal: (show) => dispatch(setParticpantModal(show)),
   };
 }
 export default connect(mapStoreStateToProps, mapDispatchToProps)(GroupCall);
