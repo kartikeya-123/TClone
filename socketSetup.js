@@ -47,10 +47,10 @@ module.exports.socketSetup = (server) => {
       });
       console.log("registered new user");
 
-      io.sockets.emit("broadcast", {
-        event: broadcastEventTypes.ACTIVE_USERS,
-        activeUsers: peers,
-      });
+      // io.sockets.emit("broadcast", {
+      //   event: broadcastEventTypes.ACTIVE_USERS,
+      //   activeUsers: peers,
+      // });
     });
 
     socket.on("disconnect", () => {
@@ -58,25 +58,33 @@ module.exports.socketSetup = (server) => {
       console.log(socket.id);
       peers = peers.filter((peer) => peer.socketId !== socket.id);
 
-      io.sockets.emit("broadcast", {
-        event: broadcastEventTypes.ACTIVE_USERS,
-        activeUsers: peers,
-      });
+      // io.sockets.emit("broadcast", {
+      //   event: broadcastEventTypes.ACTIVE_USERS,
+      //   activeUsers: peers,
+      // });
     });
 
     // listeners related with direct call
 
     socket.on("pre-offer", (data) => {
       console.log("pre-offer handled");
-      io.to(data.callee.socketId).emit("pre-offer", {
-        callerUsername: data.caller.username,
-        callerSocketId: socket.id,
-      });
+      const callee = peers.find((peer) => peer.email === data.callee.email);
+      if (callee) {
+        io.to(callee.socketId).emit("pre-offer", {
+          callerUsername: data.caller.username,
+          callerSocketId: socket.id,
+        });
+      } else {
+        io.to(socket.id).emit("pre-offer-answer", {
+          answer: "User is not online",
+        });
+      }
     });
 
     socket.on("pre-offer-answer", (data) => {
       console.log("handling pre offer answer");
       io.to(data.callerSocketId).emit("pre-offer-answer", {
+        calleeSocketId: socket.id,
         answer: data.answer,
       });
     });
