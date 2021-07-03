@@ -392,11 +392,11 @@ const resetCallDataAfterHangUp = () => {
   localStream.getVideoTracks()[0].enabled = true;
   localStream.getAudioTracks()[0].enabled = true;
 
-  // if (store.getState().call.screenSharingActive) {
-  //   screenSharingStream.getTracks().forEach(track => {
-  //     track.stop();
-  //   });
-  // }
+  if (store.getState().call.screenSharingActive) {
+    screenSharingStream.getTracks().forEach((track) => {
+      track.stop();
+    });
+  }
 
   store.dispatch(callActions.resetCallDataState());
 };
@@ -414,4 +414,37 @@ export const connectWithTeam = (teamId) => {
 
 export const sendGroupMessage = (chatDetails) => {
   socket.emit("group-message", chatDetails);
+};
+
+let screenSharingStream;
+
+export const switchForScreenSharingStream = async () => {
+  if (!store.getState().call.screenSharingActive) {
+    try {
+      screenSharingStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+      });
+      store.dispatch(callActions.setScreenSharingActive(true));
+      const senders = peerConnection.getSenders();
+      const sender = senders.find(
+        (sender) =>
+          sender.track.kind == screenSharingStream.getVideoTracks()[0].kind
+      );
+      sender.replaceTrack(screenSharingStream.getVideoTracks()[0]);
+    } catch (err) {
+      console.error(
+        "error occured when trying to get screen sharing stream",
+        err
+      );
+    }
+  } else {
+    const localStream = store.getState().call.localStream;
+    const senders = peerConnection.getSenders();
+    const sender = senders.find(
+      (sender) => sender.track.kind == localStream.getVideoTracks()[0].kind
+    );
+    sender.replaceTrack(localStream.getVideoTracks()[0]);
+    store.dispatch(callActions.setScreenSharingActive(false));
+    screenSharingStream.getTracks().forEach((track) => track.stop());
+  }
 };

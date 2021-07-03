@@ -126,3 +126,10 @@ export const setGroupMessage = (groupMessages) => {
     groupMessages: groupMessages,
   };
 };
+
+export const setScreenSharingActive = (active) => {
+  return {
+    type: CALL_SET_SCREEN_SHARING_ACTIVE,
+    active,
+  };
+};

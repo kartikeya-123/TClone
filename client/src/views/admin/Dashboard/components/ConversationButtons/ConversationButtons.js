@@ -12,7 +12,10 @@ import { BsChatDots } from "react-icons/bs";
 import ConversationButton from "./ConversationButton";
 import { callStates } from "store/actions/callActions";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
-import { endCall } from "utils/websocketclient/clientSocket.js";
+import {
+  endCall,
+  switchForScreenSharingStream,
+} from "utils/websocketclient/clientSocket.js";
 import { leaveMeeting } from "utils/websocketclient/groupCallHandler";
 
 import ParticipantModal from "../ParticipantModal/ParticpantModal";
@@ -62,7 +65,7 @@ const ConversationButtons = (props) => {
   };
 
   const handleScreenSharingButtonPressed = () => {
-    // switchForScreenSharingStream();
+    switchForScreenSharingStream();
   };
 
   const handleHangUpButtonPressed = () => {
