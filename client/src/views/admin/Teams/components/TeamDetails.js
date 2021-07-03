@@ -36,7 +36,7 @@ const TeamDetails = ({ Team, user }) => {
         root: classes.cardRoot,
       }}
       style={{
-        height: "100%",
+        height: "100vh",
         borderRadius: "0px",
         width: "min(300px,80vw)",
       }}

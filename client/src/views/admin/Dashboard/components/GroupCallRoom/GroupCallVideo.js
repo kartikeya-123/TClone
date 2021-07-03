@@ -7,7 +7,8 @@ const styles = {
     height: "auto",
   },
   videoElement: {
-    maxHeight: "250px",
+    // maxHeight: "250px",
+    height: "100%",
     minWidth: "100%",
     margin: "auto",
     padding: "10px 10px",

@@ -134,6 +134,7 @@ export const addGroupShareScreen = () => {
         video: true,
       })
       .then((stream) => {
+        screenSharingStream = stream;
         videoTrack = stream.getVideoTracks()[0];
         console.log(currentPeer.getSenders());
         let sender = currentPeer
@@ -152,6 +153,6 @@ export const addGroupShareScreen = () => {
     );
     sender.replaceTrack(localStream.getVideoTracks()[0]);
     store.dispatch(callActions.setScreenSharingActive(false));
-    videoTrack.getTracks().forEach((track) => track.stop());
+    screenSharingStream.getTracks().forEach((track) => track.stop());
   }
 };

@@ -501,8 +501,6 @@ const theme = createMuiTheme({
         paddingLeft: "15px",
       },
       container: {
-        marginRight: "-15px",
-        marginLeft: "-15px",
         width: "unset",
       },
     },

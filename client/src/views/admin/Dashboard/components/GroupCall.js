@@ -77,10 +77,18 @@ const GroupCall = (props) => {
     setShowGrid((show) => !show);
   };
   return (
-    <div>
-      {!groupCallActive && <Button onClick={joinMeet}>JOIN</Button>}
-      {groupCallActive && <GroupCallRoom {...props} />}
-      <Grid>
+    <Grid container direction="column" spacing={3}>
+      <Grid xs={6}>
+        {!groupCallActive && (
+          <Button onClick={joinMeet} className={classes.button}>
+            JOIN
+          </Button>
+        )}
+      </Grid>
+      <Grid className={classes.videoGrid}>
+        {groupCallActive && <GroupCallRoom {...props} />}
+      </Grid>
+      <Grid className={classes.localVideoGrid}>
         {localStreamGrid}
         {groupCallActive && (
           <ConversationButtons {...props} groupCall showChat={showChatGrid} />
@@ -91,7 +99,7 @@ const GroupCall = (props) => {
           ) : null}
         </Grid>
       </Grid>
-    </div>
+    </Grid>
   );
 };
 

@@ -1,21 +1,11 @@
 import React from "react";
-import ConversationButtons from "../ConversationButtons/ConversationButtons";
 import { Grid, Box } from "@material-ui/core";
 import GroupCallVideo from "./GroupCallVideo";
 import componentStyles from "assets/theme/views/admin/videoLayout";
 import { makeStyles } from "@material-ui/core/styles";
-import PropTypes from "prop-types";
-import GroupMessages from "../GroupMessages";
 
 const useStyles = makeStyles(componentStyles);
 
-const chatMessages = [
-  {
-    userId: "Kartikeya",
-    createdAt: Date.now(),
-    message: "qew",
-  },
-];
 const GroupCallRoom = (props) => {
   const classes = useStyles();
   const { user } = props;
@@ -30,7 +20,6 @@ const GroupCallRoom = (props) => {
           );
         })}
       </Grid>
-      {/* <ConversationButtons {...props} groupCall /> */}
     </div>
   );
 };

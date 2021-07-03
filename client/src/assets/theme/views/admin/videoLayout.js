@@ -2,12 +2,10 @@ import boxShadows from "assets/theme/box-shadow.js";
 
 const componentStyles = (theme) => ({
   root: {
-    display: "flex",
     alignItems: "left",
     justifyContent: "left",
-    width: "83vw",
+    margin: "0px",
     height: "100vh",
-    marginLeft: "10px",
   },
   layout: {
     width: "100%",
@@ -18,25 +16,46 @@ const componentStyles = (theme) => ({
   },
 
   gridLayout: {
-    width: "150px",
+    width: "120px",
     position: "absolute",
     display: "flex",
     justifyContent: "flex-end",
-    bottom: "5%",
+    bottom: "20px",
     left: "35px",
-    height: "140px",
+    height: "120px",
   },
   localVideoLayout: {
     width: "100%",
     height: "100%",
   },
   videoCallGridLayout: {
+    maxHeight: "60vh",
     width: "auto",
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit,minmax(min(200px,50vmin),1fr))",
     gridAutoRows: "minmax(min(200px , 50vmin),1fr)",
     overFlowX: "auto",
     alignItems: "center",
+  },
+  videoGrid: {
+    marginBottom: "10px",
+    maxHeight: "60vh",
+  },
+  localVideoGrid: {
+    marginTop: "10px",
+  },
+  button: {
+    color: theme.palette.white.main,
+    backgroundColor: theme.palette.dark.main,
+    "&:hover": {
+      backgroundColor: theme.palette.dark.dark,
+    },
+    "&:disabled": {
+      border: "0",
+    },
+    marginTop: "20px",
+
+    marginLeft: "20px",
   },
 });
 

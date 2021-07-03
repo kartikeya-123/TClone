@@ -2,7 +2,6 @@ const componentStyles = (theme) => ({
   mainContent: {
     [theme.breakpoints.up("md")]: {
       marginLeft: "200px",
-      marginBottom: "10px",
     },
     height: "100%",
   },

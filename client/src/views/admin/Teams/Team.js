@@ -115,7 +115,7 @@ function Team({ user, cookies, history, ...props }) {
               classes={classes.cardRoot}
               style={{
                 borderRadius: "0px",
-                height: "90vh",
+                height: "100vh",
                 boxShadow: "0px 0px 1rem rgba(136,152,170,0.35)",
               }}
             >
