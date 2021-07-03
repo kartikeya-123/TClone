@@ -16,7 +16,10 @@ import {
   endCall,
   switchForScreenSharingStream,
 } from "utils/websocketclient/clientSocket.js";
-import { leaveMeeting } from "utils/websocketclient/groupCallHandler";
+import {
+  leaveMeeting,
+  addGroupShareScreen,
+} from "utils/websocketclient/groupCallHandler";
 
 import ParticipantModal from "../ParticipantModal/ParticpantModal";
 const styles = {
@@ -65,7 +68,8 @@ const ConversationButtons = (props) => {
   };
 
   const handleScreenSharingButtonPressed = () => {
-    switchForScreenSharingStream();
+    if (!groupCallActive) switchForScreenSharingStream();
+    else addGroupShareScreen();
   };
 
   const handleHangUpButtonPressed = () => {

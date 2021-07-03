@@ -10,7 +10,7 @@ import * as callActions from "../../store/actions/callActions";
 let myPeer;
 let myPeerId;
 let groupCallRoomId;
-
+let currentPeer;
 export const connectWithPeer = () => {
   //Creating a new Peer
   console.log("connecting with peer");
@@ -32,7 +32,8 @@ export const connectWithPeer = () => {
     call.on("stream", (incomingStream) => {
       const streams = store.getState().call.groupCallStreams;
       const stream = streams.find((stream) => stream.id === incomingStream.id);
-
+      currentPeer = call.peerConnection;
+      console.log(currentPeer);
       if (!stream) {
         addVideoStream(incomingStream);
       }
@@ -82,7 +83,7 @@ export const connectToNewUser = (data) => {
   call.on("stream", (incomingStream) => {
     const streams = store.getState().call.groupCallStreams;
     const stream = streams.find((stream) => stream.id === incomingStream.id);
-
+    currentPeer = call.peerConnection;
     if (!stream) {
       addVideoStream(incomingStream);
     }
@@ -122,4 +123,35 @@ const addVideoStream = (incomingStream) => {
   ];
 
   store.dispatch(callActions.setGroupStreams(groupCallStreams));
+};
+
+let screenSharingStream;
+let videoTrack;
+export const addGroupShareScreen = () => {
+  if (!store.getState().call.screenSharingActive) {
+    navigator.mediaDevices
+      .getDisplayMedia({
+        video: true,
+      })
+      .then((stream) => {
+        videoTrack = stream.getVideoTracks()[0];
+        console.log(currentPeer.getSenders());
+        let sender = currentPeer
+          .getSenders()
+          .find((s) => s.track.kind === videoTrack.kind);
+        sender.replaceTrack(videoTrack);
+        console.log(sender);
+        store.dispatch(callActions.setScreenSharingActive(true));
+      })
+      .catch((err) => console.log(err));
+  } else {
+    const localStream = store.getState().call.localStream;
+    const senders = currentPeer.getSenders();
+    const sender = senders.find(
+      (sender) => sender.track.kind === localStream.getVideoTracks()[0].kind
+    );
+    sender.replaceTrack(localStream.getVideoTracks()[0]);
+    store.dispatch(callActions.setScreenSharingActive(false));
+    videoTrack.getTracks().forEach((track) => track.stop());
+  }
 };
