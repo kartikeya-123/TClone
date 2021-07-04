@@ -8,7 +8,7 @@ import {
 import { CookiesProvider, withCookies } from "react-cookie";
 import AdminLayout from "./layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
-import { webSocketConnection } from "utils/websocketclient/clientSocket";
+import { connectWithWebSocket } from "utils/websocketclient/clientSocket";
 import { connectWithPeer } from "utils/websocketclient/groupCallHandler.js";
 import { CircularProgress } from "@material-ui/core";
 
@@ -32,7 +32,7 @@ class Wrapper extends Component {
           isLoggedIn: cookies ? cookies.isLoggedIn : this.state.isLoggedIn,
           isLoading: false,
         });
-        webSocketConnection(res.data.data.user);
+        connectWithWebSocket(res.data.data.user);
         connectWithPeer();
       })
       .catch((err) => {
@@ -56,7 +56,7 @@ class Wrapper extends Component {
 
   getLoggedInUser = (response) => {
     this.setState({ user: response.data.user, isLoggedIn: true });
-    webSocketConnection(response.data.user);
+    connectWithWebSocket(response.data.user);
     connectWithPeer();
     //console.log(response.data.user);
     const userData = {

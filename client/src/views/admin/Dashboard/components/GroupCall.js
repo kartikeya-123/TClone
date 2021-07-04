@@ -103,10 +103,10 @@ const GroupCall = (props) => {
   );
 };
 
-function mapStoreStateToProps({ call, dashboard }) {
+function mapStoreStateToProps({ call, User }) {
   return {
     ...call,
-    ...dashboard,
+    ...User,
   };
 }
 

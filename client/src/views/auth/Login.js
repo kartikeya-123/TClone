@@ -20,7 +20,6 @@ import { Select, MenuItem } from "@material-ui/core";
 // @material-ui/icons components
 import Email from "@material-ui/icons/Email";
 import Lock from "@material-ui/icons/Lock";
-import { webSocketConnection } from "utils/websocketclient/clientSocket";
 // core components
 import componentStyles from "assets/theme/views/auth/login.js";
 

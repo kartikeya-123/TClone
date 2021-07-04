@@ -42,7 +42,7 @@ export const connectWithPeer = () => {
 };
 
 export const createGroupMeeting = (teamId, teamName, meetingOwner, ownerId) => {
-  const groupHost = store.getState().dashboard.user;
+  const groupHost = store.getState().User.user;
   const groupHostDetails = {
     email: groupHost.email,
     name: groupHost.name,
@@ -61,7 +61,7 @@ export const createGroupMeeting = (teamId, teamName, meetingOwner, ownerId) => {
 };
 
 export const joinGroupMeeting = (roomId) => {
-  const user = store.getState().dashboard.user;
+  const user = store.getState().User.user;
   groupCallRoomId = roomId;
 
   joinGroupCall({

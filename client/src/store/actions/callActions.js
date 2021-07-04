@@ -5,131 +5,112 @@ export const callStates = {
   CALL_IN_PROGRESS: "CALL_IN_PROGRESS",
 };
 
-export const CALL_SET_LOCAL_STREAM = "CALL.SET_LOCAL_STREAM";
-export const CALL_SET_CALL_STATE = "CALL.SET_CALL_STATE";
-export const CALL_SET_CALLING_DIALOG_VISIBLE =
-  "CALL.SET_CALLING_DIALOG_VISIBLE";
-export const CALL_SET_CALLER_USERNAME = "CALL.SET_CALLER_USERNAME";
-export const CALL_SET_CALL_REJECTED = "CALL.SET_CALL_REJECTED";
-export const CALL_SET_REMOTE_STREAM = "CALL.SET_REMOTE_STREAM";
-export const CALL_SET_LOCAL_MICROPHONE_ENABLED =
-  "CALL.SET_LOCAL_MICROPHONE_ENABLED";
-export const CALL_SET_LOCAL_CAMERA_ENABLED = "CALL.SET_LOCAL_CAMERA_ENABLED";
-export const CALL_SET_SCREEN_SHARING_ACTIVE = "CALL.SET_SCREEN_SHARING_ACTIVE";
-export const CALL_RESET_CALL_STATE = "CALL.RESET_CALL_STATE";
-export const CALL_SET_CALEE_USER = "CALL.SET_CALLEE_USERNAME";
-export const CALL_SET_GROUP_CALL_ACTIVE = "CALL.SET_CALL_ACTIVE";
-export const CALL_SET_GROUP_STREAMS = "CALL.SET_GROUP_STREAMS";
-export const CALL_CLEAR_GROUP_CALL_DATA = "CALL.CLEAR_GROUP_DATA";
-export const CALL_SET_ACTIVE_TEAM = "CALL.SET_ACTIVE_TEAM";
-export const CALL_GROUP_MESSAGE = "CALL.GROUP_MESSAGE";
-
 export const setLocalStream = (localStream) => {
   return {
-    type: CALL_SET_LOCAL_STREAM,
+    type: "SET_LOCALE_STREAM",
     localStream,
   };
 };
 
 export const setCallState = (callState) => {
   return {
-    type: CALL_SET_CALL_STATE,
+    type: "SET_VIDEO_STATE",
     callState,
   };
 };
 
 export const setCallingDialogVisible = (visible) => {
   return {
-    type: CALL_SET_CALLING_DIALOG_VISIBLE,
+    type: "SET_CALLING_DIALOG",
     visible,
   };
 };
 
 export const setCallerUsername = (callerUsername) => {
   return {
-    type: CALL_SET_CALLER_USERNAME,
+    type: "SET_CALLER_DETAILS",
     callerUsername,
   };
 };
 
 export const setCalleeUsername = (calleeUsername) => {
   return {
-    type: CALL_SET_CALEE_USER,
+    type: "SET_CALLEE_DETAILS",
     calleeUsername,
   };
 };
 
 export const setRejectedReason = (callRejected) => {
   return {
-    type: CALL_SET_CALL_REJECTED,
+    type: "SET_CALL_REJECTED",
     callRejected,
   };
 };
 
 export const setRemoteStream = (remoteStream) => {
   return {
-    type: CALL_SET_REMOTE_STREAM,
+    type: "SET_USER_REMOTE_STREAM",
     remoteStream,
   };
 };
 
 export const setLocalMicrophoneEnabled = (enabled) => {
   return {
-    type: CALL_SET_LOCAL_MICROPHONE_ENABLED,
+    type: "ENABLE_MICROPHONE",
     enabled,
   };
 };
 
 export const setLocalCameraEnabled = (enabled) => {
   return {
-    type: CALL_SET_LOCAL_CAMERA_ENABLED,
+    type: "ENABLE_CAMERA",
     enabled,
   };
 };
 
 export const resetCallDataState = () => {
   return {
-    type: CALL_RESET_CALL_STATE,
+    type: "RESET_CALL_DATA",
   };
 };
 
 export const setGroupCallActive = (active) => {
   return {
-    type: CALL_SET_GROUP_CALL_ACTIVE,
+    type: "SET_START_GROUP_CALL",
     active: active,
   };
 };
 
 export const setGroupStreams = (groupStreams) => {
   return {
-    type: CALL_SET_GROUP_STREAMS,
+    type: "SET_GROUP_STEAMS",
     groupStreams: groupStreams,
   };
 };
 
 export const clearGroupCallData = () => {
   return {
-    type: CALL_CLEAR_GROUP_CALL_DATA,
+    type: "RESET_GROUP_DATA",
   };
 };
 
 export const setTeamToActive = (activeTeams) => {
   return {
-    type: CALL_SET_ACTIVE_TEAM,
+    type: "SET_ACTIVE_TEAM",
     activeTeams: activeTeams,
   };
 };
 
 export const setGroupMessage = (groupMessages) => {
   return {
-    type: CALL_GROUP_MESSAGE,
+    type: "SET_GROUP_MESSAGE",
     groupMessages: groupMessages,
   };
 };
 
 export const setScreenSharingActive = (active) => {
   return {
-    type: CALL_SET_SCREEN_SHARING_ACTIVE,
+    type: "SET_SCREEN_SHARE_ACTIVE",
     active,
   };
 };

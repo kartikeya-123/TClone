@@ -1,15 +1,10 @@
 import socketClient from "socket.io-client";
 import store from "../../store/store";
-import * as dashboardActions from "../../store/actions/dashboardActions";
+import * as userActions from "../../store/actions/userActions";
 import * as callActions from "../../store/actions/callActions";
 import { connectToNewUser, removeVideoStream } from "./groupCallHandler";
 
 const SERVER = "/";
-
-const broadcastEventTypes = {
-  ACTIVE_USERS: "ACTIVE_USERS",
-  GROUP_CALL_ROOMS: "GROUP_CALL_ROOMS",
-};
 
 const preOfferAnswers = {
   CALL_ACCEPTED: "CALL_ACCEPTED",
@@ -19,13 +14,12 @@ const preOfferAnswers = {
 
 export let socket;
 let mediaStream;
-export const webSocketConnection = (user) => {
+
+export const connectWithWebSocket = (user) => {
   socket = socketClient(SERVER);
 
   socket.on("connection", () => {
-    console.log("succesfully connected with wss server");
-    registerNewUser(user);
-    console.log(socket.id);
+    connectNewUser(user);
   });
 
   socket.on("pre-offer", (data) => {
@@ -78,6 +72,20 @@ export const webSocketConnection = (user) => {
   });
 };
 
+// Registering new User
+const connectNewUser = (user) => {
+  //Storing current user data in redux store
+  store.dispatch(userActions.setLoggedUser(user));
+
+  //Emitting event to server
+  socket.emit("new-user-connected", {
+    username: user.name,
+    email: user.email,
+    image: user.image,
+    socketId: socket.id,
+  });
+};
+
 const handleGroupMessage = (data) => {
   let groupMessages = store.getState().call.groupMessages;
   groupMessages = [...groupMessages, data];
@@ -85,7 +93,7 @@ const handleGroupMessage = (data) => {
 };
 
 const createNotification = () => {
-  store.dispatch(dashboardActions.setNotification(false));
+  store.dispatch(userActions.setNotification(false));
 };
 const removeActiveTeam = (data) => {
   let activeTeams = store.getState().call.activeTeams;
@@ -124,20 +132,6 @@ export const joinGroupCall = (data) => {
 
 export const leaveGroupCall = (data) => {
   socket.emit("leave-meeting", data);
-};
-
-const registerNewUser = (user) => {
-  store.dispatch(dashboardActions.setUsername(user.name));
-  store.dispatch(
-    callActions.setCallState(callActions.callStates.CALL_AVAILABLE)
-  );
-  store.dispatch(dashboardActions.setLoggedUser(user));
-  socket.emit("register-new-user", {
-    username: user.name,
-    email: user.email,
-    image: user.image,
-    socketId: socket.id,
-  });
 };
 
 export const getLocaleStream = () => {
@@ -184,7 +178,7 @@ export const callOtherUser = (calleeDetails) => {
   );
   store.dispatch(callActions.setCalleeUsername(calleeDetails.name));
   store.dispatch(callActions.setCallingDialogVisible(true));
-  const user = store.getState().dashboard.user;
+  const user = store.getState().User.user;
   // console.log(user);
   sendPreOffer({
     callee: calleeDetails,

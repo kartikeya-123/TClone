@@ -24,7 +24,7 @@ import axios from "axios";
 import { Avatar } from "@material-ui/core";
 import {
   socket,
-  webSocketConnection,
+  connectWithWebSocket,
 } from "utils/websocketclient/clientSocket";
 import TeamDetails from "./components/TeamDetails";
 const useStyles = makeStyles(componentStyles);
@@ -79,7 +79,7 @@ function Team({ user, cookies, history, ...props }) {
   };
   useEffect(() => {
     if (!socket) {
-      webSocketConnection(user);
+      connectWithWebSocket(user);
     }
     let id = window.location.pathname.split("/")[2];
     getTeam(id);

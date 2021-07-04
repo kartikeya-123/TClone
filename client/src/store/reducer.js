@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import dashboardReducer from "./reducers/dashboardReducer";
+import userReducer from "./reducers/userReducer";
 import callReducer from "./reducers/callReducer";
 
 export default combineReducers({
-  dashboard: dashboardReducer,
+  User: userReducer,
   call: callReducer,
 });

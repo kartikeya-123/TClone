@@ -35,22 +35,16 @@ module.exports.socketSetup = (server) => {
 
   io.on("connection", (socket) => {
     socket.emit("connection", null);
-    console.log("new user connected");
-    console.log(socket.id);
+    // console.log("new user connected");
+    // console.log(socket.id);
 
-    socket.on("register-new-user", (data) => {
+    socket.on("new-user-connected", (data) => {
       peers.push({
         username: data.username,
         email: data.email,
         image: data.image,
         socketId: socket.id,
       });
-      console.log("registered new user");
-
-      // io.sockets.emit("broadcast", {
-      //   event: broadcastEventTypes.ACTIVE_USERS,
-      //   activeUsers: peers,
-      // });
     });
 
     socket.on("disconnect", () => {

@@ -2,7 +2,7 @@ import * as callActions from "../actions/callActions";
 
 const initState = {
   localStream: null,
-  callState: callActions.callStates.CALL_UNAVAILABLE,
+  callState: callActions.callStates.CALL_AVAILABLE,
   callingDialogVisible: false,
   callerUsername: "",
   calleeUsername: "",
@@ -22,57 +22,57 @@ const initState = {
 
 const reducer = (state = initState, action) => {
   switch (action.type) {
-    case callActions.CALL_SET_LOCAL_STREAM:
+    case "SET_LOCALE_STREAM":
       return {
         ...state,
         localStream: action.localStream,
       };
-    case callActions.CALL_SET_CALL_STATE:
+    case "SET_VIDEO_STATE":
       return {
         ...state,
         callState: action.callState,
       };
-    case callActions.CALL_SET_CALLING_DIALOG_VISIBLE:
+    case "SET_CALLING_DIALOG":
       return {
         ...state,
         callingDialogVisible: action.visible,
       };
-    case callActions.CALL_SET_CALLER_USERNAME:
+    case "SET_CALLER_DETAILS":
       return {
         ...state,
         callerUsername: action.callerUsername,
       };
-    case callActions.CALL_SET_CALEE_USER:
+    case "SET_CALLEE_DETAILS":
       return {
         ...state,
         calleeUsername: action.calleeUsername,
       };
-    case callActions.CALL_SET_CALL_REJECTED:
+    case "SET_CALL_REJECTED":
       return {
         ...state,
         callRejected: action.callRejected,
       };
-    case callActions.CALL_SET_REMOTE_STREAM:
+    case "SET_USER_REMOTE_STREAM":
       return {
         ...state,
         remoteStream: action.remoteStream,
       };
-    case callActions.CALL_SET_LOCAL_CAMERA_ENABLED:
+    case "ENABLE_MICROPHONE":
       return {
         ...state,
         localCameraEnabled: action.enabled,
       };
-    case callActions.CALL_SET_LOCAL_MICROPHONE_ENABLED:
+    case "ENABLE_CAMERA":
       return {
         ...state,
         localMicrophoneEnabled: action.enabled,
       };
-    case callActions.CALL_SET_SCREEN_SHARING_ACTIVE:
+    case "SET_SCREEN_SHARE_ACTIVE":
       return {
         ...state,
         screenSharingActive: action.active,
       };
-    case callActions.CALL_RESET_CALL_STATE:
+    case "RESET_CALL_DATA":
       return {
         ...state,
         remoteStream: null,
@@ -83,7 +83,7 @@ const reducer = (state = initState, action) => {
         callingDialogVisible: false,
         calleeUsername: "",
       };
-    case callActions.CALL_CLEAR_GROUP_CALL_DATA:
+    case "RESET_GROUP_DATA":
       return {
         ...state,
         groupCallActive: false,
@@ -93,22 +93,22 @@ const reducer = (state = initState, action) => {
         localCameraEnabled: true,
         groupMessages: [],
       };
-    case callActions.CALL_SET_GROUP_CALL_ACTIVE:
+    case "SET_START_GROUP_CALL":
       return {
         ...state,
         groupCallActive: action.active,
       };
-    case callActions.CALL_SET_GROUP_STREAMS:
+    case "SET_GROUP_STEAMS":
       return {
         ...state,
         groupCallStreams: action.groupStreams,
       };
-    case callActions.CALL_SET_ACTIVE_TEAM:
+    case "SET_ACTIVE_TEAM":
       return {
         ...state,
         activeTeams: action.activeTeams,
       };
-    case callActions.CALL_GROUP_MESSAGE:
+    case "SET_GROUP_MESSAGE":
       return {
         ...state,
         groupMessages: action.groupMessages,

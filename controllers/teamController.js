@@ -149,7 +149,7 @@ exports.addMembersToTeam = catchAsync(async (req, res, next) => {
     return next(new AppError("Atleast one member should be present", 404));
   }
   let notification = {
-    messsage: `Added into a new team ${team.Name} by ${req.user.name}`,
+    message: `Added into a new team ${team.Name} by ${req.user.name}`,
     notificationType: "New Team",
     teamId: team.id,
   };

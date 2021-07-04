@@ -134,7 +134,7 @@ const Notification = ({ user, history, color, show, setNotification }) => {
   const id = open ? "simple-popover" : undefined;
 
   const makeNotificationIcon = (notification) => {
-    switch (notification.type) {
+    switch (notification.notificationType) {
       case "profileMatch":
         return <FileText color="darkblue" size={20} />;
       // break;
