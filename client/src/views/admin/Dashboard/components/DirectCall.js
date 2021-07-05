@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import CallRejectedDialog from "./CallRejectedDialog/CallRejectedDialog";
@@ -15,7 +15,7 @@ import {
 } from "store/actions/videoActions";
 import ConversationButtons from "./ConversationButtons/ConversationButtons";
 import componentStyles from "assets/theme/views/admin/videoLayout";
-
+import DirectMessages from "./directMessages";
 import { Grid } from "@material-ui/core";
 
 const useStyles = makeStyles(componentStyles);
@@ -24,18 +24,22 @@ const DirectCall = (props) => {
   const localStreamRef = useRef();
   const remoteStreamRef = useRef();
 
+  const [show, setShowChat] = useState(false);
+
+  const handleChatModal = () => {
+    setShowChat(!show);
+  };
   const classes = useStyles();
 
   const {
     localStream,
     remoteStream,
     directCallModal,
-    callState,
-    callerUsername,
     callRejected,
     hideCallRejectedDialog,
-    activeUsers,
     calleeUsername,
+    user,
+    directMessages,
   } = props;
   // console.log(callerUsername);
 
@@ -106,7 +110,8 @@ const DirectCall = (props) => {
       {directCallModal ? (
         <CallingModal calleeUsername={calleeUsername} />
       ) : null}
-      <ConversationButtons {...props} />
+      <ConversationButtons {...props} handleChat={handleChatModal} />
+      <Grid>{show ? <DirectMessages {...props} /> : null}</Grid>
     </>
   );
 };

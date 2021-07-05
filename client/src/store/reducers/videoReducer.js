@@ -19,6 +19,8 @@ const initState = {
   groupCallStreams: [],
   activeTeams: [],
   groupMessages: [],
+  directMessages: [],
+  connectedUserId: "",
 };
 
 const reducer = (state = initState, action) => {
@@ -83,6 +85,8 @@ const reducer = (state = initState, action) => {
         localCameraEnabled: true,
         directCallModal: false,
         calleeUsername: "",
+        directMessages: [],
+        connectedUserId: "",
       };
     case "RESET_GROUP_DATA":
       return {
@@ -113,6 +117,16 @@ const reducer = (state = initState, action) => {
       return {
         ...state,
         groupMessages: action.groupMessages,
+      };
+    case "SET_DIRECT_MESSAGE":
+      return {
+        ...state,
+        directMessages: action.directMessages,
+      };
+    case "SET_USER_SOCKET_ID":
+      return {
+        ...state,
+        connectedUserId: action.socketId,
       };
     default:
       return state;

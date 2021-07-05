@@ -107,9 +107,22 @@ export const setGroupMessage = (groupMessages) => {
   };
 };
 
+export const setDirectMessage = (directMessages) => {
+  return {
+    type: "SET_DIRECT_MESSAGE",
+    directMessages: directMessages,
+  };
+};
 export const setScreenSharingActive = (active) => {
   return {
     type: "SET_SCREEN_SHARE_ACTIVE",
     active,
+  };
+};
+
+export const setConnectedUserId = (socketId) => {
+  return {
+    type: "SET_USER_SOCKET_ID",
+    socketId,
   };
 };

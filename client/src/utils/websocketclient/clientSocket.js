@@ -75,6 +75,9 @@ export const connectWithWebSocket = (user) => {
   socket.on("group-message-recieved", (data) => {
     handleGroupMessage(data);
   });
+  socket.on("direct-message-recieved", (data) => {
+    handleDirectMessage(data);
+  });
 };
 
 //Creating Peer connection
@@ -180,6 +183,7 @@ const handlePreOffer = (data) => {
 
   if (enableCall === true) {
     recieverSocketId = data.callerSocketId;
+    store.dispatch(videoActions.setConnectedUserId(recieverSocketId));
     store.dispatch(videoActions.setCallerUsername(data.callerUsername));
     store.dispatch(
       videoActions.setCallState(videoActions.callStates.CALL_REQUESTED)
@@ -213,6 +217,7 @@ const handlePreofferAnswer = (data) => {
     }
     default: {
       recieverSocketId = data.calleeSocketId;
+      store.dispatch(videoActions.setConnectedUserId(recieverSocketId));
       sendOffer();
     }
   }
@@ -433,4 +438,14 @@ const handleGroupMessage = (data) => {
 
 const createNotification = () => {
   store.dispatch(userActions.setNotification(false));
+};
+
+export const sendDirectMessage = (data) => {
+  socket.emit("direct-message", data);
+};
+
+const handleDirectMessage = (data) => {
+  let directMessages = store.getState().Video.directMessages;
+  directMessages = [...directMessages, data];
+  store.dispatch(videoActions.setDirectMessage(directMessages));
 };
