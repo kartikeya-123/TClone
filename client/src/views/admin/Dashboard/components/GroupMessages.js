@@ -20,6 +20,8 @@ import SendIcon from "@material-ui/icons/Send";
 import { makeStyles } from "@material-ui/core/styles";
 import componentStyles from "assets/theme/views/admin/groupMessages";
 import { sendGroupMessage } from "./../../../../utils/websocketclient/clientSocket";
+import { useLocation } from "react-router-dom";
+
 const useStyles = makeStyles(componentStyles);
 const urlify = (text) => {
   var urlRegex =
@@ -31,7 +33,7 @@ const urlify = (text) => {
 
 const GroupMessages = ({ groupMessages, user }) => {
   const classes = useStyles();
-
+  const location = useLocation();
   const scrollToBottom = () => {
     const elem = document.getElementById("chat-elem");
     if (elem) elem.scrollTop = elem.scrollHeight;
@@ -69,11 +71,12 @@ const GroupMessages = ({ groupMessages, user }) => {
       const roomId = window.location.pathname.split("/")[2];
       const chatDetails = {
         roomId: roomId,
-        name: user.name,
-        createdAt: getDate(Date.now()),
+        userName: user.name,
+        createdAt: Date.now(),
         message: message,
         userId: user.id,
         userImage: user.image,
+        teamId: location.state.teamId,
       };
       sendGroupMessage(chatDetails);
       setMessage("");
@@ -134,9 +137,9 @@ const GroupMessages = ({ groupMessages, user }) => {
                     >
                       <Box>
                         <h4 style={{ margin: 0 }}>
-                          {chatMessage.name}{" "}
+                          {chatMessage.userName}{" "}
                           <span className={classes.span}>
-                            {chatMessage.createdAt}
+                            {getDate(chatMessage.createdAt)}
                           </span>
                         </h4>
 
