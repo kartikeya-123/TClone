@@ -10,7 +10,7 @@ import {
 } from "react-icons/md";
 import { BsChatDots } from "react-icons/bs";
 import ConversationButton from "./ConversationButton";
-import { callStates } from "store/actions/callActions";
+import { callStates } from "store/actions/videoActions";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import {
   endCall,

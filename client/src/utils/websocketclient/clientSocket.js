@@ -1,19 +1,29 @@
 import socketClient from "socket.io-client";
 import store from "../../store/store";
 import * as userActions from "../../store/actions/userActions";
-import * as callActions from "../../store/actions/callActions";
+import * as videoActions from "../../store/actions/videoActions";
 import { connectToNewUser, removeVideoStream } from "./groupCallHandler";
 
 const SERVER = "/";
 
 const preOfferAnswers = {
-  CALL_ACCEPTED: "CALL_ACCEPTED",
-  CALL_REJECTED: "CALL_REJECTED",
-  CALL_NOT_AVAILABLE: "CALL_NOT_AVAILABLE",
+  ANOTHER_CALL: "ANOTHER_CALL",
+  ACCEPTED: "ACCEPTED",
+  REJECTED: "REJECTED",
+  NOT_AVAILABLE: "NOT_AVAILABLE",
+};
+
+let recieverSocketId;
+let peerConnection;
+const configuration = {
+  iceServers: [
+    { urls: "stun:stun.l.google.com:13902" },
+    { url: "stun:stun.12connect.com:3478" },
+    { url: "stun:stun.12voip.com:3478" },
+  ],
 };
 
 export let socket;
-let mediaStream;
 
 export const connectWithWebSocket = (user) => {
   socket = socketClient(SERVER);
@@ -27,7 +37,7 @@ export const connectWithWebSocket = (user) => {
   });
 
   socket.on("pre-offer-answer", (data) => {
-    handlePreOfferAnswer(data);
+    handlePreofferAnswer(data);
   });
 
   socket.on("webRTC-offer", (data) => {
@@ -35,7 +45,6 @@ export const connectWithWebSocket = (user) => {
   });
 
   socket.on("webRTC-answer", (data) => {
-    console.log(data);
     handleWebRTCAnswer(data);
   });
 
@@ -45,10 +54,6 @@ export const connectWithWebSocket = (user) => {
 
   socket.on("user-hanged-up", () => {
     resetCallDataAfterHangUp();
-  });
-
-  socket.on("roomId-for-group-call", (data) => {
-    handleRoomId(data);
   });
 
   socket.on("group-call-request", (data) => {
@@ -72,6 +77,39 @@ export const connectWithWebSocket = (user) => {
   });
 };
 
+//Creating Peer connection
+const createPeerConnection = () => {
+  // New RTC peer connection
+  peerConnection = new RTCPeerConnection(configuration);
+
+  const localStream = store.getState().Video.localStream;
+
+  for (const track of localStream.getTracks()) {
+    peerConnection.addTrack(track, localStream);
+  }
+
+  peerConnection.ontrack = ({ streams: [stream] }) => {
+    store.dispatch(videoActions.setRemoteStream(stream));
+  };
+
+  peerConnection.onicecandidate = (event) => {
+    console.log("geeting candidates from stun server");
+    if (event.candidate) {
+      sendWebRTCCandidate({
+        candidate: event.candidate,
+        recieverSocketId: recieverSocketId,
+      });
+    }
+  };
+
+  peerConnection.onconnectionstatechange = (event) => {
+    if (peerConnection.connectionState === "connected") {
+      console.log("succesfully connected with other peer");
+    }
+    console.log(peerConnection.connectionState);
+  };
+};
+
 // Registering new User
 const connectNewUser = (user) => {
   //Storing current user data in redux store
@@ -86,61 +124,12 @@ const connectNewUser = (user) => {
   });
 };
 
-const handleGroupMessage = (data) => {
-  let groupMessages = store.getState().call.groupMessages;
-  groupMessages = [...groupMessages, data];
-  store.dispatch(callActions.setGroupMessage(groupMessages));
-};
-
-const createNotification = () => {
-  store.dispatch(userActions.setNotification(false));
-};
-const removeActiveTeam = (data) => {
-  let activeTeams = store.getState().call.activeTeams;
-  activeTeams = activeTeams.filter(
-    (activeTeam) => activeTeam.roomId !== data.roomId
-  );
-  console.log(activeTeams);
-  store.dispatch(callActions.setTeamToActive(activeTeams));
-};
-
-const addActiveTeam = (activeTeam) => {
-  let activeTeams = store.getState().call.activeTeams;
-  if (
-    !activeTeams.some(
-      (active) =>
-        active.roomId === activeTeam.roomId &&
-        active.teamId === activeTeam.teamId
-    )
-  ) {
-    activeTeams = [...activeTeams, activeTeam];
-  }
-  store.dispatch(callActions.setTeamToActive(activeTeams));
-};
-//Group calls
-export const registerGroupMeeting = (data) => {
-  socket.emit("create-meeting", data);
-};
-
-const handleRoomId = (data) => {
-  alert(data.roomId);
-};
-
-export const joinGroupCall = (data) => {
-  socket.emit("join-meeting", data);
-};
-
-export const leaveGroupCall = (data) => {
-  socket.emit("leave-meeting", data);
-};
-
+//EXTRACTING LOCALE STREAM FROM USER
 export const getLocaleStream = () => {
-  console.log("Calling");
   navigator.mediaDevices
     .getUserMedia({ video: { width: 620, height: 520 }, audio: true })
     .then((stream) => {
-      mediaStream = stream;
-      store.dispatch(callActions.setLocalStream(stream));
+      store.dispatch(videoActions.setLocalStream(stream));
       createPeerConnection();
     })
     .catch((err) => {
@@ -148,200 +137,156 @@ export const getLocaleStream = () => {
     });
 };
 
+//STOP LOCALE STREAM FROM USER
 export const stopLocaleStream = () => {
-  let stream = store.getState().call.localStream;
+  let stream = store.getState().Video.localStream;
   if (stream) {
-    console.log("Stopping");
     stream.getVideoTracks().forEach(function (track) {
       track.stop();
     });
     stream.getAudioTracks().forEach(function (track) {
       track.stop();
     });
-    store.dispatch(callActions.setLocalStream(stream));
+    store.dispatch(videoActions.setLocalStream(stream));
   }
 };
 
-let connectedUserSocketId;
-let peerConnection;
-const configuration = {
-  iceServers: [
-    { urls: "stun:stun.l.google.com:13902" },
-    { url: "stun:stun.12connect.com:3478" },
-    { url: "stun:stun.12voip.com:3478" },
-  ],
-};
-export const callOtherUser = (calleeDetails) => {
-  // connectedUserSocketId = calleeDetails.socketId;
+//DIRECT CALL TO OTHER USER
+export const callOtherUser = (recieverDetails) => {
   store.dispatch(
-    callActions.setCallState(callActions.callStates.CALL_IN_PROGRESS)
+    videoActions.setCallState(videoActions.callStates.CALL_IN_PROGRESS)
   );
-  store.dispatch(callActions.setCalleeUsername(calleeDetails.name));
-  store.dispatch(callActions.setCallingDialogVisible(true));
+  store.dispatch(videoActions.setRecieverUsername(recieverDetails.name));
+  store.dispatch(videoActions.setDirectCallModal(true));
   const user = store.getState().User.user;
-  // console.log(user);
-  sendPreOffer({
-    callee: calleeDetails,
+  const data = {
+    reciever: recieverDetails,
     caller: {
       username: user.name,
     },
-  });
+  };
+  // SENDING PREOFFER TO RECIEVER
+  socket.emit("pre-offer", data);
 };
 
-const createPeerConnection = () => {
-  peerConnection = new RTCPeerConnection(configuration);
+//HANDLING PRE-OFFER BY THE RECIEVER
+const handlePreOffer = (data) => {
+  // data will contain the caller details
 
-  const localStream = store.getState().call.localStream;
+  // const localStream = store.getState().Video.localStream;
+  const callState = store.getState().Video.callState;
 
-  for (const track of localStream.getTracks()) {
-    peerConnection.addTrack(track, localStream);
+  let enableCall = callState !== videoActions.callStates.CALL_IN_PROGRESS;
+
+  if (enableCall === true) {
+    recieverSocketId = data.callerSocketId;
+    store.dispatch(videoActions.setCallerUsername(data.callerUsername));
+    store.dispatch(
+      videoActions.setCallState(videoActions.callStates.CALL_REQUESTED)
+    );
+  } else {
+    // If call not possible reciever sends preoffer answer to sender
+    const callNotPossible = {
+      callerSocketId: data.callerSocketId,
+      answer: preOfferAnswers.ANOTHER_CALL,
+    };
+
+    socket.emit("pre-offer-answer", callNotPossible);
+  }
+};
+
+// HANDLING PREOFFER ANSWER BY SENDER
+const handlePreofferAnswer = (data) => {
+  let rejectedReason = "";
+  switch (data.answer) {
+    case preOfferAnswers.ANOTHER_CALL: {
+      rejectedReason = "User is on another call";
+      break;
+    }
+    case preOfferAnswers.REJECTED: {
+      rejectedReason = "User rejected the call";
+      break;
+    }
+    case preOfferAnswers.NOT_AVAILABLE: {
+      rejectedReason = "User is not available to take the call";
+      break;
+    }
+    default: {
+      recieverSocketId = data.calleeSocketId;
+      sendOffer();
+    }
   }
 
-  peerConnection.ontrack = ({ streams: [stream] }) => {
-    store.dispatch(callActions.setRemoteStream(stream));
+  if (rejectedReason.length > 0) {
+    let callRejected = {
+      rejected: true,
+      reason: rejectedReason,
+    };
+    store.dispatch(videoActions.setRejectedReason(callRejected));
+    resetCallData();
+  }
+  store.dispatch(videoActions.setDirectCallModal(false));
+};
+
+//SENDING OFFER TO RECEIVER
+const sendOffer = async () => {
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(offer);
+  const data = {
+    calleeSocketId: recieverSocketId,
+    offer: offer,
   };
 
-  peerConnection.onicecandidate = (event) => {
-    console.log("geeting candidates from stun server");
-    if (event.candidate) {
-      sendWebRTCCandidate({
-        candidate: event.candidate,
-        connectedUserSocketId: connectedUserSocketId,
-      });
-    }
-  };
-
-  peerConnection.onconnectionstatechange = (event) => {
-    console.log(event);
-    if (peerConnection.connectionState === "connected") {
-      console.log("succesfully connected with other peer");
-    }
-    console.log(peerConnection.connectionState);
-  };
+  socket.emit("webRTC-offer", data);
 };
 
 const sendWebRTCCandidate = (data) => {
   socket.emit("webRTC-candidate", data);
 };
-const sendOffer = async () => {
-  const offer = await peerConnection.createOffer();
-  await peerConnection.setLocalDescription(offer);
-  const data = {
-    calleeSocketId: connectedUserSocketId,
-    offer: offer,
-  };
-
-  sendWebRTCOffer(data);
-};
-
-const sendWebRTCOffer = (data) => {
-  socket.emit("webRTC-offer", data);
-};
-
-const sendPreOffer = (data) => {
-  // console.log(data.caller);
-  socket.emit("pre-offer", data);
-};
-
-const handlePreOffer = (data) => {
-  // data will contain the caller details
-  if (checkIfCallAvailble()) {
-    connectedUserSocketId = data.callerSocketId;
-    store.dispatch(callActions.setCallerUsername(data.callerUsername));
-    store.dispatch(
-      callActions.setCallState(callActions.callStates.CALL_REQUESTED)
-    );
-  } else {
-    // The callee will send this data to the caller
-    sendPreOfferAnswer({
-      callerSocketId: data.callerSocketId,
-      answer: preOfferAnswers.CALL_NOT_AVAILABLE,
-    });
-  }
-};
-
-const checkIfCallAvailble = () => {
-  if (
-    store.getState().call.localStream != null &&
-    store.getState().call.callState !== callActions.callStates.CALL_AVAILABLE
-  ) {
-    return false;
-  } else return true;
-};
 
 export const acceptIncomingCallRequest = () => {
-  sendPreOfferAnswer({
-    callerSocketId: connectedUserSocketId,
-    answer: preOfferAnswers.CALL_ACCEPTED,
-  });
+  const acceptedData = {
+    callerSocketId: recieverSocketId,
+    answer: preOfferAnswers.ACCEPTED,
+  };
 
   store.dispatch(
-    callActions.setCallState(callActions.callStates.CALL_IN_PROGRESS)
+    videoActions.setCallState(videoActions.callStates.CALL_IN_PROGRESS)
   );
-  // store.dispatch(callActions.setCallingDialogVisible(false));
+
+  socket.emit("pre-offer-answer", acceptedData);
 };
 
 export const rejectIncomingCallRequest = () => {
-  sendPreOfferAnswer({
-    callerSocketId: connectedUserSocketId,
-    answer: preOfferAnswers.CALL_REJECTED,
-  });
+  const rejectedData = {
+    callerSocketId: recieverSocketId,
+    answer: preOfferAnswers.REJECTED,
+  };
+  socket.emit("pre-offer-answer", rejectedData);
+
   resetCallData();
 };
+
 export const resetCallData = () => {
-  connectedUserSocketId = null;
+  recieverSocketId = null;
   store.dispatch(
-    callActions.setCallState(callActions.callStates.CALL_AVAILABLE)
+    videoActions.setCallState(videoActions.callStates.CALL_AVAILABLE)
   );
 };
 
-const sendPreOfferAnswer = (data) => {
-  //send callee details
-  // This will be sent by the callee
-  socket.emit("pre-offer-answer", data);
-};
-
-const handlePreOfferAnswer = (data) => {
-  // This will be recived by the caller
-  if (data.answer !== preOfferAnswers.CALL_ACCEPTED) {
-    let rejectedMessage;
-    if (data.answer === preOfferAnswers.CALL_NOT_AVAILABLE) {
-      rejectedMessage = "User is not available for the call";
-    } else if (data.answer === preOfferAnswers.CALL_REJECTED) {
-      rejectedMessage = "User rejected the call";
-    } else if (data.answer === "User is not online") {
-      rejectedMessage = "User is not online";
-    }
-    let callRejected = {
-      rejected: true,
-      reason: rejectedMessage,
-    };
-
-    store.dispatch(callActions.setRejectedReason(callRejected));
-
-    resetCallData();
-  } else {
-    connectedUserSocketId = data.calleeSocketId;
-
-    sendOffer();
-  }
-  store.dispatch(callActions.setCallingDialogVisible(false));
-};
-
+//Handling WebRTC offer by the callee
 const handleWebRTCOffer = async (data) => {
   // This is done by the callee.
   await peerConnection.setRemoteDescription(data.offer);
   const answer = await peerConnection.createAnswer();
   await peerConnection.setLocalDescription(answer);
 
-  sendWebRTCAnswer({
-    callerSocketId: connectedUserSocketId,
+  const webRTCdata = {
+    callerSocketId: recieverSocketId,
     answer: answer,
-  });
-};
+  };
 
-const sendWebRTCAnswer = (data) => {
-  socket.emit("webRTC-answer", data);
+  socket.emit("webRTC-answer", webRTCdata);
 };
 
 const handleWebRTCAnswer = async (data) => {
@@ -361,17 +306,17 @@ const handleWebRTCCandidate = async (data) => {
 };
 
 export const endCall = () => {
-  console.log(store.getState().call.callState);
+  console.log(store.getState().Video.callState);
   if (
-    store.getState().call.callState !== callActions.callStates.CALL_REQUESTED
+    store.getState().Video.callState !== videoActions.callStates.CALL_REQUESTED
   ) {
     socket.emit("user-hanged-up", {
-      connectedUserSocketId: connectedUserSocketId,
+      recieverSocketId: recieverSocketId,
     });
     resetCallDataAfterHangUp();
   } else {
     resetCallData();
-    store.dispatch(callActions.resetCallDataState());
+    store.dispatch(videoActions.resetCallDataState());
   }
 };
 
@@ -382,17 +327,17 @@ const resetCallDataAfterHangUp = () => {
 
   resetCallData();
 
-  const localStream = store.getState().call.localStream;
+  const localStream = store.getState().Video.localStream;
   localStream.getVideoTracks()[0].enabled = true;
   localStream.getAudioTracks()[0].enabled = true;
 
-  if (store.getState().call.screenSharingActive) {
+  if (store.getState().Video.screenSharingActive) {
     screenSharingStream.getTracks().forEach((track) => {
       track.stop();
     });
   }
 
-  store.dispatch(callActions.resetCallDataState());
+  store.dispatch(videoActions.resetCallDataState());
 };
 
 export const disconnectSocket = () => {
@@ -411,34 +356,81 @@ export const sendGroupMessage = (chatDetails) => {
 };
 
 let screenSharingStream;
-
-export const switchForScreenSharingStream = async () => {
-  if (!store.getState().call.screenSharingActive) {
-    try {
-      screenSharingStream = await navigator.mediaDevices.getDisplayMedia({
+let videoTrack;
+export const switchForScreenSharingStream = () => {
+  if (!store.getState().Video.screenSharingActive) {
+    navigator.mediaDevices
+      .getDisplayMedia({
         video: true,
-      });
-      store.dispatch(callActions.setScreenSharingActive(true));
-      const senders = peerConnection.getSenders();
-      const sender = senders.find(
-        (sender) =>
-          sender.track.kind == screenSharingStream.getVideoTracks()[0].kind
-      );
-      sender.replaceTrack(screenSharingStream.getVideoTracks()[0]);
-    } catch (err) {
-      console.error(
-        "error occured when trying to get screen sharing stream",
-        err
-      );
-    }
+      })
+      .then((stream) => {
+        screenSharingStream = stream;
+        videoTrack = stream.getVideoTracks()[0];
+        console.log(peerConnection.getSenders());
+        let sender = peerConnection
+          .getSenders()
+          .find((s) => s.track.kind === videoTrack.kind);
+        sender.replaceTrack(videoTrack);
+        console.log(sender);
+        store.dispatch(videoActions.setScreenSharingActive(true));
+      })
+      .catch((err) => console.log(err));
   } else {
-    const localStream = store.getState().call.localStream;
+    const localStream = store.getState().Video.localStream;
     const senders = peerConnection.getSenders();
     const sender = senders.find(
-      (sender) => sender.track.kind == localStream.getVideoTracks()[0].kind
+      (sender) => sender.track.kind === localStream.getVideoTracks()[0].kind
     );
     sender.replaceTrack(localStream.getVideoTracks()[0]);
-    store.dispatch(callActions.setScreenSharingActive(false));
+    store.dispatch(videoActions.setScreenSharingActive(false));
     screenSharingStream.getTracks().forEach((track) => track.stop());
   }
+};
+
+const removeActiveTeam = (data) => {
+  let activeTeams = store.getState().Video.activeTeams;
+  activeTeams = activeTeams.filter(
+    (activeTeam) => activeTeam.roomId !== data.roomId
+  );
+
+  store.dispatch(videoActions.setTeamToActive(activeTeams));
+};
+
+const addActiveTeam = (activeTeam) => {
+  // Adding team in which the meeting is started
+  let activeTeams = store.getState().Video.activeTeams;
+  if (
+    !activeTeams.some(
+      (active) =>
+        active.roomId === activeTeam.roomId &&
+        active.teamId === activeTeam.teamId
+    )
+  ) {
+    activeTeams = [...activeTeams, activeTeam];
+  }
+  store.dispatch(videoActions.setTeamToActive(activeTeams));
+};
+
+//Group calls
+export const registerGroupMeeting = (data) => {
+  socket.emit("create-meeting", data);
+};
+
+export const joinGroupCall = (data) => {
+  socket.emit("join-meeting", data);
+};
+
+export const leaveGroupCall = (data) => {
+  socket.emit("leave-meeting", data);
+};
+
+//Handling Group Messages
+const handleGroupMessage = (data) => {
+  let groupMessages = store.getState().Video.groupMessages;
+  groupMessages = [...groupMessages, data];
+  store.dispatch(videoActions.setGroupMessage(groupMessages));
+};
+
+const createNotification = () => {
+  store.dispatch(userActions.setNotification(false));
 };

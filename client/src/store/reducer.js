@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
 import userReducer from "./reducers/userReducer";
-import callReducer from "./reducers/callReducer";
+import videoReducer from "./reducers/videoReducer";
 
 export default combineReducers({
   User: userReducer,
-  call: callReducer,
+  Video: videoReducer,
 });

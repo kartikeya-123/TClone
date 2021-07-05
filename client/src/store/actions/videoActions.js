@@ -1,5 +1,4 @@
 export const callStates = {
-  CALL_UNAVAILABLE: "CALL_UNAVAILABLE",
   CALL_AVAILABLE: "CALL_AVAILABLE",
   CALL_REQUESTED: "CALL_REQUESTED",
   CALL_IN_PROGRESS: "CALL_IN_PROGRESS",
@@ -19,10 +18,10 @@ export const setCallState = (callState) => {
   };
 };
 
-export const setCallingDialogVisible = (visible) => {
+export const setDirectCallModal = (show) => {
   return {
     type: "SET_CALLING_DIALOG",
-    visible,
+    show,
   };
 };
 
@@ -33,10 +32,10 @@ export const setCallerUsername = (callerUsername) => {
   };
 };
 
-export const setCalleeUsername = (calleeUsername) => {
+export const setRecieverUsername = (recieverUsername) => {
   return {
     type: "SET_CALLEE_DETAILS",
-    calleeUsername,
+    recieverUsername,
   };
 };
 

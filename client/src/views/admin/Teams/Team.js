@@ -43,7 +43,7 @@ function Team({ user, cookies, history, ...props }) {
 
   const checkIfCallStarted = (teamId) => {
     console.log(teamId);
-    const activeTeam = activeTeams.find((active) => active.teamId == teamId);
+    const activeTeam = activeTeams.find((active) => active.teamId === teamId);
     if (activeTeam) {
       setMeetingStarted(true);
       setRoomId(activeTeam.roomId);
@@ -200,9 +200,9 @@ function Team({ user, cookies, history, ...props }) {
     </div>
   );
 }
-function mapStoreStateToProps({ call, dashboard }) {
+function mapStoreStateToProps({ Video, dashboard }) {
   return {
-    ...call,
+    ...Video,
   };
 }
 

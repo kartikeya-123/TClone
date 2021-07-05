@@ -9,11 +9,11 @@ import CallingModal from "./CallingModal";
 import {
   callStates,
   setLocalMicrophoneEnabled,
-} from "store/actions/callActions";
+} from "store/actions/videoActions";
 import {
   setRejectedReason,
   setLocalCameraEnabled,
-} from "store/actions/callActions";
+} from "store/actions/videoActions";
 import ConversationButtons from "./ConversationButtons/ConversationButtons";
 import ParticpantModal from "./ParticipantModal/ParticpantModal";
 import componentStyles from "assets/theme/views/admin/videoLayout";
@@ -103,9 +103,9 @@ const GroupCall = (props) => {
   );
 };
 
-function mapStoreStateToProps({ call, User }) {
+function mapStoreStateToProps({ Video, User }) {
   return {
-    ...call,
+    ...Video,
     ...User,
   };
 }

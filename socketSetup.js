@@ -45,32 +45,29 @@ module.exports.socketSetup = (server) => {
         image: data.image,
         socketId: socket.id,
       });
+      console.log(peers);
     });
 
     socket.on("disconnect", () => {
       console.log("user disconnected");
       console.log(socket.id);
       peers = peers.filter((peer) => peer.socketId !== socket.id);
-
-      // io.sockets.emit("broadcast", {
-      //   event: broadcastEventTypes.ACTIVE_USERS,
-      //   activeUsers: peers,
-      // });
     });
 
     // listeners related with direct call
 
     socket.on("pre-offer", (data) => {
       console.log("pre-offer handled");
-      const callee = peers.find((peer) => peer.email === data.callee.email);
-      if (callee) {
-        io.to(callee.socketId).emit("pre-offer", {
+      const reciever = peers.find((peer) => peer.email === data.reciever.email);
+      console.log(peers);
+      if (reciever) {
+        io.to(reciever.socketId).emit("pre-offer", {
           callerUsername: data.caller.username,
           callerSocketId: socket.id,
         });
       } else {
         io.to(socket.id).emit("pre-offer-answer", {
-          answer: "User is not online",
+          answer: "NOT_AVAILABLE",
         });
       }
     });
@@ -99,14 +96,13 @@ module.exports.socketSetup = (server) => {
     });
 
     socket.on("webRTC-candidate", (data) => {
-      console.log("handling ice candidate");
-      io.to(data.connectedUserSocketId).emit("webRTC-candidate", {
+      io.to(data.recieverSocketId).emit("webRTC-candidate", {
         candidate: data.candidate,
       });
     });
 
     socket.on("user-hanged-up", (data) => {
-      io.to(data.connectedUserSocketId).emit("user-hanged-up");
+      io.to(data.recieverSocketId).emit("user-hanged-up");
     });
 
     socket.on("create-meeting", async (data) => {

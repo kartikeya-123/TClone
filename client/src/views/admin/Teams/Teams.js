@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { callStates } from "store/actions/callActions";
+import { callStates } from "store/actions/videoActions";
 import { connect } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -136,9 +136,9 @@ function Teams({ user, history, ...props }) {
   );
 }
 
-function mapStoreStateToProps({ call, User }) {
+function mapStoreStateToProps({ Video, User }) {
   return {
-    ...call,
+    ...Video,
   };
 }
 

@@ -21,7 +21,7 @@ import IncomingCallDialog from "./../views/admin/Dashboard/components/IncomingCa
 import routes from "routes.js";
 
 import componentStyles from "assets/theme/layouts/admin.js";
-import { callStates } from "store/actions/callActions";
+import { callStates } from "store/actions/videoActions";
 import { setNotification } from "store/actions/userActions.js";
 const useStyles = makeStyles(componentStyles);
 
@@ -142,9 +142,9 @@ const Admin = ({ userdata, cookies, getUserAgain, logOut, ...props }) => {
   );
 };
 
-function mapStoreStateToProps({ call, User }) {
+function mapStoreStateToProps({ Video, User }) {
   return {
-    ...call,
+    ...Video,
     ...User,
   };
 }

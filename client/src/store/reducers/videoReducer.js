@@ -1,11 +1,11 @@
-import * as callActions from "../actions/callActions";
+import * as callActions from "../actions/videoActions";
 
 const initState = {
   localStream: null,
   callState: callActions.callStates.CALL_AVAILABLE,
-  callingDialogVisible: false,
   callerUsername: "",
   calleeUsername: "",
+  directCallModal: false,
   callRejected: {
     rejected: false,
     reason: "",
@@ -15,6 +15,7 @@ const initState = {
   localMicrophoneEnabled: true,
   screenSharingActive: false,
   groupCallActive: false,
+
   groupCallStreams: [],
   activeTeams: [],
   groupMessages: [],
@@ -35,7 +36,7 @@ const reducer = (state = initState, action) => {
     case "SET_CALLING_DIALOG":
       return {
         ...state,
-        callingDialogVisible: action.visible,
+        directCallModal: action.show,
       };
     case "SET_CALLER_DETAILS":
       return {
@@ -57,12 +58,12 @@ const reducer = (state = initState, action) => {
         ...state,
         remoteStream: action.remoteStream,
       };
-    case "ENABLE_MICROPHONE":
+    case "ENABLE_CAMERA":
       return {
         ...state,
         localCameraEnabled: action.enabled,
       };
-    case "ENABLE_CAMERA":
+    case "ENABLE_MICROPHONE":
       return {
         ...state,
         localMicrophoneEnabled: action.enabled,
@@ -80,7 +81,7 @@ const reducer = (state = initState, action) => {
         callerUsername: "",
         localMicrophoneEnabled: true,
         localCameraEnabled: true,
-        callingDialogVisible: false,
+        directCallModal: false,
         calleeUsername: "",
       };
     case "RESET_GROUP_DATA":

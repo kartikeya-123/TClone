@@ -8,11 +8,11 @@ import CallingModal from "./CallingModal";
 import {
   callStates,
   setLocalMicrophoneEnabled,
-} from "store/actions/callActions";
+} from "store/actions/videoActions";
 import {
   setRejectedReason,
   setLocalCameraEnabled,
-} from "store/actions/callActions";
+} from "store/actions/videoActions";
 import ConversationButtons from "./ConversationButtons/ConversationButtons";
 import componentStyles from "assets/theme/views/admin/videoLayout";
 
@@ -29,7 +29,7 @@ const DirectCall = (props) => {
   const {
     localStream,
     remoteStream,
-    callingDialogVisible,
+    directCallModal,
     callState,
     callerUsername,
     callRejected,
@@ -103,7 +103,7 @@ const DirectCall = (props) => {
       {/* {callState === callStates.CALL_REQUESTED ? (
         <IncomingCallDialog caller={callerUsername} show={true} />
       ) : null} */}
-      {callingDialogVisible ? (
+      {directCallModal ? (
         <CallingModal calleeUsername={calleeUsername} />
       ) : null}
       <ConversationButtons {...props} />
@@ -111,9 +111,9 @@ const DirectCall = (props) => {
   );
 };
 
-function mapStoreStateToProps({ call, User }) {
+function mapStoreStateToProps({ Video, User }) {
   return {
-    ...call,
+    ...Video,
     ...User,
   };
 }
