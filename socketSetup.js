@@ -5,6 +5,7 @@ const app = require("./app");
 const {
   sendMessage,
   meetingNotification,
+  finishTeamMeeting,
 } = require("./controllers/teamController");
 //Exports
 
@@ -45,7 +46,6 @@ module.exports.socketSetup = (server) => {
         image: data.image,
         socketId: socket.id,
       });
-      console.log(peers);
     });
 
     socket.on("disconnect", () => {
@@ -122,16 +122,13 @@ module.exports.socketSetup = (server) => {
           teamName: data.teamName,
           owner: data.owner,
           ownerId: data.ownerId,
+          roomId: roomId,
         });
-        console.log(users);
         for (let user of users) {
           const activeUser = peers.find((peer) => peer.email === user.email);
-          io.to(activeUser.socketId).emit("new-notification");
+          if (activeUser) io.to(activeUser.socketId).emit("new-notification");
         }
       }
-      // io.to(socket.id).emit("roomId-for-group-call", {
-      //   roomId: roomId,
-      // });
     });
 
     socket.on("join-meeting", (data) => {
@@ -144,7 +141,7 @@ module.exports.socketSetup = (server) => {
       console.log(io.sockets.adapter.rooms.get(data.roomId).size);
     });
 
-    socket.on("leave-meeting", (data) => {
+    socket.on("leave-meeting", async (data) => {
       console.log(io.sockets.adapter.rooms.get(data.roomId).size);
       if (io.sockets.adapter.rooms.get(data.roomId).size == 1) {
         //If the size of room is 1
@@ -156,7 +153,8 @@ module.exports.socketSetup = (server) => {
             return false;
           }
         });
-        // delete io.sockets.adapter.rooms[data.roomId];
+
+        await finishTeamMeeting({ roomId: data.roomId });
         io.to(teamId).emit("team-meeting-finished", {
           roomId: data.roomId,
         });
@@ -190,9 +188,16 @@ module.exports.socketSetup = (server) => {
       callBack();
     });
 
-    socket.on("group-message", (chatDetails) => {
+    socket.on("group-message", async (chatDetails) => {
+      await sendMessage(chatDetails);
       const roomId = chatDetails.roomId;
       io.to(roomId).emit("group-message-recieved", chatDetails);
+    });
+
+    socket.on("direct-message", (chatDetails) => {
+      const reciever = chatDetails.reciever;
+      io.to(socket.id).emit("direct-message-recieved", chatDetails);
+      io.to(reciever).emit("direct-message-recieved", chatDetails);
     });
   });
 };
