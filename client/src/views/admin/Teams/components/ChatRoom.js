@@ -37,12 +37,13 @@ const ChatRoom = ({ user, Team }) => {
         setLoading(false);
         //console.log(response);
         if (response.status === 200) {
-          setChatMessages(response.data.data.chatMessages);
+          console.log(response.data.data.results);
+          setChatMessages(response.data.data.results);
         }
       })
       .catch((err) => {
         console.log(err);
-        window.alert(err.response.data.message);
+        window.alert(err);
       });
   };
 
@@ -92,7 +93,7 @@ const ChatRoom = ({ user, Team }) => {
       </div>
     );
   else if (!isLoading && chatMessages.length > 0) {
-    chats = <MessageCard chatMessages={chatMessages} user={user} />;
+    chats = <MessageCard teamMessages={chatMessages} user={user} />;
   } else
     chats = (
       <Typography

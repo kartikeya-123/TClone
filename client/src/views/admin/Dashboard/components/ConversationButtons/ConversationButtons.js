@@ -8,6 +8,7 @@ import {
   MdVideoLabel,
   MdCamera,
 } from "react-icons/md";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { BsChatDots } from "react-icons/bs";
 import ConversationButton from "./ConversationButton";
 import { callStates } from "store/actions/videoActions";
@@ -49,6 +50,7 @@ const ConversationButtons = (props) => {
     groupCallActive,
     history,
     showChat,
+    handleChat,
     activeUsers,
     user,
   } = props;
@@ -113,17 +115,19 @@ const ConversationButtons = (props) => {
           <MdVideoLabel style={styles.icon} />
         )}
       </ConversationButton>
-      {!groupCallActive ? (
+      {!groupCallActive && callState !== callStates.CALL_IN_PROGRESS ? (
         <ConversationButton onClickHandler={handleAddParticipant}>
-          <GroupAddIcon size="large" />
-        </ConversationButton>
-      ) : null}
-      {groupCallActive ? (
-        <ConversationButton onClickHandler={showChat}>
-          <BsChatDots style={styles.icon} />
+          <AiOutlineUsergroupAdd style={styles.icon} />
         </ConversationButton>
       ) : null}
 
+      {callState === callStates.CALL_IN_PROGRESS ? (
+        <ConversationButton
+          onClickHandler={groupCallActive ? showChat : handleChat}
+        >
+          <BsChatDots style={styles.icon} />
+        </ConversationButton>
+      ) : null}
       <ParticipantModal
         show={show}
         activeUsers={activeUsers}

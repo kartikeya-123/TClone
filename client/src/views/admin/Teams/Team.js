@@ -54,7 +54,7 @@ function Team({ user, cookies, history, ...props }) {
     let meet = activeTeams.find((team) => team.teamId == Team._id);
     console.log(meet);
     let url = `/call/${meet.roomId}`;
-    history.push(url);
+    history.push({ pathname: url, state: { teamId: Team._id } });
   };
 
   const startMeet = () => {
