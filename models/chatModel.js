@@ -20,7 +20,10 @@ const chatMessageSchema = new mongoose.Schema({
   teamId: {
     type: mongoose.Schema.ObjectId,
     ref: "Team",
-    required: [true, "Chat Message must have a team"],
+    // required: [true, "Chat Message must have a team"],
+  },
+  roomId: {
+    type: String,
   },
   createdAt: {
     type: Date,
