@@ -131,6 +131,7 @@ export default function ParticipantModal({
           variant="outlined"
           placeholder="Invite Someone"
           classes={{ root: classes.input }}
+          autoComplete="off"
         />
         {value.length > 0 ? (
           <Paper className={classes.listPaper}>
