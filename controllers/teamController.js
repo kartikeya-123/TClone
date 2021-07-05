@@ -1,6 +1,7 @@
 const User = require("./../models/userModel");
 const Team = require("./../models/teamModel");
 const Chat = require("./../models/chatModel");
+const TeamMeeting = require("./../models/teamMeetingModel");
 
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
@@ -209,19 +210,76 @@ exports.getAllChatMessagesByTeam = catchAsync(async (req, res, next) => {
     return next(new AppError("You are not allowed to view this team!", 401));
   }
 
-  const chatMessages = await Chat.find({ teamId: teamId });
-
+  const chatMessages = await Chat.find({ teamId: teamId, roomId: null });
+  const teamMeetings = await TeamMeeting.find({ teamId: teamId });
+  let results;
+  if (chatMessages.length > 0 && teamMeetings.length > 0)
+    results = mergeTwoArrays(chatMessages, teamMeetings);
+  else if (chatMessages.length > 0) results = chatMessages;
+  else if (teamMeetings.length > 0) results = teamMeetings;
+  else results = [];
   res.status(200).json({
     status: "success",
-    data: { results: chatMessages.length, chatMessages },
+    data: { results: results.length, results },
   });
 });
 
-exports.meetingNotification = async ({ teamId, teamName, owner, ownerId }) => {
+const mergeTwoArrays = (chatMessages, teamMeetings) => {
+  let merged = [];
+  let index1 = 0;
+  let index2 = 0;
+  let current = 0;
+  const chatLength = chatMessages.length;
+  const meetingsLength = teamMeetings.length;
+
+  while (current < chatLength + meetingsLength) {
+    if (index1 == chatLength) {
+      while (index2 < meetingsLength)
+        merged[current++] = teamMeetings[index2++];
+      break;
+    }
+    if (index2 == meetingsLength) {
+      while (index1 < chatLength) merged[current++] = chatMessages[index1++];
+      break;
+    }
+
+    let unmerged1 = chatMessages[index1];
+    let unmerged2 = teamMeetings[index2];
+
+    // if next comes from chatMessages
+    if (unmerged1.createdAt < unmerged2.createdAt) {
+      merged[current] = unmerged1;
+      index1++;
+      // if next comes from arr2
+    } else {
+      merged[current] = unmerged2;
+      index2++;
+    }
+    current++;
+  }
+
+  return merged;
+};
+
+exports.meetingNotification = async ({
+  teamId,
+  teamName,
+  owner,
+  ownerId,
+  roomId,
+}) => {
   if (!teamId) {
     return new AppError("Team Id is not mentioned", 404);
   }
   console.log(teamId);
+
+  const teamMeetingData = {
+    roomId: roomId,
+    teamId: teamId,
+    startedBy: owner,
+  };
+  await TeamMeeting.create(teamMeetingData);
+
   const notification = {
     message: `A new meeting started in ${teamName} by ${owner}`,
     notificationType: "New Meeting",
@@ -246,7 +304,7 @@ exports.meetingNotification = async ({ teamId, teamName, owner, ownerId }) => {
       { teamsOwned: ObjectId(teamId) },
     ],
   }).select("email");
-  console.log(users);
+
   return users;
 };
 
@@ -299,4 +357,33 @@ exports.getAllFiles = catchAsync(async (req, res, next) => {
     status: "success",
     files: files,
   });
+});
+
+exports.finishTeamMeeting = catchAsync(async ({ roomId }) => {
+  if (!roomId) {
+    return new AppError("RoomId is not mentioned", 404);
+  }
+  console.log("Hi");
+  console.log(roomId);
+  const chatMessages = await Chat.find({ roomId: roomId })
+    .select("userName userImage message createdAt")
+    .sort({ createdAt: 1 });
+  console.log(chatMessages);
+  // const d = new Date();
+  // const endedAt =
+  //   d.getFullYear() +
+  //   "/" +
+  //   (d.getMonth() + 1) +
+  //   "/" +
+  //   d.getDate() +
+  //   " " +
+  //   d.getHours() +
+  //   ":" +
+  //   d.getMinutes();
+
+  const endedAt = Date.now();
+  const teamMeeting = await TeamMeeting.findOneAndUpdate(
+    { roomId: roomId },
+    { chatMessages: chatMessages, endedAt: endedAt }
+  );
 });
