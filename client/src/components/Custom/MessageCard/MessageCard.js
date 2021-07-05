@@ -1,6 +1,21 @@
 import React, { useEffect } from "react";
-import { Avatar, Grid, GridList, Box, Paper } from "@material-ui/core";
+import {
+  Avatar,
+  Grid,
+  GridList,
+  Box,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Typography from "@material-ui/core/Typography";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,11 +44,20 @@ const useStyles = makeStyles((theme) => ({
     display: "inline-block",
     padding: "10px",
   },
+
   imageLayout: {
     justifyContent: "right",
   },
   gridLayout: {
     alignItems: "right",
+  },
+  cardgridLayout: {
+    width: "100%",
+    backgroundColor: "#fcfcfc",
+    padding: "10px",
+  },
+  meetingCard: {
+    minWidth: "90%",
   },
   span: {
     color: "#5F5F5F",
@@ -41,6 +65,16 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "12px",
     textDecoration: "transparent",
     fontWeight: 400,
+    margin: "3px",
+  },
+  AccordionRoot: {
+    width: "100%",
+    boxShadow: "0px",
+    backgroundColor: "#F7F7F7",
+  },
+  messageList: {
+    width: "100%",
+    backgroundColor: "#F7F7F7",
   },
 }));
 const urlify = (text) => {
@@ -51,12 +85,14 @@ const urlify = (text) => {
   });
 };
 
-const Messages = ({ chatMessages, user }) => {
+const Messages = ({ teamMessages, user }) => {
   const classes = useStyles();
 
   const scrollToBottom = () => {
     const elem = document.getElementById("chat-elem");
-    if (elem) elem.scrollTop = elem.scrollHeight;
+    if (elem) {
+      elem.scrollTop = elem.scrollHeight;
+    }
   };
 
   const getDate = (date) => {
@@ -82,77 +118,183 @@ const Messages = ({ chatMessages, user }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [chatMessages]);
+  }, [teamMessages]);
 
   return (
     <div
-      id="chat-elem"
+      id="chat-lem"
       style={{
         paddingTop: "0px",
         minHeight: "60vh",
       }}
       // className={classes.root}
     >
-      <GridList cellHeight={40} className={classes.gridList} cols={1}>
-        {chatMessages.map((chatMessage, index) => {
-          let alignment = "left";
-          if (chatMessage.userId === user.id) {
-            alignment = "right";
-          }
-          return (
-            <React.Fragment key={index}>
-              <Grid
-                container
-                wrap="nowrap"
-                spacing={1}
-                style={{
-                  margin: "10px 5px",
-                  height: "auto",
-                }}
-                className={classes.gridLayout}
-              >
-                {alignment == "left" ? (
-                  <Grid item>
-                    <Avatar
-                      alt="avatar"
-                      src={chatMessage.userImage}
-                      className={classes.image}
-                    />
-                  </Grid>
-                ) : null}
+      <GridList
+        cellHeight={40}
+        className={classes.gridList}
+        cols={1}
+        id="chat-elem"
+      >
+        {teamMessages.map((chatMessage, index) => {
+          if (!chatMessage.roomId) {
+            let alignment = "left";
+            if (chatMessage.userId === user.id) {
+              alignment = "right";
+            }
+            return (
+              <React.Fragment key={index}>
                 <Grid
-                  className={
-                    alignment === "right"
-                      ? classes.messageCardRight
-                      : classes.messageCard
-                  }
-                  item
-                  zeroMinWidth
-                  alignItems="flex-end"
-                  direction="reverse"
-                  justify="flex-end"
-                  //
-                  xs={6}
+                  container
+                  wrap="nowrap"
+                  spacing={1}
+                  style={{
+                    margin: "10px 5px",
+                    height: "auto",
+                  }}
+                  className={classes.gridLayout}
                 >
-                  <Box>
-                    <h4 style={{ margin: 0 }}>
-                      {chatMessage.userName}{" "}
-                      <span className={classes.span}>
-                        {getDate(chatMessage.createdAt)}
-                      </span>
-                    </h4>
+                  {alignment == "left" ? (
+                    <Grid item>
+                      <Avatar
+                        alt="avatar"
+                        src={chatMessage.userImage}
+                        className={classes.image}
+                      />
+                    </Grid>
+                  ) : null}
+                  <Grid
+                    className={
+                      alignment === "right"
+                        ? classes.messageCardRight
+                        : classes.messageCard
+                    }
+                    item
+                    zeroMinWidth
+                    alignItems="flex-end"
+                    direction="reverse"
+                    justify="flex-end"
+                    //
+                    xs={6}
+                  >
+                    <Box>
+                      <h4 style={{ margin: 0 }}>
+                        {chatMessage.userName}{" "}
+                        <span className={classes.span}>
+                          {getDate(chatMessage.createdAt)}
+                        </span>
+                      </h4>
 
-                    <p
-                      style={{ margin: "0px" }}
-                      dangerouslySetInnerHTML={{
-                        __html: urlify(chatMessage.message),
-                      }}
-                    ></p>
-                  </Box>
+                      <p
+                        style={{ margin: "0px" }}
+                        dangerouslySetInnerHTML={{
+                          __html: urlify(chatMessage.message),
+                        }}
+                      ></p>
+                    </Box>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </React.Fragment>
-          );
+              </React.Fragment>
+            );
+          } else {
+            return (
+              <React.Fragment key={index}>
+                <Grid
+                  container
+                  wrap="nowrap"
+                  spacing={1}
+                  style={{
+                    margin: "10px 5px",
+                    height: "auto",
+                  }}
+                  className={classes.cardgridLayout}
+                >
+                  <Grid item>
+                    <VideocamOutlinedIcon className={classes.image} />
+                  </Grid>
+
+                  <Grid
+                    className={classes.meetingCard}
+                    item
+                    zeroMinWidth
+                    alignItems="flex-end"
+                    direction="reverse"
+                    justify="flex-end"
+                    //
+                    xs={6}
+                  >
+                    <Box style={{ width: "100%" }}>
+                      <h4 style={{ margin: 0, paddingBottom: "10px" }}>
+                        Meeting started by {chatMessage.startedBy}{" "}
+                        <span className={classes.span}>
+                          {getDate(chatMessage.endedAt)}
+                        </span>
+                        <span className={classes.span}>
+                          {getDate(chatMessage.createdAt)}
+                          {" - "}
+                        </span>
+                      </h4>
+                      {chatMessage.chatMessages.length > 0 ? (
+                        <Accordion
+                          className={{ root: classes.AccordionRoot }}
+                          style={{ boxShadow: "0px" }}
+                          elevation={0}
+                          style={{ backgroundColor: "#F7F7F7" }}
+                        >
+                          <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header"
+                          >
+                            <Typography className={classes.heading}>
+                              See messages
+                            </Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <List className={classes.messageList}>
+                              {chatMessage.chatMessages.map(
+                                (message, index) => {
+                                  return (
+                                    <ListItem style={{ display: "flex" }}>
+                                      <ListItemAvatar>
+                                        <Avatar
+                                          alt="avatar"
+                                          src={message.userImage}
+                                          className={classes.image}
+                                        />
+                                      </ListItemAvatar>
+                                      <ListItemText
+                                        disableTypography
+                                        primary={
+                                          <h4 style={{ margin: 0 }}>
+                                            {message.userName}{" "}
+                                            <span className={classes.span}>
+                                              {getDate(message.createdAt)}
+                                            </span>
+                                          </h4>
+                                        }
+                                        secondary={
+                                          <p
+                                            style={{ margin: "0px" }}
+                                            dangerouslySetInnerHTML={{
+                                              __html: urlify(message.message),
+                                            }}
+                                          ></p>
+                                        }
+                                      ></ListItemText>
+                                    </ListItem>
+                                  );
+                                }
+                              )}
+                            </List>
+                          </AccordionDetails>
+                        </Accordion>
+                      ) : null}
+                    </Box>
+                  </Grid>
+                </Grid>
+              </React.Fragment>
+            );
+          }
         })}
       </GridList>
     </div>
