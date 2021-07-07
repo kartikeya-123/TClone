@@ -21,6 +21,8 @@ import GroupCallRoom from "./GroupCallRoom/GroupCallRoom";
 import { Grid } from "@material-ui/core";
 import { joinGroupMeeting } from "utils/websocketclient/groupCallHandler";
 import GroupMessages from "./GroupMessages";
+import Board from "./../../../../components/Custom/Board/Board";
+
 const useStyles = makeStyles(componentStyles);
 
 const GroupCall = (props) => {
@@ -29,6 +31,7 @@ const GroupCall = (props) => {
 
   const classes = useStyles();
   const [show, setShowGrid] = useState(false);
+  const [showBoard, setShowBoard] = useState(false);
 
   const {
     localStream,
@@ -37,6 +40,7 @@ const GroupCall = (props) => {
     groupCallStreams,
     user,
     groupMessages,
+    imageData,
   } = props;
   // console.log(callerUsername);
 
@@ -54,6 +58,7 @@ const GroupCall = (props) => {
     console.log(roomId);
     joinGroupMeeting(roomId);
   };
+
   useEffect(() => {
     if (localStream) {
       // Local video element value is assigned localStream
@@ -76,6 +81,10 @@ const GroupCall = (props) => {
   const showChatGrid = () => {
     setShowGrid((show) => !show);
   };
+
+  const showWhiteBoardGrid = () => {
+    setShowBoard((showBoard) => !showBoard);
+  };
   return (
     <Grid container direction="column" spacing={3}>
       <Grid xs={6}>
@@ -91,12 +100,18 @@ const GroupCall = (props) => {
       <Grid className={classes.localVideoGrid}>
         {localStreamGrid}
         {groupCallActive && (
-          <ConversationButtons {...props} groupCall showChat={showChatGrid} />
+          <ConversationButtons
+            {...props}
+            groupCall
+            showChat={showChatGrid}
+            showBoardGrid={showWhiteBoardGrid}
+          />
         )}
         <Grid>
           {show ? (
             <GroupMessages user={user} groupMessages={groupMessages} />
           ) : null}
+          {showBoard ? <Board imageData={imageData} user={user} /> : null}
         </Grid>
       </Grid>
     </Grid>

@@ -9,6 +9,8 @@ import {
   MdCamera,
 } from "react-icons/md";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import { BiChalkboard } from "react-icons/bi";
+
 import { BsChatDots } from "react-icons/bs";
 import ConversationButton from "./ConversationButton";
 import { callStates } from "store/actions/videoActions";
@@ -53,6 +55,7 @@ const ConversationButtons = (props) => {
     handleChat,
     activeUsers,
     user,
+    showBoardGrid,
   } = props;
 
   const [show, setShowModal] = useState(false);
@@ -126,6 +129,12 @@ const ConversationButtons = (props) => {
           onClickHandler={groupCallActive ? showChat : handleChat}
         >
           <BsChatDots style={styles.icon} />
+        </ConversationButton>
+      ) : null}
+
+      {groupCallActive && callState === callStates.CALL_IN_PROGRESS ? (
+        <ConversationButton onClickHandler={showBoardGrid}>
+          <BiChalkboard style={styles.icon} />
         </ConversationButton>
       ) : null}
       <ParticipantModal
