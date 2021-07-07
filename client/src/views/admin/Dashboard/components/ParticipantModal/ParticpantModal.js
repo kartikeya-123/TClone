@@ -84,7 +84,7 @@ export default function ParticipantModal({
   const [users, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
 
-  useEffect(() => getAllUsers());
+  useEffect(() => getAllUsers(), []);
   const handleChange = (event) => {
     setValue(event.target.value);
   };
