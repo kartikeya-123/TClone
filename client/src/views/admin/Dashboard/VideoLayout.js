@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getLocaleStream } from "utils/websocketclient/clientSocket";
 import { joinGroupMeeting } from "utils/websocketclient/groupCallHandler";
-import DirectCall from "./components/DirectCall";
-import GroupCall from "./components/GroupCall";
+import DirectCall from "./DirectCall";
+import GroupCall from "./GroupCall";
 import { Grid } from "@material-ui/core";
 
 import { Container, makeStyles } from "@material-ui/core";
@@ -22,13 +22,11 @@ const VideoLayout = ({ user, history }) => {
     if (paths.length === 3) {
       setDirectCall(false);
     }
-    console.log(paths);
-
     setLoading(false);
   };
+
   useEffect(() => {
     getLocaleStream();
-    // connectWithPeer();
     checkIfGroupCall();
   }, []);
 

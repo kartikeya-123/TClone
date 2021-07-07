@@ -73,12 +73,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ParticipantModal({
-  show,
-  activeUsers,
-  close,
-  currentUser,
-}) {
+export default function ParticipantModal({ show, close, currentUser }) {
   const classes = useStyles();
   const [value, setValue] = useState("");
   const [users, setAllUsers] = useState([]);

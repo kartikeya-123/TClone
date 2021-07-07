@@ -20,9 +20,8 @@ import {
   InputBase,
 } from "@material-ui/core";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
-import { createGroupMeeting } from "./../../../../utils/websocketclient/groupCallHandler";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
-
+import CallIcon from "@material-ui/icons/Call";
 const useStyles = makeStyles(componentStyles);
 
 const BootstrapInput = withStyles((theme) => ({
@@ -101,9 +100,6 @@ const CreateTeam = ({ user, createTeam, redirectToCall }) => {
     handleClose();
   };
 
-  const createMeeting = () => {
-    createGroupMeeting();
-  };
   let formDialog = (
     <Dialog
       open={open}
@@ -262,24 +258,17 @@ const CreateTeam = ({ user, createTeam, redirectToCall }) => {
     <>
       <Button
         className={classes.buttonContainedInfo}
-        startIcon={<GroupAddIcon className={classes.icon} />}
+        startIcon={<CallIcon className={classes.icon} />}
         onClick={redirectToCall}
       >
-        <Typography style={{ fontSize: "15px" }}>Call others</Typography>
+        <Typography style={{ fontSize: "14px" }}>Call others</Typography>
       </Button>
-      {/* <Button
-        className={classes.buttonContainedInfo}
-        startIcon={<GroupAddIcon className={classes.icon} />}
-        onClick={createMeeting}
-      >
-        <Typography style={{ fontSize: "15px" }}>Group meeting</Typography>
-      </Button> */}
       <Button
         className={classes.buttonContainedInfo}
         onClick={handleOpen}
         startIcon={<GroupAddIcon className={classes.icon} />}
       >
-        <Typography style={{ fontSize: "15px" }}>Create a new team</Typography>
+        <Typography style={{ fontSize: "14px" }}>Create a new team</Typography>
       </Button>
       {formDialog}
     </>

@@ -2,20 +2,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import CallRejectedDialog from "./CallRejectedDialog/CallRejectedDialog";
-import IncomingCallDialog from "./IncomingCallDialog/IncomingCallDialog";
-import CallingModal from "./CallingModal";
-import {
-  callStates,
-  setLocalMicrophoneEnabled,
-} from "store/actions/videoActions";
-import {
-  setRejectedReason,
-  setLocalCameraEnabled,
-} from "store/actions/videoActions";
-import ConversationButtons from "./ConversationButtons/ConversationButtons";
+import CallRejectedDialog from "./components/CallRejectedDialog/CallRejectedDialog";
+import CallingModal from "./components/CallingModal";
+
+import { setRejectedReason } from "store/actions/videoActions";
+import ConversationButtons from "./components/ConversationButtons/ConversationButtons";
 import componentStyles from "assets/theme/views/admin/videoLayout";
-import DirectMessages from "./directMessages";
+import DirectMessages from "./components/directMessages";
 import { Grid } from "@material-ui/core";
 
 const useStyles = makeStyles(componentStyles);
@@ -38,8 +31,6 @@ const DirectCall = (props) => {
     callRejected,
     hideCallRejectedDialog,
     calleeUsername,
-    user,
-    directMessages,
   } = props;
   // console.log(callerUsername);
 
@@ -127,9 +118,6 @@ function mapDispatchToProps(dispatch) {
   return {
     hideCallRejectedDialog: (callRejectedDetails) =>
       dispatch(setRejectedReason(callRejectedDetails)),
-    setCameraEnabled: (enabled) => dispatch(setLocalCameraEnabled(enabled)),
-    setMicrophoneEnabled: (enabled) =>
-      dispatch(setLocalMicrophoneEnabled(enabled)),
   };
 }
 export default connect(mapStoreStateToProps, mapDispatchToProps)(DirectCall);

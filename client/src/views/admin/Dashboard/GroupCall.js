@@ -3,50 +3,34 @@ import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import CallRejectedDialog from "./CallRejectedDialog/CallRejectedDialog";
-import IncomingCallDialog from "./IncomingCallDialog/IncomingCallDialog";
-import CallingModal from "./CallingModal";
-import {
-  callStates,
-  setLocalMicrophoneEnabled,
-} from "store/actions/videoActions";
-import {
-  setRejectedReason,
-  setLocalCameraEnabled,
-} from "store/actions/videoActions";
-import ConversationButtons from "./ConversationButtons/ConversationButtons";
-import ParticpantModal from "./ParticipantModal/ParticpantModal";
+import ConversationButtons from "./components/ConversationButtons/ConversationButtons";
 import componentStyles from "assets/theme/views/admin/videoLayout";
-import GroupCallRoom from "./GroupCallRoom/GroupCallRoom";
+import GroupCallRoom from "./components/GroupCallRoom/GroupCallRoom";
 import { Grid } from "@material-ui/core";
 import { joinGroupMeeting } from "utils/websocketclient/groupCallHandler";
-import GroupMessages from "./GroupMessages";
-import Board from "./../../../../components/Custom/Board/Board";
+import GroupMessages from "./components/GroupMessages";
+import Board from "../../../components/Custom/Board/Board";
 
 const useStyles = makeStyles(componentStyles);
 
 const GroupCall = (props) => {
   const localStreamRef = useRef();
-  const remoteStreamRef = useRef();
-
   const classes = useStyles();
   const [show, setShowGrid] = useState(false);
   const [showBoard, setShowBoard] = useState(false);
 
   const {
     localStream,
-    callState,
+
     groupCallActive,
-    groupCallStreams,
+
     user,
     groupMessages,
     imageData,
   } = props;
-  // console.log(callerUsername);
 
   const getLocalStreamGrid = () => {
     const localVideoStream = localStreamRef.current;
-
     localVideoStream.srcObject = localStream;
     localVideoStream.onloadedmetadata = () => {
       localVideoStream.play();
@@ -125,13 +109,4 @@ function mapStoreStateToProps({ Video, User }) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    hideCallRejectedDialog: (callRejectedDetails) =>
-      dispatch(setRejectedReason(callRejectedDetails)),
-    setCameraEnabled: (enabled) => dispatch(setLocalCameraEnabled(enabled)),
-    setMicrophoneEnabled: (enabled) =>
-      dispatch(setLocalMicrophoneEnabled(enabled)),
-  };
-}
-export default connect(mapStoreStateToProps, mapDispatchToProps)(GroupCall);
+export default connect(mapStoreStateToProps, null)(GroupCall);

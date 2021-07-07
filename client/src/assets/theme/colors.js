@@ -58,7 +58,7 @@ const themeColors = {
     badgeBg: "#aaedf9",
     badgeBgHover: "#0c9cb7",
     badge: "#F5F5F5",
-    hovered: "#EDEBE9",
+    hovered: "#ebedfa",
   },
   background: {
     default: "#f8f9fe",

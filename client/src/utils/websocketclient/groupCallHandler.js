@@ -77,9 +77,7 @@ export const joinGroupMeeting = (roomId) => {
 
 export const connectToNewUser = (data) => {
   const localStream = store.getState().Video.localStream;
-
   const call = myPeer.call(data.peerId, localStream);
-
   call.on("stream", (incomingStream) => {
     const streams = store.getState().Video.groupCallStreams;
     const stream = streams.find((stream) => stream.id === incomingStream.id);

@@ -132,7 +132,7 @@ const componentStyles = (theme) => ({
     borderColor: theme.palette.info.badge,
     color: theme.palette.dark.heading,
     "&:hover": {
-      backgroundColor: theme.palette.info.hovered,
+      backgroundColor: "#ebedfa",
       borderColor: theme.palette.info.hovered,
     },
     display: "flex",

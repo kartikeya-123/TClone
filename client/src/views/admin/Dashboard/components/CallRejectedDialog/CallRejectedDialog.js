@@ -1,8 +1,19 @@
 import React, { useEffect } from "react";
+import componentStyles from "assets/theme/components/callingModal";
+import { makeStyles } from "@material-ui/core";
+import {
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  CircularProgress,
+} from "@material-ui/core";
 
-import "./CallRejectedDialog.css";
+const useStyles = makeStyles(componentStyles);
 
 const CallRejectedDialog = ({ reason, hideCallRejectedDialog }) => {
+  const classes = useStyles();
+
   useEffect(() => {
     setTimeout(() => {
       const callRejected = {
@@ -12,10 +23,15 @@ const CallRejectedDialog = ({ reason, hideCallRejectedDialog }) => {
       hideCallRejectedDialog(callRejected);
     }, [3000]);
   }, []);
+
   return (
-    <div className="call_rejected_dialog background_secondary_color">
-      <span>{reason}</span>
-    </div>
+    <Grid container spacing={0} className={classes.gridLayout}>
+      <Card className={classes.cardRoot}>
+        <CardContent className={classes.cardContentRoot}>
+          <Typography>{reason}</Typography>
+        </CardContent>
+      </Card>
+    </Grid>
   );
 };
 
