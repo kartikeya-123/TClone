@@ -49,6 +49,15 @@ const componentStyles = (theme) => ({
     right: "2%",
     top: "20%",
   },
+  gridItemRoot2: {
+    [theme.breakpoints.up("xl")]: {
+      marginBottom: "0!important",
+    },
+    width: "70%",
+    position: "absolute",
+    right: "2%",
+    top: "15%",
+  },
   cardRoot: {
     boxShadow: boxShadows.boxShadow + "!important",
     border: "0!important",

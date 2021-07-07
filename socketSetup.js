@@ -199,5 +199,10 @@ module.exports.socketSetup = (server) => {
       io.to(socket.id).emit("direct-message-recieved", chatDetails);
       io.to(reciever).emit("direct-message-recieved", chatDetails);
     });
+
+    socket.on("drawing", (data) => {
+      // console.log(data);
+      io.to(data.roomId).emit("drawing", data);
+    });
   });
 };
