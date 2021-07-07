@@ -126,3 +126,10 @@ export const setConnectedUserId = (socketId) => {
     socketId,
   };
 };
+
+export const setImageData = (imageData) => {
+  return {
+    type: "SET_IMAGE_DATA",
+    imageData,
+  };
+};

@@ -78,6 +78,9 @@ export const connectWithWebSocket = (user) => {
   socket.on("direct-message-recieved", (data) => {
     handleDirectMessage(data);
   });
+  // socket.on("drawing", (data) => {
+  //   handleImageData(data);
+  // });
 };
 
 //Creating Peer connection
@@ -448,4 +451,12 @@ const handleDirectMessage = (data) => {
   let directMessages = store.getState().Video.directMessages;
   directMessages = [...directMessages, data];
   store.dispatch(videoActions.setDirectMessage(directMessages));
+};
+
+export const sendDrawing = (data) => {
+  socket.emit("drawing", data);
+};
+
+const handleImageData = (data) => {
+  store.dispatch(videoActions.setImageData(data));
 };

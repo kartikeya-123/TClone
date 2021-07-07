@@ -21,6 +21,7 @@ const initState = {
   groupMessages: [],
   directMessages: [],
   connectedUserId: "",
+  imageData: null,
 };
 
 const reducer = (state = initState, action) => {
@@ -97,6 +98,7 @@ const reducer = (state = initState, action) => {
         localMicrophoneEnabled: true,
         localCameraEnabled: true,
         groupMessages: [],
+        imageData: null,
       };
     case "SET_START_GROUP_CALL":
       return {
@@ -127,6 +129,11 @@ const reducer = (state = initState, action) => {
       return {
         ...state,
         connectedUserId: action.socketId,
+      };
+    case "SET_IMAGE_DATA":
+      return {
+        ...state,
+        imageData: action.imageData,
       };
     default:
       return state;
