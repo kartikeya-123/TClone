@@ -18,10 +18,17 @@ export const connectWithPeer = () => {
   console.log("connecting with peer");
 
   myPeer = new window.Peer(undefined, {
-    path: "/api/v1/peerjs",
-    host: "teamclone-web.herokuapp.com",
-    port: 443,
-    secure: true,
+    // path: "/api/v1/peerjs",
+    // host: "teamclone-web.herokuapp.com",
+    // port: 443,
+    // secure: true,
+    config: {
+      iceServers: [
+        { url: "stun:stun.l.google.com:19302" },
+        { url: "stun:stun.12connect.com:3478" },
+        { url: "stun:stun.12voip.com:3478" },
+      ],
+    },
   });
 
   myPeer.on("open", (id) => {
