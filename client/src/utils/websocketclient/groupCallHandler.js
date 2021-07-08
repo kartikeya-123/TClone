@@ -3,6 +3,7 @@ import {
   joinGroupCall,
   leaveGroupCall,
   stopLocaleStream,
+  getTurnServers,
 } from "./clientSocket";
 import store from "../../store/store";
 import * as callActions from "../../store/actions/videoActions";
@@ -16,7 +17,7 @@ let videoTrack;
 export const connectWithPeer = () => {
   //Creating a new Peer
   console.log("connecting with peer");
-
+  const turnServers = getTurnServers();
   myPeer = new window.Peer(undefined, {
     // path: "/api/v1/peerjs",
     // host: "teamclone-web.herokuapp.com",
@@ -24,6 +25,8 @@ export const connectWithPeer = () => {
     // secure: true,
     config: {
       iceServers: [
+        ...turnServers,
+        { urls: "stun:stun.lund1.de:3478" },
         { url: "stun:stun.l.google.com:19302" },
         { url: "stun:stun.12connect.com:3478" },
         { url: "stun:stun.12voip.com:3478" },

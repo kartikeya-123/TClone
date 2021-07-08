@@ -9,6 +9,7 @@ const middleware = require("./utils/middleware");
 const AppError = require("./utils/appError");
 const peerServer = require("./server");
 const globalErrorHandler = require("./controllers/errorController");
+const peerController = require("./controllers/peerController");
 const clientEndpoints = ["teams", "call", "team"];
 //routers
 const authRouter = require("./routes/authRoutes.js");
@@ -46,7 +47,7 @@ app.use(express.static(path.join(__dirname, "client/build")));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/team", teamRouter);
-
+app.get("/api/v1/turnCredentials", peerController.turnServer);
 // app.get("*", (req, res, next) => {
 //   res.sendFile(path.join(__dirname, "/client/public/index.html"));
 // });

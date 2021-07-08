@@ -12,6 +12,8 @@ let MONGODB_URI = process.env.MONGODB_URI;
 let JWT_COOKIE_EXPIRES_IN = process.env.JWT_COOKIE_EXPIRES_IN;
 let CLIENT_ID = process.env.CLIENT_ID;
 let SIGNUP_TOGGLE = process.env.SIGNUP_TOGGLE;
+let accountSid = process.env.accountSid;
+let authToken = process.env.authToken;
 
 module.exports = {
   PORT,
@@ -26,4 +28,6 @@ module.exports = {
   JWT_COOKIE_EXPIRES_IN,
   CLIENT_ID,
   SIGNUP_TOGGLE,
+  accountSid,
+  authToken,
 };

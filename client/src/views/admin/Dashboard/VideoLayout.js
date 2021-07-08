@@ -7,9 +7,9 @@ import { Grid } from "@material-ui/core";
 
 import { Container, makeStyles } from "@material-ui/core";
 import componentStyles from "assets/theme/views/admin/videoLayout";
-
+import axios from "axios";
 import Header from "components/Headers/Header";
-
+import { setTurnServers } from "utils/websocketclient/clientSocket";
 const useStyles = makeStyles(componentStyles);
 
 const VideoLayout = ({ user, history }) => {
@@ -25,9 +25,23 @@ const VideoLayout = ({ user, history }) => {
     setLoading(false);
   };
 
+  const getServersFromBackend = () => {
+    axios
+      .get("/api/v1/turnCredentials")
+      .then((response) => {
+        console.log(response.data.token.iceServers);
+        setTurnServers(response.data.token.iceServers);
+        getLocaleStream();
+        checkIfGroupCall();
+      })
+      .catch((err) => {
+        getLocaleStream();
+        checkIfGroupCall();
+        console.log(err);
+      });
+  };
   useEffect(() => {
-    getLocaleStream();
-    checkIfGroupCall();
+    getServersFromBackend();
   }, []);
 
   return (

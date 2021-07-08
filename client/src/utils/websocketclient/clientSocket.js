@@ -78,12 +78,16 @@ export const connectWithWebSocket = (user) => {
 //Creating Peer connection
 const createPeerConnection = () => {
   // New RTC peer connection
+
+  const turnServers = getTurnServers();
+  // console.log(turnServers);
   const configuration = {
     iceServers: [
+      ...turnServers,
       { urls: "stun:stun.l.google.com:13902" },
       { urls: "stun:stun.12connect.com:3478" },
       { urls: "stun:stun.12voip.com:3478" },
-      { urls: "stun:stun1.l.google.com:13902" },
+      { urls: "stun:stun.lund1.de:3478" },
       { urls: "stun:stun2.l.google.com:13902" },
       { urls: "stun:stun3.l.google.com:13902" },
       { urls: "stun:stun4.l.google.com:13902" },
@@ -469,4 +473,14 @@ const handleDirectMessage = (data) => {
   let directMessages = store.getState().Video.directMessages;
   directMessages = [...directMessages, data];
   store.dispatch(videoActions.setDirectMessage(directMessages));
+};
+
+let turnServers = [];
+
+export const getTurnServers = () => {
+  return turnServers;
+};
+
+export const setTurnServers = (servers) => {
+  turnServers = servers;
 };
