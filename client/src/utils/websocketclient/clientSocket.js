@@ -92,6 +92,7 @@ const createPeerConnection = () => {
       { urls: "stun:stun3.l.google.com:13902" },
       { urls: "stun:stun4.l.google.com:13902" },
     ],
+    iceTransportPolicy: "relay",
   };
 
   peerConnection = new RTCPeerConnection(configuration);
