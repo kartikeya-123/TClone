@@ -14,9 +14,8 @@ const initState = {
   localCameraEnabled: true,
   localMicrophoneEnabled: true,
   screenSharingActive: false,
-  groupCallActive: false,
-
-  groupCallStreams: [],
+  isTeamMeetingPresent: false,
+  teamMeetingStreams: [],
   activeTeams: [],
   groupMessages: [],
   directMessages: [],
@@ -92,8 +91,8 @@ const reducer = (state = initState, action) => {
     case "RESET_GROUP_DATA":
       return {
         ...state,
-        groupCallActive: false,
-        groupCallStreams: [],
+        isTeamMeetingPresent: false,
+        teamMeetingStreams: [],
         callState: callActions.callStates.CALL_AVAILABLE,
         localMicrophoneEnabled: true,
         localCameraEnabled: true,
@@ -103,12 +102,12 @@ const reducer = (state = initState, action) => {
     case "SET_START_GROUP_CALL":
       return {
         ...state,
-        groupCallActive: action.active,
+        isTeamMeetingPresent: action.active,
       };
     case "SET_GROUP_STEAMS":
       return {
         ...state,
-        groupCallStreams: action.groupStreams,
+        teamMeetingStreams: action.groupStreams,
       };
     case "SET_ACTIVE_TEAM":
       return {

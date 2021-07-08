@@ -73,7 +73,7 @@ export const resetCallDataState = () => {
   };
 };
 
-export const setGroupCallActive = (active) => {
+export const setisTeamMeetingPresent = (active) => {
   return {
     type: "SET_START_GROUP_CALL",
     active: active,

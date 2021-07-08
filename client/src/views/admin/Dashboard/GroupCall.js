@@ -22,7 +22,7 @@ const GroupCall = (props) => {
   const {
     localStream,
 
-    groupCallActive,
+    isTeamMeetingPresent,
 
     user,
     groupMessages,
@@ -72,18 +72,18 @@ const GroupCall = (props) => {
   return (
     <Grid container direction="column" spacing={3}>
       <Grid xs={6}>
-        {!groupCallActive && (
+        {!isTeamMeetingPresent && (
           <Button onClick={joinMeet} className={classes.button}>
             JOIN
           </Button>
         )}
       </Grid>
       <Grid className={classes.videoGrid}>
-        {groupCallActive && <GroupCallRoom {...props} />}
+        {isTeamMeetingPresent && <GroupCallRoom {...props} />}
       </Grid>
       <Grid className={classes.localVideoGrid}>
         {localStreamGrid}
-        {groupCallActive && (
+        {isTeamMeetingPresent && (
           <ConversationButtons
             {...props}
             groupCall

@@ -136,7 +136,7 @@ module.exports.socketSetup = (server) => {
       const peerData = {
         peerId: data.peerId,
       };
-      io.to(data.roomId).emit("group-call-request", peerData);
+      io.to(data.roomId).emit("team-meeting-request", peerData);
       socket.join(data.roomId);
       console.log(io.sockets.adapter.rooms.get(data.roomId).size);
     });
@@ -161,7 +161,7 @@ module.exports.socketSetup = (server) => {
         socket.leave(data.roomId);
       } else {
         socket.leave(data.roomId);
-        io.to(data.roomId).emit("group-call-user-left", {
+        io.to(data.roomId).emit("team-meeting-user-left", {
           streamId: data.streamId,
         });
       }

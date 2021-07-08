@@ -9,8 +9,10 @@ import * as callActions from "../../store/actions/videoActions";
 
 let myPeer;
 let myPeerId;
-let groupCallRoomId;
 let currentPeer;
+let screenShare;
+let videoTrack;
+
 export const connectWithPeer = () => {
   //Creating a new Peer
   console.log("connecting with peer");
@@ -25,17 +27,21 @@ export const connectWithPeer = () => {
   myPeer.on("open", (id) => {
     console.log("succesfully connected with peer server");
     myPeerId = id;
-    console.log(id);
   });
+
   myPeer.on("call", (call) => {
-    call.answer(store.getState().Video.localStream);
+    const localStream = store.getState().Video.localStream;
+    call.answer(localStream);
+
     call.on("stream", (incomingStream) => {
-      const streams = store.getState().Video.groupCallStreams;
-      const stream = streams.find((stream) => stream.id === incomingStream.id);
+      const groupStreams = store.getState().Video.teamMeetingStreams;
+      const stream = groupStreams.find(
+        (stream) => stream.id === incomingStream.id
+      );
       currentPeer = call.peerConnection;
-      console.log(currentPeer);
-      if (!stream) {
-        addVideoStream(incomingStream);
+
+      if (stream == null) {
+        insertVideoStream(incomingStream);
       }
     });
   });
@@ -62,69 +68,63 @@ export const createGroupMeeting = (teamId, teamName, meetingOwner, ownerId) => {
 
 export const joinGroupMeeting = (roomId) => {
   const user = store.getState().User.user;
-  groupCallRoomId = roomId;
-
-  joinGroupCall({
+  const userData = {
     roomId: roomId,
     peerId: myPeerId,
     user: user,
-  });
+  };
+  joinGroupCall(userData);
+
   store.dispatch(
     callActions.setCallState(callActions.callStates.CALL_IN_PROGRESS)
   );
-  store.dispatch(callActions.setGroupCallActive(true));
+  store.dispatch(callActions.setisTeamMeetingPresent(true));
 };
 
 export const connectToNewUser = (data) => {
   const localStream = store.getState().Video.localStream;
   const call = myPeer.call(data.peerId, localStream);
   call.on("stream", (incomingStream) => {
-    const streams = store.getState().Video.groupCallStreams;
+    const streams = store.getState().Video.teamMeetingStreams;
     const stream = streams.find((stream) => stream.id === incomingStream.id);
     currentPeer = call.peerConnection;
     if (!stream) {
-      addVideoStream(incomingStream);
+      insertVideoStream(incomingStream);
     }
   });
 };
 
 export const leaveMeeting = (roomId) => {
-  const streamId = store.getState().Video.localStream.id;
+  const localStream = store.getState().Video.localStream;
+  const streamId = localStream.id;
+
   const leaveData = {
     roomId: roomId,
     streamId: streamId,
   };
 
   leaveGroupCall(leaveData);
-  clearGroupData();
-};
 
-export const removeVideoStream = (data) => {
-  let groupCallStreams = store.getState().Video.groupCallStreams;
-  groupCallStreams = groupCallStreams.filter(
-    (stream) => stream.id !== data.streamId
-  );
-
-  store.dispatch(callActions.setGroupStreams(groupCallStreams));
-};
-export const clearGroupData = () => {
+  //Clearing meeting data and re-initialization
   store.dispatch(callActions.clearGroupCallData());
   myPeer.destroy();
   connectWithPeer();
   stopLocaleStream();
 };
 
-const addVideoStream = (incomingStream) => {
-  const groupCallStreams = [
-    ...store.getState().Video.groupCallStreams,
-    incomingStream,
-  ];
-
-  store.dispatch(callActions.setGroupStreams(groupCallStreams));
+const insertVideoStream = (newStream) => {
+  const presentStreams = store.getState().Video.teamMeetingStreams;
+  const updatedStreams = [...presentStreams, newStream];
+  store.dispatch(callActions.setGroupStreams(updatedStreams));
 };
 
-let screenSharingStream;
-let videoTrack;
+export const deleteVideoStream = (data) => {
+  let presentStreams = store.getState().Video.teamMeetingStreams;
+  presentStreams = presentStreams.filter(
+    (stream) => stream.id !== data.streamId
+  );
+  store.dispatch(callActions.setGroupStreams(presentStreams));
+};
 
 export const addGroupShareScreen = () => {
   if (!store.getState().Video.screenSharingActive) {
@@ -133,14 +133,13 @@ export const addGroupShareScreen = () => {
         video: true,
       })
       .then((stream) => {
-        screenSharingStream = stream;
+        screenShare = stream;
         videoTrack = stream.getVideoTracks()[0];
         console.log(currentPeer.getSenders());
         let sender = currentPeer
           .getSenders()
           .find((s) => s.track.kind === videoTrack.kind);
         sender.replaceTrack(videoTrack);
-        console.log(sender);
         store.dispatch(callActions.setScreenSharingActive(true));
       })
       .catch((err) => console.log(err));
@@ -152,6 +151,6 @@ export const addGroupShareScreen = () => {
     );
     sender.replaceTrack(localStream.getVideoTracks()[0]);
     store.dispatch(callActions.setScreenSharingActive(false));
-    screenSharingStream.getTracks().forEach((track) => track.stop());
+    screenShare.getTracks().forEach((track) => track.stop());
   }
 };

@@ -1,38 +1,28 @@
 import React, { useRef, useEffect } from "react";
 import { Box } from "@material-ui/core";
+import componentStyles from "assets/theme/components/groupCall";
+import { makeStyles } from "@material-ui/core/styles";
 
-const styles = {
-  videoContainer: {
-    width: "auto",
-    height: "auto",
-  },
-  videoElement: {
-    // maxHeight: "250px",
-    height: "100%",
-    minWidth: "100%",
-    margin: "auto",
-    padding: "10px 10px",
-    boxSizing: "border-box",
-    objectFit: "contain",
-    transition: "0.4s ease-in-out",
-  },
-};
+const useStyles = makeStyles(componentStyles);
 
-const GroupCallVideo = ({ stream, index, ...props }) => {
-  const { sx, ...other } = props;
+const GroupCallVideo = ({ incomingStream, index, ...props }) => {
+  const classes = useStyles();
   const videoRef = useRef();
 
-  useEffect(() => {
-    const remoteGroupCallVideo = videoRef.current;
-    remoteGroupCallVideo.srcObject = stream;
-    remoteGroupCallVideo.onloadedmetadata = () => {
-      remoteGroupCallVideo.play();
+  const getRemoteGrid = () => {
+    const videoGrid = videoRef.current;
+    videoGrid.srcObject = incomingStream;
+    videoGrid.onloadedmetadata = () => {
+      videoGrid.play();
     };
-  }, [stream]);
+  };
+  useEffect(() => {
+    getRemoteGrid();
+  }, [incomingStream]);
 
   return (
     <Box>
-      <video ref={videoRef} autoPlay style={styles.videoElement} />
+      <video ref={videoRef} autoPlay className={classes.gridVideo} />
     </Box>
   );
 };

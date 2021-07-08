@@ -2,7 +2,7 @@ import socketClient from "socket.io-client";
 import store from "../../store/store";
 import * as userActions from "../../store/actions/userActions";
 import * as videoActions from "../../store/actions/videoActions";
-import { connectToNewUser, removeVideoStream } from "./groupCallHandler";
+import { connectToNewUser, deleteVideoStream } from "./groupCallHandler";
 
 const SERVER = "/";
 
@@ -15,13 +15,8 @@ const preOfferAnswers = {
 
 let recieverSocketId;
 let peerConnection;
-const configuration = {
-  iceServers: [
-    { urls: "stun:stun.l.google.com:13902" },
-    { url: "stun:stun.12connect.com:3478" },
-    { url: "stun:stun.12voip.com:3478" },
-  ],
-};
+let screenSharingStream;
+let videoTrack;
 
 export let socket;
 
@@ -56,12 +51,12 @@ export const connectWithWebSocket = (user) => {
     resetCallDataAfterHangUp();
   });
 
-  socket.on("group-call-request", (data) => {
+  socket.on("team-meeting-request", (data) => {
     connectToNewUser(data);
   });
 
-  socket.on("group-call-user-left", (data) => {
-    removeVideoStream(data);
+  socket.on("team-meeting-user-left", (data) => {
+    deleteVideoStream(data);
   });
   socket.on("team-meeting-started", (data) => {
     addActiveTeam(data);
@@ -78,14 +73,23 @@ export const connectWithWebSocket = (user) => {
   socket.on("direct-message-recieved", (data) => {
     handleDirectMessage(data);
   });
-  // socket.on("drawing", (data) => {
-  //   handleImageData(data);
-  // });
 };
 
 //Creating Peer connection
 const createPeerConnection = () => {
   // New RTC peer connection
+  const configuration = {
+    iceServers: [
+      { urls: "stun:stun.l.google.com:13902" },
+      { urls: "stun:stun.12connect.com:3478" },
+      { urls: "stun:stun.12voip.com:3478" },
+      { urls: "stun:stun1.l.google.com:13902" },
+      { urls: "stun:stun2.l.google.com:13902" },
+      { urls: "stun:stun3.l.google.com:13902" },
+      { urls: "stun:stun4.l.google.com:13902" },
+    ],
+  };
+
   peerConnection = new RTCPeerConnection(configuration);
 
   const localStream = store.getState().Video.localStream;
@@ -99,12 +103,13 @@ const createPeerConnection = () => {
   };
 
   peerConnection.onicecandidate = (event) => {
-    console.log("geeting candidates from stun server");
+    // console.log("geeting candidates from stun server");
     if (event.candidate) {
-      sendWebRTCCandidate({
+      const candidateData = {
         candidate: event.candidate,
         recieverSocketId: recieverSocketId,
-      });
+      };
+      socket.emit("webRTC-candidate", candidateData);
     }
   };
 
@@ -204,18 +209,20 @@ const handlePreOffer = (data) => {
 
 // HANDLING PREOFFER ANSWER BY SENDER
 const handlePreofferAnswer = (data) => {
+  const calleeName = store.getState().Video.calleeUsername;
+
   let rejectedReason = "";
   switch (data.answer) {
     case preOfferAnswers.ANOTHER_CALL: {
-      rejectedReason = "User is on another call";
+      rejectedReason = `${calleeName} is on another call`;
       break;
     }
     case preOfferAnswers.REJECTED: {
-      rejectedReason = "User rejected the call";
+      rejectedReason = `${calleeName} rejected the call`;
       break;
     }
     case preOfferAnswers.NOT_AVAILABLE: {
-      rejectedReason = "User is not available to take the call";
+      rejectedReason = `${calleeName} is not available to take the call`;
       break;
     }
     default: {
@@ -348,10 +355,12 @@ const resetCallDataAfterHangUp = () => {
   store.dispatch(videoActions.resetCallDataState());
 };
 
+// Disconnecting with socket
 export const disconnectSocket = () => {
   socket.emit("disconnect");
 };
 
+// Creating socket connection for each team
 export const connectWithTeam = (teamId) => {
   const data = {
     teamId: teamId,
@@ -359,12 +368,7 @@ export const connectWithTeam = (teamId) => {
   socket.emit("team", data);
 };
 
-export const sendGroupMessage = (chatDetails) => {
-  socket.emit("group-message", chatDetails);
-};
-
-let screenSharingStream;
-let videoTrack;
+//Screen Sharing
 export const switchForScreenSharingStream = () => {
   if (!store.getState().Video.screenSharingActive) {
     navigator.mediaDevices
@@ -394,6 +398,8 @@ export const switchForScreenSharingStream = () => {
     screenSharingStream.getTracks().forEach((track) => track.stop());
   }
 };
+
+//Handling teams
 
 const removeActiveTeam = (data) => {
   let activeTeams = store.getState().Video.activeTeams;
@@ -432,31 +438,35 @@ export const leaveGroupCall = (data) => {
   socket.emit("leave-meeting", data);
 };
 
-//Handling Group Messages
+//Handling Team Messages
+
+// Sending message in the team
+export const sendGroupMessage = (chatDetails) => {
+  socket.emit("group-message", chatDetails);
+};
+
+// Reciveing group messages
 const handleGroupMessage = (data) => {
   let groupMessages = store.getState().Video.groupMessages;
   groupMessages = [...groupMessages, data];
   store.dispatch(videoActions.setGroupMessage(groupMessages));
 };
 
+// Creating new Notification
 const createNotification = () => {
   store.dispatch(userActions.setNotification(false));
 };
 
+//Direct messages
+
+// Send direct message in one - one call
 export const sendDirectMessage = (data) => {
   socket.emit("direct-message", data);
 };
 
+//Handling direct messages
 const handleDirectMessage = (data) => {
   let directMessages = store.getState().Video.directMessages;
   directMessages = [...directMessages, data];
   store.dispatch(videoActions.setDirectMessage(directMessages));
-};
-
-export const sendDrawing = (data) => {
-  socket.emit("drawing", data);
-};
-
-const handleImageData = (data) => {
-  store.dispatch(videoActions.setImageData(data));
 };

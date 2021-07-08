@@ -1,19 +1,17 @@
 import React, { useState } from "react";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import { BiChalkboard } from "react-icons/bi";
+import { BsChatDots } from "react-icons/bs";
+import { callStates } from "store/actions/videoActions";
 import {
   MdCallEnd,
   MdMic,
+  MdCamera,
   MdMicOff,
   MdVideocam,
   MdVideocamOff,
   MdVideoLabel,
-  MdCamera,
 } from "react-icons/md";
-
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { BiChalkboard } from "react-icons/bi";
-
-import { BsChatDots } from "react-icons/bs";
-import { callStates } from "store/actions/videoActions";
 
 import {
   endCall,
@@ -23,6 +21,7 @@ import {
   leaveMeeting,
   addGroupShareScreen,
 } from "utils/websocketclient/groupCallHandler";
+
 import { IconButton } from "@material-ui/core";
 import ParticipantModal from "../ParticipantModal/ParticpantModal";
 import { makeStyles } from "@material-ui/core";
@@ -46,7 +45,7 @@ const ConversationButtons = (props) => {
     callState,
     handleMicrophone,
     handleCamera,
-    groupCallActive,
+    isTeamMeetingPresent,
     history,
     showChat,
     handleChat,
@@ -56,23 +55,23 @@ const ConversationButtons = (props) => {
 
   const [show, setShowModal] = useState(false);
 
-  const handleMicButtonPressed = () => {
+  const onClickMicrophoneButton = () => {
     localStream.getAudioTracks()[0].enabled = !localMicrophoneEnabled;
     handleMicrophone(!localMicrophoneEnabled);
   };
 
-  const handleCameraButtonPressed = () => {
+  const onClickCameraButton = () => {
     localStream.getVideoTracks()[0].enabled = !localCameraEnabled;
     handleCamera(!localCameraEnabled);
   };
 
-  const handleScreenSharingButtonPressed = () => {
-    if (!groupCallActive) switchForScreenSharingStream();
+  const onClickShareButton = () => {
+    if (!isTeamMeetingPresent) switchForScreenSharingStream();
     else addGroupShareScreen();
   };
 
-  const handleHangUpButtonPressed = () => {
-    if (!groupCallActive) endCall();
+  const onClickEndButton = () => {
+    if (!isTeamMeetingPresent) endCall();
     else {
       const roomId = window.location.pathname.split("/")[2];
       leaveMeeting(roomId);
@@ -80,27 +79,27 @@ const ConversationButtons = (props) => {
     }
   };
 
-  const handleAddParticipant = () => {
+  const onClickAddParticipant = () => {
     setShowModal(!show);
   };
 
   return (
     <div className={classes.buttons}>
-      <IconButton onClick={handleMicButtonPressed}>
+      <IconButton onClick={onClickMicrophoneButton}>
         {localMicrophoneEnabled ? (
           <MdMic className={classes.icon} />
         ) : (
           <MdMicOff className={classes.icon} />
         )}
       </IconButton>
-      <IconButton onClick={handleCameraButtonPressed}>
+      <IconButton onClick={onClickCameraButton}>
         {localCameraEnabled ? (
           <MdVideocam className={classes.icon} />
         ) : (
           <MdVideocamOff className={classes.icon} />
         )}
       </IconButton>
-      <IconButton onClick={handleScreenSharingButtonPressed}>
+      <IconButton onClick={onClickShareButton}>
         {screenSharingActive ? (
           <MdCamera className={classes.icon} />
         ) : (
@@ -110,29 +109,29 @@ const ConversationButtons = (props) => {
 
       {callState === callStates.CALL_IN_PROGRESS ? (
         <>
-          <IconButton onClick={handleHangUpButtonPressed}>
+          <IconButton onClick={onClickEndButton}>
             <MdCallEnd className={classes.icon} />
           </IconButton>
-          <IconButton onClick={groupCallActive ? showChat : handleChat}>
+          <IconButton onClick={isTeamMeetingPresent ? showChat : handleChat}>
             <BsChatDots className={classes.icon} />
           </IconButton>
 
-          {groupCallActive ? (
+          {isTeamMeetingPresent ? (
             <IconButton onClick={showBoardGrid}>
               <BiChalkboard className={classes.icon} />
             </IconButton>
           ) : null}
         </>
       ) : null}
-      {!groupCallActive && callState !== callStates.CALL_IN_PROGRESS ? (
-        <IconButton onClick={handleAddParticipant}>
+      {!isTeamMeetingPresent && callState !== callStates.CALL_IN_PROGRESS ? (
+        <IconButton onClick={onClickAddParticipant}>
           <AiOutlineUsergroupAdd className={classes.icon} />
         </IconButton>
       ) : null}
 
       <ParticipantModal
         show={show}
-        close={handleAddParticipant}
+        close={onClickAddParticipant}
         currentUser={user}
       />
     </div>
