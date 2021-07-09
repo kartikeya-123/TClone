@@ -64,8 +64,8 @@ export const connectWithWebSocket = (user) => {
   socket.on("team-meeting-finished", (data) => {
     removeActiveTeam(data);
   });
-  socket.on("new-notification", () => {
-    createNotification();
+  socket.on("new-notification", (data) => {
+    createNotification(data);
   });
   socket.on("group-message-recieved", (data) => {
     handleGroupMessage(data);
@@ -92,7 +92,7 @@ const createPeerConnection = () => {
       { urls: "stun:stun3.l.google.com:13902" },
       { urls: "stun:stun4.l.google.com:13902" },
     ],
-    iceTransportPolicy: "relay",
+    // iceTransportPolicy: "relay",
   };
 
   peerConnection = new RTCPeerConnection(configuration);
@@ -156,13 +156,12 @@ export const getLocaleStream = () => {
 //STOP LOCALE STREAM FROM USER
 export const stopLocaleStream = () => {
   let stream = store.getState().Video.localStream;
+  // console.log(stream);
   if (stream) {
-    stream.getVideoTracks().forEach(function (track) {
+    stream.getTracks().forEach(function (track) {
       track.stop();
     });
-    stream.getAudioTracks().forEach(function (track) {
-      track.stop();
-    });
+
     store.dispatch(videoActions.setLocalStream(stream));
   }
 };
@@ -214,7 +213,7 @@ const handlePreOffer = (data) => {
 
 // HANDLING PREOFFER ANSWER BY SENDER
 const handlePreofferAnswer = (data) => {
-  const calleeName = store.getState().Video.calleeUsername;
+  const calleeName = store.getState().Video.recieverUsername;
 
   let rejectedReason = "";
   switch (data.answer) {
@@ -458,7 +457,8 @@ const handleGroupMessage = (data) => {
 };
 
 // Creating new Notification
-const createNotification = () => {
+const createNotification = (data) => {
+  store.dispatch(videoActions.setTeamMeetingData(data));
   store.dispatch(userActions.setNotification(false));
 };
 

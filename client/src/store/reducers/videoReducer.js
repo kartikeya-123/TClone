@@ -4,7 +4,7 @@ const initState = {
   localStream: null,
   callState: callActions.callStates.CALL_AVAILABLE,
   callerUsername: "",
-  calleeUsername: "",
+  recieverUsername: "",
   directCallModal: false,
   callRejected: {
     rejected: false,
@@ -21,6 +21,7 @@ const initState = {
   directMessages: [],
   connectedUserId: "",
   imageData: null,
+  teamMeetingData: null,
 };
 
 const reducer = (state = initState, action) => {
@@ -48,7 +49,7 @@ const reducer = (state = initState, action) => {
     case "SET_CALLEE_DETAILS":
       return {
         ...state,
-        calleeUsername: action.calleeUsername,
+        recieverUsername: action.recieverUsername,
       };
     case "SET_CALL_REJECTED":
       return {
@@ -84,7 +85,7 @@ const reducer = (state = initState, action) => {
         localMicrophoneEnabled: true,
         localCameraEnabled: true,
         directCallModal: false,
-        calleeUsername: "",
+        recieverUsername: "",
         directMessages: [],
         connectedUserId: "",
       };
@@ -133,6 +134,11 @@ const reducer = (state = initState, action) => {
       return {
         ...state,
         imageData: action.imageData,
+      };
+    case "SET_TEAM_MEETING_DATA":
+      return {
+        ...state,
+        teamMeetingData: action.teamMeetingData,
       };
     default:
       return state;

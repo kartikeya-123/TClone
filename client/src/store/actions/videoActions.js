@@ -133,3 +133,10 @@ export const setImageData = (imageData) => {
     imageData,
   };
 };
+
+export const setTeamMeetingData = (teamMeetingData) => {
+  return {
+    type: "SET_TEAM_MEETING_DATA",
+    teamMeetingData,
+  };
+};

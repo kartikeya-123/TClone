@@ -157,7 +157,7 @@ const DirectMessages = (props) => {
             })}
           </GridList>
         </CardContent>
-        <CardActions>
+        <CardActions className={classes.cardActions}>
           <FormGroup>
             <FormControl
               variant="filled"
@@ -181,6 +181,7 @@ const DirectMessages = (props) => {
                 id="message"
                 onChange={handleChange}
                 value={message}
+                disableUnderline={true}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton

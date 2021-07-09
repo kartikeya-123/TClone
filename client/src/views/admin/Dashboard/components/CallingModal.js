@@ -11,7 +11,7 @@ import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(componentStyles);
 
-const CallingDialog = ({ calleeUsername }) => {
+const CallingDialog = ({ recieverUsername }) => {
   const classes = useStyles();
 
   return (
@@ -19,7 +19,7 @@ const CallingDialog = ({ calleeUsername }) => {
       <Card className={classes.cardRoot}>
         <CardContent className={classes.cardContentRoot}>
           <Typography>
-            Calling <span> {calleeUsername}</span>{" "}
+            Calling <span> {recieverUsername}</span>{" "}
           </Typography>
           <CircularProgress className={classes.spinner} />
         </CardContent>
