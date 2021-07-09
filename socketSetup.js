@@ -124,9 +124,15 @@ module.exports.socketSetup = (server) => {
           ownerId: data.ownerId,
           roomId: roomId,
         });
+        const teamData = {
+          teamId: data.teamId,
+          teamName: data.teamName,
+          owner: data.owner,
+        };
         for (let user of users) {
           const activeUser = peers.find((peer) => peer.email === user.email);
-          if (activeUser) io.to(activeUser.socketId).emit("new-notification");
+          if (activeUser)
+            io.to(activeUser.socketId).emit("new-notification", teamData);
         }
       }
     });
