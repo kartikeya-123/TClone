@@ -62,6 +62,20 @@ const componentStyles = (theme) => ({
     boxShadow: boxShadows.boxShadow + "!important",
     border: "0!important",
   },
+  searchInput: {
+    color: "black",
+    backgroundColor: "#ffffff",
+    boxShadow: "none",
+    padding: "10px",
+    "&::placeholder": {
+      color: theme.palette.dark[200],
+      fontSize: "1rem",
+    },
+    borderRadius: "20px 20px",
+  },
+  cardActions: {
+    display: "inline",
+  },
 });
 
 export default componentStyles;

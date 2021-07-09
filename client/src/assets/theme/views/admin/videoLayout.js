@@ -29,10 +29,10 @@ const componentStyles = (theme) => ({
     height: "100%",
   },
   videoCallGridLayout: {
-    maxHeight: "60vh",
+    height: "60vh",
     width: "auto",
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit,minmax(min(200px,50vmin),1fr))",
+    gridTemplateColumns: "repeat(auto-fit,minmax(min(200px,40vmin),1fr))",
     gridAutoRows: "minmax(min(200px , 50vmin),1fr)",
     overFlowX: "auto",
     alignItems: "center",
@@ -40,6 +40,7 @@ const componentStyles = (theme) => ({
   videoGrid: {
     marginBottom: "10px",
     maxHeight: "60vh",
+    maxWidth: "100%",
   },
   localVideoGrid: {
     marginTop: "10px",

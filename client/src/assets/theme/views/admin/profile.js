@@ -104,18 +104,18 @@ const componentStyles = (theme) => ({
 
   searchInput: {
     color: "black",
-    width: "270px",
-    backgroundColor: "initial",
-    border: 0,
+    backgroundColor: "#ffffff",
     boxShadow: "none",
-    padding: "0",
+    padding: "10px",
     "&::placeholder": {
       color: theme.palette.dark[200],
       fontSize: "1rem",
     },
+    borderRadius: "20px 20px",
   },
   pgl4: {
     paddingTop: "0.5rem",
+    paddingBottom: "0.5rem",
   },
   paperRoot: {
     flexGrow: 1,
