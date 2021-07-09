@@ -16,9 +16,8 @@
 }
 
 .colors {
-  position: fixed;
+  position: absolute;
 }
-
 .color {
   display: inline-block;
   height: 48px;
@@ -27,16 +26,36 @@
 
 .color.black {
   background-color: black;
+  height: 24px;
+  width: 24px;
+  margin: 5px;
+  border-radius: 50%;
 }
 .color.red {
   background-color: red;
+  height: 24px;
+  width: 24px;
+  margin: 5px;
+  border-radius: 50%;
 }
 .color.green {
   background-color: green;
+  height: 24px;
+  width: 24px;
+  margin: 5px;
+  border-radius: 50%;
 }
 .color.blue {
   background-color: blue;
+  height: 24px;
+  width: 24px;
+  margin: 5px;
+  border-radius: 50%;
 }
 .color.yellow {
   background-color: yellow;
+  height: 24px;
+  width: 24px;
+  margin: 5px;
+  border-radius: 50%;
 }

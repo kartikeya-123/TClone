@@ -10,9 +10,9 @@ import * as callActions from "../../store/actions/videoActions";
 
 let myPeer;
 let myPeerId;
-let currentPeer;
+let currentPeerConnections = [];
 let screenShare;
-let videoTrack;
+// let videoTrack;
 
 export const connectWithPeer = () => {
   //Creating a new Peer
@@ -48,13 +48,17 @@ export const connectWithPeer = () => {
       const stream = groupStreams.find(
         (stream) => stream.id === incomingStream.id
       );
-      currentPeer = call.peerConnection;
-
+      currentPeerConnections = [...currentPeerConnections, call.peerConnection];
       if (stream == null) {
         insertVideoStream(incomingStream);
       }
     });
   });
+
+  // myPeer.on("data", (stream) => {
+  //   console.log("hello");
+  //   insertVideoStream(stream);
+  // });
 };
 
 export const createGroupMeeting = (teamId, teamName, meetingOwner, ownerId) => {
@@ -97,7 +101,7 @@ export const connectToNewUser = (data) => {
   call.on("stream", (incomingStream) => {
     const streams = store.getState().Video.teamMeetingStreams;
     const stream = streams.find((stream) => stream.id === incomingStream.id);
-    currentPeer = call.peerConnection;
+    currentPeerConnections = [...currentPeerConnections, call.peerConnection];
     if (!stream) {
       insertVideoStream(incomingStream);
     }
@@ -137,6 +141,7 @@ export const deleteVideoStream = (data) => {
 };
 
 export const addGroupShareScreen = () => {
+  console.log(myPeer.connections);
   if (!store.getState().Video.screenSharingActive) {
     navigator.mediaDevices
       .getDisplayMedia({
@@ -144,22 +149,28 @@ export const addGroupShareScreen = () => {
       })
       .then((stream) => {
         screenShare = stream;
-        videoTrack = stream.getVideoTracks()[0];
-        console.log(currentPeer.getSenders());
-        let sender = currentPeer
-          .getSenders()
-          .find((s) => s.track.kind === videoTrack.kind);
-        sender.replaceTrack(videoTrack);
+        let videoTrack = stream.getVideoTracks()[0];
+        for (let currentPeer of currentPeerConnections) {
+          let sender = currentPeer
+            .getSenders()
+            .find((s) => s.track.kind === videoTrack.kind);
+          sender.replaceTrack(videoTrack);
+        }
+        // console.log(currentPeer.getSenders());
+
         store.dispatch(callActions.setScreenSharingActive(true));
       })
       .catch((err) => console.log(err));
   } else {
     const localStream = store.getState().Video.localStream;
-    const senders = currentPeer.getSenders();
-    const sender = senders.find(
-      (sender) => sender.track.kind === localStream.getVideoTracks()[0].kind
-    );
-    sender.replaceTrack(localStream.getVideoTracks()[0]);
+
+    for (let currentPeer of currentPeerConnections) {
+      const senders = currentPeer.getSenders();
+      const sender = senders.find(
+        (sender) => sender.track.kind === localStream.getVideoTracks()[0].kind
+      );
+      sender.replaceTrack(localStream.getVideoTracks()[0]);
+    }
     store.dispatch(callActions.setScreenSharingActive(false));
     screenShare.getTracks().forEach((track) => track.stop());
   }

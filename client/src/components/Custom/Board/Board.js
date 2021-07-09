@@ -23,6 +23,7 @@ const Board = ({ imageData, user }) => {
     // ----------------------- Colors --------------------------------------------------
 
     const colors = document.getElementsByClassName("color");
+    console.log(colors);
     // console.log(colors, "the colors");
     // console.log(test);
     // set the current color
@@ -32,6 +33,7 @@ const Board = ({ imageData, user }) => {
 
     // helper that will update the current color
     const onColorUpdate = (e) => {
+      console.log(e);
       current.color = e.target.className.split(" ")[1];
     };
 
@@ -160,9 +162,9 @@ const Board = ({ imageData, user }) => {
     // -------------- make the canvas fill its parent component -----------------
 
     const onResize = () => {
-      if (document.getElementById("card")) {
-        var width = document.getElementById("card").clientWidth;
-        var height = document.getElementById("card").clientHeight;
+      if (document.getElementById("cardContent")) {
+        var width = document.getElementById("cardContent").clientWidth;
+        var height = document.getElementById("cardContent").clientHeight;
         // console.log(height);
         canvas.width = width;
         canvas.height = height;
@@ -199,8 +201,8 @@ const Board = ({ imageData, user }) => {
       //   marginBottom="3rem"
       classes={{ root: classes.gridItemRoot2 + " " + classes.order2 }}
     >
-      <Card className={classes.root} id="card">
-        <CardContent style={{ backgroundColor: "green" }}>
+      <Card className={classes.root}>
+        <CardContent style={{ backgroundColor: "#1976D2" }} id="cardContent">
           <canvas ref={canvasRef} className="whiteboard" />
         </CardContent>
         <CardActions>

@@ -24,6 +24,7 @@ const VideoLayout = ({ user, history }) => {
     if (paths.length === 3) {
       setDirectCall(false);
     }
+    setLoading(false);
   };
 
   const getServersFromBackend = () => {
@@ -33,17 +34,16 @@ const VideoLayout = ({ user, history }) => {
         console.log(response.data.token.iceServers);
         setTurnServers(response.data.token.iceServers);
         getLocaleStream();
-        setLoading(false);
+        checkIfGroupCall();
       })
       .catch((err) => {
         getLocaleStream();
-        setLoading(false);
+        checkIfGroupCall();
         console.log(err);
       });
   };
   useEffect(() => {
     getServersFromBackend();
-    checkIfGroupCall();
   }, []);
 
   return (

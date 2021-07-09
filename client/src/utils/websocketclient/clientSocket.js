@@ -317,10 +317,7 @@ const handleWebRTCCandidate = async (data) => {
     console.log("adding ice candidates");
     await peerConnection.addIceCandidate(data.candidate);
   } catch (err) {
-    console.error(
-      "error occured when trying to add received ice candidate",
-      err
-    );
+    console.error(err);
   }
 };
 

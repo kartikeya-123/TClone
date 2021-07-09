@@ -30,7 +30,7 @@ const componentStyles = (theme) => ({
   },
   videoCallGridLayout: {
     height: "60vh",
-    width: "auto",
+    maxWidth: "100%",
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit,minmax(min(200px,40vmin),1fr))",
     gridAutoRows: "minmax(min(200px , 50vmin),1fr)",
