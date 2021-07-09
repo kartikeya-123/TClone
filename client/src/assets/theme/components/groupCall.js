@@ -1,6 +1,6 @@
 const componentStyles = (theme) => ({
   gridVideo: {
-    // maxHeight: "250px",
+    maxHeight: "100%",
     height: "100%",
     minWidth: "100%",
     margin: "auto",
@@ -8,6 +8,9 @@ const componentStyles = (theme) => ({
     boxSizing: "border-box",
     objectFit: "contain",
     transition: "0.4s ease-in-out",
+  },
+  video: {
+    maxHeight: "60vh",
   },
 });
 

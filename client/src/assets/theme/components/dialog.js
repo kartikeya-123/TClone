@@ -12,8 +12,8 @@ const componentStyles = (theme) => ({
     borderRadius: "8px",
   },
   root: {
-    backgroundColor: "#282727",
-    color: "red",
+    backgroundColor: "#405361",
+    color: "white",
     textAlign: "center",
   },
   dialogHeader: {
@@ -45,6 +45,22 @@ const componentStyles = (theme) => ({
       " 100%)!important",
     "& $dialogHeading, & $dialogTitle": {
       color: theme.palette.white.main,
+    },
+  },
+  buttonOutlineSuccess: {
+    color: theme.palette.success.main,
+    borderColor: theme.palette.success.main,
+    "&:hover": {
+      color: "white",
+      backgroundColor: theme.palette.success.main,
+    },
+  },
+  buttonOutlineError: {
+    color: theme.palette.error.main,
+    borderColor: theme.palette.error.main,
+    "&:hover": {
+      color: "white",
+      backgroundColor: theme.palette.error.main,
     },
   },
 });
