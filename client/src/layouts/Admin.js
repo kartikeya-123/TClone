@@ -19,10 +19,16 @@ import Sidebar from "../components/Sidebar/Sidebar.js";
 import NavbarDropdown from "../components/Dropdowns/NavbarDropdown.js";
 import IncomingCallDialog from "./../views/admin/Dashboard/components/IncomingCallDialog/IncomingCallDialog";
 import routes from "routes.js";
+import {
+  acceptIncomingCallRequest,
+  rejectIncomingCallRequest,
+  getLocaleStream,
+} from "utils/websocketclient/clientSocket";
 
 import componentStyles from "assets/theme/layouts/admin.js";
 import { callStates } from "store/actions/videoActions";
 import { setNotification } from "store/actions/userActions.js";
+import { setTeamMeetingData } from "store/actions/videoActions.js";
 const useStyles = makeStyles(componentStyles);
 
 const Admin = ({ userdata, cookies, getUserAgain, logOut, ...props }) => {
@@ -35,6 +41,8 @@ const Admin = ({ userdata, cookies, getUserAgain, logOut, ...props }) => {
     localStream,
     showNotifications,
     setNotification,
+    clearTeamMeetingData,
+    teamMeetingData,
   } = props;
 
   React.useEffect(() => {
@@ -75,6 +83,26 @@ const Admin = ({ userdata, cookies, getUserAgain, logOut, ...props }) => {
     return "";
   };
 
+  const acceptDirectCall = () => {
+    if (location.pathname !== "/call") {
+      history.push("/call");
+    }
+  };
+  const rejectDirectCall = () => {
+    rejectIncomingCallRequest();
+  };
+
+  const acceptTeamMeeting = () => {
+    setNotification(true);
+    const teamId = teamMeetingData.teamId;
+    history.push(`/team/${teamId}`);
+    clearTeamMeetingData();
+  };
+
+  const rejectTeamMeeting = () => {
+    setNotification(true);
+    clearTeamMeetingData();
+  };
   return (
     <>
       <>
@@ -126,12 +154,22 @@ const Admin = ({ userdata, cookies, getUserAgain, logOut, ...props }) => {
           </Box>
           {callState === callStates.CALL_REQUESTED ? (
             <IncomingCallDialog
-              caller={callerUsername}
+              message={`Call from ${callerUsername} `}
               show={true}
               localStream={localStream}
+              accept={acceptDirectCall}
+              reject={rejectDirectCall}
             />
           ) : null}
-
+          {!showNotifications ? (
+            <IncomingCallDialog
+              message={`New Meeting started in ${teamMeetingData.teamName}`}
+              show={true}
+              localStream={localStream}
+              accept={acceptTeamMeeting}
+              reject={rejectTeamMeeting}
+            />
+          ) : null}
           <Switch>
             {getRoutes(routes)}
             <Redirect from="*" to="/teams" />
@@ -152,6 +190,7 @@ function mapStoreStateToProps({ Video, User }) {
 function mapDispatchToProps(dispatch) {
   return {
     setNotification: (show) => dispatch(setNotification(show)),
+    clearTeamMeetingData: () => dispatch(setTeamMeetingData(null)),
   };
 }
 
