@@ -10,6 +10,8 @@ import componentStyles from "assets/theme/views/admin/videoLayout";
 import axios from "axios";
 import Header from "components/Headers/Header";
 import { setTurnServers } from "utils/websocketclient/clientSocket";
+import { CircularProgress } from "@material-ui/core";
+
 const useStyles = makeStyles(componentStyles);
 
 const VideoLayout = ({ user, history }) => {
@@ -22,7 +24,6 @@ const VideoLayout = ({ user, history }) => {
     if (paths.length === 3) {
       setDirectCall(false);
     }
-    setLoading(false);
   };
 
   const getServersFromBackend = () => {
@@ -32,16 +33,17 @@ const VideoLayout = ({ user, history }) => {
         console.log(response.data.token.iceServers);
         setTurnServers(response.data.token.iceServers);
         getLocaleStream();
-        checkIfGroupCall();
+        setLoading(false);
       })
       .catch((err) => {
         getLocaleStream();
-        checkIfGroupCall();
+        setLoading(false);
         console.log(err);
       });
   };
   useEffect(() => {
     getServersFromBackend();
+    checkIfGroupCall();
   }, []);
 
   return (
@@ -57,7 +59,21 @@ const VideoLayout = ({ user, history }) => {
             )}
           </Grid>
         </Grid>
-      ) : null}
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            height: "100vh",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <CircularProgress />
+            <h3 style={{ marginLeft: "20px" }}>Loading...</h3>
+          </div>
+        </div>
+      )}
     </>
   );
 };

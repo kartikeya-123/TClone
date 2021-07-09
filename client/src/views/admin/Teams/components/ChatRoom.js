@@ -116,6 +116,7 @@ const ChatRoom = ({ user, Team }) => {
         fontSize: "1rem",
         height: "100%",
         justifyContent: "space-evenly",
+        paddingBottom: "10px",
       }}
     >
       <Grid container>
@@ -136,11 +137,15 @@ const ChatRoom = ({ user, Team }) => {
             {/* <p>{typingName}</p> */}
             <div
               className={classes.plLg4}
-              style={{ marignLeft: "auto", marginRight: "auto" }}
+              style={{
+                marignLeft: "auto",
+                marginRight: "auto",
+                marginBottom: "10px",
+              }}
             >
               <br />
 
-              <Grid container>
+              <Grid>
                 <Grid item xs="auto">
                   <FormGroup>
                     <FormControl
@@ -165,6 +170,7 @@ const ChatRoom = ({ user, Team }) => {
                         id="message"
                         onChange={handleChange}
                         value={message}
+                        disableUnderline={true}
                         endAdornment={
                           <InputAdornment position="end">
                             <IconButton

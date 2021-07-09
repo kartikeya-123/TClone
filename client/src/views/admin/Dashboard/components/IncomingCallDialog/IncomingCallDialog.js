@@ -19,7 +19,13 @@ import { makeStyles } from "@material-ui/core";
 import sound from "./../../../../../assets/sounds/hangouts_video_call.mp3";
 const useStyles = makeStyles(componentStyles);
 
-export default function IncomingCallDialog({ show, caller, localStream }) {
+export default function IncomingCallDialog({
+  show,
+  message,
+  localStream,
+  accept,
+  reject,
+}) {
   const [open, setOpen] = React.useState(show);
   const location = useLocation();
   const history = useHistory();
@@ -41,20 +47,13 @@ export default function IncomingCallDialog({ show, caller, localStream }) {
     console.log("sound");
   };
   const handleAcceptButtonPressed = () => {
-    // accept the call
-
-    acceptIncomingCallRequest();
-    if (location.pathname !== "/call") {
-      history.push("/call");
-    }
+    accept();
+    handleClose();
   };
 
   const handleRejectButtonPressed = () => {
-    // accept the call
-    if (Sounds) {
-      console.log("present");
-    }
-    rejectIncomingCallRequest();
+    reject();
+    handleClose();
   };
 
   const handleClose = () => {
@@ -72,20 +71,23 @@ export default function IncomingCallDialog({ show, caller, localStream }) {
           classes={{ paper: classes.root }}
         >
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Getting a call from {caller}
+            <DialogContentText style={{ color: "white", fontSize: "16px" }}>
+              {message}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleAcceptButtonPressed} color="primary">
-              Accept
+            <Button
+              onClick={handleAcceptButtonPressed}
+              className={classes.buttonOutlineSuccess}
+            >
+              Continue
             </Button>
             <Button
               onClick={handleRejectButtonPressed}
-              color="primary"
+              className={classes.buttonOutlineError}
               autoFocus
             >
-              Reject
+              Cancel
             </Button>
           </DialogActions>
         </Dialog>

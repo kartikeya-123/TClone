@@ -9,8 +9,9 @@ import { setRejectedReason } from "store/actions/videoActions";
 import ConversationButtons from "./components/ConversationButtons/ConversationButtons";
 import componentStyles from "assets/theme/views/admin/videoLayout";
 import DirectMessages from "./components/directMessages";
-import { Grid } from "@material-ui/core";
-
+import { Grid, Button } from "@material-ui/core";
+import { callStates } from "store/actions/videoActions";
+import { acceptIncomingCallRequest } from "utils/websocketclient/clientSocket";
 const useStyles = makeStyles(componentStyles);
 
 const DirectCall = (props) => {
@@ -30,7 +31,8 @@ const DirectCall = (props) => {
     directCallModal,
     callRejected,
     hideCallRejectedDialog,
-    calleeUsername,
+    recieverUsername,
+    callState,
   } = props;
   // console.log(callerUsername);
 
@@ -85,8 +87,18 @@ const DirectCall = (props) => {
     </Grid>
   );
 
+  const joinCall = () => {
+    acceptIncomingCallRequest();
+  };
   return (
     <>
+      {callState === callStates.CALL_REQUESTED ? (
+        <Grid xs={6}>
+          <Button onClick={joinCall} className={classes.button}>
+            ACCEPT
+          </Button>
+        </Grid>
+      ) : null}
       {localStreamGrid}
       {remoteStream ? remoteStreamGrid : null}
       {callRejected.rejected ? (
@@ -99,7 +111,7 @@ const DirectCall = (props) => {
         <IncomingCallDialog caller={callerUsername} show={true} />
       ) : null} */}
       {directCallModal ? (
-        <CallingModal calleeUsername={calleeUsername} />
+        <CallingModal recieverUsername={recieverUsername} />
       ) : null}
       <ConversationButtons {...props} handleChat={handleChatModal} />
       <Grid>{show ? <DirectMessages {...props} /> : null}</Grid>
