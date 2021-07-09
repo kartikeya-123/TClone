@@ -21,9 +21,9 @@ const GroupCallVideo = ({ incomingStream, index, ...props }) => {
   }, [incomingStream]);
 
   return (
-    <Box>
-      <video ref={videoRef} autoPlay className={classes.gridVideo} />
-    </Box>
+    <div className={classes.gridVideo}>
+      <video ref={videoRef} autoPlay className={classes.video} />
+    </div>
   );
 };
 

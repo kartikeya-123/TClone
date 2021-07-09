@@ -157,7 +157,7 @@ const GroupMessages = ({ groupMessages, user }) => {
             })}
           </GridList>
         </CardContent>
-        <CardActions>
+        <CardActions className={classes.cardActions}>
           <FormGroup>
             <FormControl
               variant="filled"
@@ -181,6 +181,7 @@ const GroupMessages = ({ groupMessages, user }) => {
                 id="message"
                 onChange={handleChange}
                 value={message}
+                disableUnderline={true}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton

@@ -11,12 +11,10 @@ const GroupCallRoom = (props) => {
 
   const { teamMeetingStreams } = props;
   return (
-    <div>
-      <Grid className={classes.videoCallGridLayout}>
-        {teamMeetingStreams.map((stream, index) => {
-          return <GroupCallVideo key={stream.id} incomingStream={stream} />;
-        })}
-      </Grid>
+    <div className={classes.videoCallGridLayout}>
+      {teamMeetingStreams.map((stream, index) => {
+        return <GroupCallVideo key={stream.id} incomingStream={stream} />;
+      })}
     </div>
   );
 };
