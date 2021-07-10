@@ -69,6 +69,7 @@ const useStyles = makeStyles({
 const Notification = ({ user, history, color, show, setNotification }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [notifications, setNotifications] = useState([
     {
       message: "You have no Notifications",
@@ -79,9 +80,10 @@ const Notification = ({ user, history, color, show, setNotification }) => {
   const [status, setNotificationStatus] = useState(user.notificationsSeen);
 
   useEffect(() => {
-    console.log(show);
-    setNotificationStatus(show);
-    if (show == false) SoundPlay();
+    if (show === false) {
+      SoundPlay();
+      setNotificationStatus(false);
+    }
   }, [show]);
 
   const SoundPlay = () => {
@@ -119,9 +121,11 @@ const Notification = ({ user, history, color, show, setNotification }) => {
         if (notificationsInorder.length > 0)
           setNotifications(notificationsInorder);
         setNotificationStatus(true);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
+        setIsLoading(false);
       });
   };
 
@@ -190,29 +194,31 @@ const Notification = ({ user, history, color, show, setNotification }) => {
         style={{ padding: "10px 0px 0px 10px", margin: 0 }}
       />
       <CardContent style={{ padding: 0, margin: 0 }}>
-        {notifications.map((notification, key) => {
-          return (
-            <div
-              className={classes.tile}
-              onClick={() => {
-                //console.log(notification);
-                redirectToTeam(notification.teamId);
-              }}
-              key={key}
-            >
-              <div
-                style={{
-                  alignItems: "center",
-                  display: "flex",
-                  margin: "0px 10px 0px 3px",
-                }}
-              >
-                {makeNotificationIcon(notification)}
-              </div>
-              {makeNotificationMessage(notification)}
-            </div>
-          );
-        })}
+        {!isLoading
+          ? notifications.map((notification, key) => {
+              return (
+                <div
+                  className={classes.tile}
+                  onClick={() => {
+                    //console.log(notification);
+                    redirectToTeam(notification.teamId);
+                  }}
+                  key={key}
+                >
+                  <div
+                    style={{
+                      alignItems: "center",
+                      display: "flex",
+                      margin: "0px 10px 0px 3px",
+                    }}
+                  >
+                    {makeNotificationIcon(notification)}
+                  </div>
+                  {makeNotificationMessage(notification)}
+                </div>
+              );
+            })
+          : null}
       </CardContent>
     </Card>
   );
@@ -225,7 +231,6 @@ const Notification = ({ user, history, color, show, setNotification }) => {
         variant="dot"
         invisible={status}
       >
-        {console.log(status)}
         <SvgIcon
           style={{
             color: "white",
