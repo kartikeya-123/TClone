@@ -23,6 +23,7 @@
     "howler": "^2.2.1",
     "mapbox-gl": "^2.2.0",
     "mdb-react-ui-kit": "^1.0.0-beta5",
+    "moment": "^2.29.1",
     "node-sass": "5.0.0",
     "nouislider": "14.6.3",
     "prop-types": "^15.7.2",
