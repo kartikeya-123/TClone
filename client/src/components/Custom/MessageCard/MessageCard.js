@@ -16,7 +16,7 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-
+import { getDate } from "../Date";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -95,23 +95,6 @@ const Messages = ({ teamMessages, user }) => {
     }
   };
 
-  const getDate = (date) => {
-    let day = new Date(date).toUTCString().substr(0, 3);
-    let messageTime = new Date(date).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    messageTime = messageTime.split(":");
-    let finalTime = day + ", ";
-    if (messageTime[0] <= 1) {
-      finalTime += messageTime[0] + "." + messageTime[1] + " AM";
-    } else {
-      finalTime += messageTime[0] - 12 + "." + messageTime[1] + " PM";
-    }
-
-    return finalTime;
-  };
   useEffect(() => {
     scrollToBottom();
   }, []);
@@ -226,7 +209,9 @@ const Messages = ({ teamMessages, user }) => {
                       <h4 style={{ margin: 0, paddingBottom: "10px" }}>
                         Meeting started by {chatMessage.startedBy}{" "}
                         <span className={classes.span}>
-                          {getDate(chatMessage.endedAt)}
+                          {chatMessage.endedAt
+                            ? getDate(chatMessage.endedAt)
+                            : "On going"}
                         </span>
                         <span className={classes.span}>
                           {getDate(chatMessage.createdAt)}
@@ -236,9 +221,11 @@ const Messages = ({ teamMessages, user }) => {
                       {chatMessage.chatMessages.length > 0 ? (
                         <Accordion
                           className={{ root: classes.AccordionRoot }}
-                          style={{ boxShadow: "0px" }}
+                          style={{
+                            boxShadow: "0px",
+                            backgroundColor: "#F7F7F7",
+                          }}
                           elevation={0}
-                          style={{ backgroundColor: "#F7F7F7" }}
                         >
                           <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}

@@ -20,7 +20,7 @@ import SendIcon from "@material-ui/icons/Send";
 import { makeStyles } from "@material-ui/core/styles";
 import componentStyles from "assets/theme/views/admin/groupMessages";
 import { sendDirectMessage } from "../../../../utils/websocketclient/clientSocket";
-
+import { getDate } from "components/Custom/Date";
 const useStyles = makeStyles(componentStyles);
 
 const urlify = (text) => {
@@ -43,24 +43,6 @@ const DirectMessages = (props) => {
   const [message, setMessage] = useState("");
   const handleChange = (e) => {
     setMessage(e.target.value);
-  };
-
-  const getDate = (date) => {
-    let day = new Date(date).toUTCString().substr(0, 3);
-    let messageTime = new Date(date).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    messageTime = messageTime.split(":");
-    let finalTime = day + ", ";
-    if (messageTime[0] <= 1) {
-      finalTime += messageTime[0] + "." + messageTime[1] + " AM";
-    } else {
-      finalTime += messageTime[0] - 12 + "." + messageTime[1] + " PM";
-    }
-
-    return finalTime;
   };
 
   // useEffect(() => {
