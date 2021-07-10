@@ -19,6 +19,7 @@ import {
   Box,
   Container,
   Chip,
+  Typography,
 } from "@material-ui/core";
 import { FixedSizeList } from "react-window";
 
@@ -184,32 +185,43 @@ export default function AddMember({ show, handleEvent, Team }) {
 
           {/* {selectedUsers} */}
           <br></br>
-          <Paper className={classes.paper}>
-            <List
-              component="nav"
-              className={classes.root}
-              aria-label="contacts"
-            >
-              {users.map((user, index) => {
-                return (
-                  <ListItem
-                    button
-                    key={index}
-                    style={{ display: "flex" }}
-                    onClick={() => addToSelect(user)}
-                  >
-                    <ListItemIcon>
-                      <Avatar
-                        src={user.image}
-                        className={classes.avatar}
-                      ></Avatar>
-                    </ListItemIcon>
-                    <ListItemText primary={user.name} secondary={user.email} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </Paper>
+          {search !== "" ? (
+            <Paper className={classes.paper}>
+              <List
+                component="nav"
+                className={classes.root}
+                aria-label="contacts"
+              >
+                {users.length > 0 ? (
+                  users.map((user, index) => {
+                    return (
+                      <ListItem
+                        button
+                        key={index}
+                        style={{ display: "flex" }}
+                        onClick={() => addToSelect(user)}
+                      >
+                        <ListItemIcon>
+                          <Avatar
+                            src={user.image}
+                            className={classes.avatar}
+                          ></Avatar>
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={user.name}
+                          secondary={user.email}
+                        />
+                      </ListItem>
+                    );
+                  })
+                ) : (
+                  <Typography style={{ textAlign: "center" }}>
+                    No users found
+                  </Typography>
+                )}
+              </List>
+            </Paper>
+          ) : null}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleEvent} color="primary">

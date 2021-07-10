@@ -71,6 +71,7 @@ function Teams({ user, history, ...props }) {
       .post("/api/v1/team/createTeam", data, { withCredentials: true })
       .then((response) => {
         let team = response.data.data;
+        console.log(team);
         setOwnerTeams((ownerTeams) => [...ownerTeams, team]);
       })
       .catch((err) => console.log(err));

@@ -9,7 +9,10 @@ import { Container, makeStyles } from "@material-ui/core";
 import componentStyles from "assets/theme/views/admin/videoLayout";
 import axios from "axios";
 import Header from "components/Headers/Header";
-import { setTurnServers } from "utils/websocketclient/clientSocket";
+import {
+  setTurnServers,
+  getTurnServers,
+} from "utils/websocketclient/clientSocket";
 import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles(componentStyles);
@@ -43,7 +46,11 @@ const VideoLayout = ({ user, history }) => {
       });
   };
   useEffect(() => {
-    getServersFromBackend();
+    if (getTurnServers().length === 0) getServersFromBackend();
+    else {
+      getLocaleStream();
+      checkIfGroupCall();
+    }
   }, []);
 
   return (
