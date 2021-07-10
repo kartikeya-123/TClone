@@ -83,14 +83,14 @@ const GroupCall = (props) => {
       </Grid>
       <Grid className={classes.localVideoGrid}>
         {localStreamGrid}
-        {isTeamMeetingPresent && (
-          <ConversationButtons
-            {...props}
-            groupCall
-            showChat={showChatGrid}
-            showBoardGrid={showWhiteBoardGrid}
-          />
-        )}
+
+        <ConversationButtons
+          {...props}
+          groupCall
+          showChat={showChatGrid}
+          showBoardGrid={showWhiteBoardGrid}
+        />
+
         <Grid>
           {show ? (
             <GroupMessages user={user} groupMessages={groupMessages} />

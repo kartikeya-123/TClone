@@ -75,10 +75,6 @@ export const createGroupMeeting = (teamId, teamName, meetingOwner, ownerId) => {
   };
 
   registerGroupMeeting(groupHostDetails);
-
-  store.dispatch(
-    callActions.setCallState(callActions.callStates.CALL_IN_PROGRESS)
-  );
 };
 
 export const joinGroupMeeting = (roomId) => {

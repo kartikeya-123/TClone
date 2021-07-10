@@ -8,7 +8,10 @@ import {
 import { CookiesProvider, withCookies } from "react-cookie";
 import AdminLayout from "./layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
-import { connectWithWebSocket } from "utils/websocketclient/clientSocket";
+import {
+  connectWithWebSocket,
+  setTurnServers,
+} from "utils/websocketclient/clientSocket";
 import { connectWithPeer } from "utils/websocketclient/groupCallHandler.js";
 import { CircularProgress } from "@material-ui/core";
 
@@ -22,6 +25,20 @@ class Wrapper extends Component {
     loggingOut: false,
   };
 
+  getServersFromBackend = () => {
+    axios
+      .get("/api/v1/turnCredentials")
+      .then((response) => {
+        console.log(response.data.token.iceServers);
+        setTurnServers(response.data.token.iceServers);
+        connectWithPeer();
+      })
+      .catch((err) => {
+        connectWithPeer();
+
+        console.log(err);
+      });
+  };
   getUser = (cookies) => {
     axios
       .get("/api/v1/user/profile")
@@ -33,7 +50,7 @@ class Wrapper extends Component {
           isLoading: false,
         });
         connectWithWebSocket(res.data.data.user);
-        connectWithPeer();
+        this.getServersFromBackend();
       })
       .catch((err) => {
         console.log(err);
@@ -57,7 +74,8 @@ class Wrapper extends Component {
   getLoggedInUser = (response) => {
     this.setState({ user: response.data.user, isLoggedIn: true });
     connectWithWebSocket(response.data.user);
-    connectWithPeer();
+    this.getServersFromBackend();
+    // connectWithPeer();
     //console.log(response.data.user);
     const userData = {
       name: response.data.user.name,

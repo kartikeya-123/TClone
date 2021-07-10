@@ -51,6 +51,7 @@ const ConversationButtons = (props) => {
     handleChat,
     user,
     showBoardGrid,
+    groupCall,
   } = props;
 
   const [show, setShowModal] = useState(false);
@@ -99,16 +100,15 @@ const ConversationButtons = (props) => {
           <MdVideocamOff className={classes.icon} />
         )}
       </IconButton>
-      <IconButton onClick={onClickShareButton}>
-        {screenSharingActive ? (
-          <MdCamera className={classes.icon} />
-        ) : (
-          <MdVideoLabel className={classes.icon} />
-        )}
-      </IconButton>
-
       {callState === callStates.CALL_IN_PROGRESS ? (
         <>
+          <IconButton onClick={onClickShareButton}>
+            {screenSharingActive ? (
+              <MdCamera className={classes.icon} />
+            ) : (
+              <MdVideoLabel className={classes.icon} />
+            )}
+          </IconButton>
           <IconButton onClick={onClickEndButton}>
             <MdCallEnd className={classes.icon} />
           </IconButton>
@@ -123,7 +123,7 @@ const ConversationButtons = (props) => {
           ) : null}
         </>
       ) : null}
-      {!isTeamMeetingPresent && callState !== callStates.CALL_IN_PROGRESS ? (
+      {!groupCall && callState !== callStates.CALL_IN_PROGRESS ? (
         <IconButton onClick={onClickAddParticipant}>
           <AiOutlineUsergroupAdd className={classes.icon} />
         </IconButton>

@@ -80,7 +80,7 @@ exports.createTeam = catchAsync(async (req, res, next) => {
       return next(new AppError("Some error happened", 403));
     }
 
-    await User.findOneAndUpdate(req.user.id, {
+    await User.findByIdAndUpdate(req.user.id, {
       $push: { teamsOwned: newTeam._id },
     });
 
