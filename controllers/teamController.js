@@ -68,7 +68,9 @@ exports.createTeam = catchAsync(async (req, res, next) => {
     let memberIds;
     teamData.Owner = req.user.id;
 
-    const newTeam = await Team.create(teamData).populate({
+    const newTeam = await Team.create(teamData);
+
+    const populatedTeam = await Team.findById(newTeam.id).populate({
       path: "Owner",
       ref: "User",
       select: "name image",
@@ -84,7 +86,7 @@ exports.createTeam = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
       status: "Success",
-      data: newTeam,
+      data: populatedTeam,
     });
   }
 });
@@ -386,4 +388,62 @@ exports.finishTeamMeeting = catchAsync(async ({ roomId }) => {
     { roomId: roomId },
     { chatMessages: chatMessages, endedAt: endedAt }
   );
+});
+
+exports.leaveTeam = catchAsync(async (req, res, next) => {
+  const user = req.user;
+
+  const teamId = req.params.teamId;
+
+  if (!teamId) {
+    return next(new AppError("Team Id is not present", 404));
+  }
+
+  const teamData = await Team.findById(teamId).select("Members");
+
+  const updatedMembers = teamData.Members.filter(
+    (member) => member.toString() !== req.user.id
+  );
+
+  await Team.findByIdAndUpdate(teamId, { Members: updatedMembers });
+
+  const teamsEnrolled = user.teamsEnrolled.filter(
+    (team) => team.toString() !== teamId
+  );
+
+  // console.log(typeof teamsEnrolled[0]);
+
+  await User.findByIdAndUpdate(req.user.id, { teamsEnrolled: teamsEnrolled });
+
+  res.status(200).json({
+    status: "success",
+  });
+});
+
+exports.deleteTeam = catchAsync(async (req, res, next) => {
+  const teamId = req.params.teamId;
+
+  if (!teamId) {
+    return next(new AppError("Team Id is not present", 404));
+  }
+
+  await Team.findByIdAndDelete(teamId);
+
+  const ownerTeams = req.user.teamsOwned.filter(
+    (team) => team.toString() !== teamId
+  );
+
+  const user = await User.findByIdAndUpdate(req.user.id, {
+    teamsOwned: ownerTeams,
+  });
+
+  await User.updateMany(
+    { teamsEnrolled: ObjectId(teamId) },
+    { $pull: { teamsEnrolled: ObjectId(teamId) } }
+  );
+
+  res.status(200).json({
+    status: "sucess",
+    user: user,
+  });
 });

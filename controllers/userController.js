@@ -3,6 +3,7 @@ const Team = require("./../models/teamModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const { sendEmail } = require("../utils/sendEmail");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.aboutMe = catchAsync(async (req, res, next) => {
   if (!req.user) {
@@ -107,8 +108,8 @@ exports.getOutsideUsers = catchAsync(async (req, res, next) => {
 
   //Get all users who doesn't belong to the team
   const users = await User.find({
-    teamsEnrolled: { $nin: teamId },
-    teamsOwned: { $nin: teamId },
+    _id: { $ne: req.user.id },
+    teamsEnrolled: { $nin: ObjectId(teamId) },
   }).select("name email image");
 
   res.status(200).json({

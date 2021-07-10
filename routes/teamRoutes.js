@@ -21,4 +21,6 @@ router.post(
   teamController.submitFile
 );
 
+router.patch("/leaveTeam/:teamId", teamController.leaveTeam);
+router.patch("/deleteTeam/:teamId", teamController.deleteTeam);
 module.exports = router;
