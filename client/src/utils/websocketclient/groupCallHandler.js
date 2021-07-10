@@ -26,11 +26,12 @@ export const connectWithPeer = () => {
     config: {
       iceServers: [
         ...turnServers,
-        { urls: "stun:stun.lund1.de:3478" },
+        { url: "stun:stun.lund1.de:3478" },
         { url: "stun:stun.l.google.com:19302" },
         { url: "stun:stun.12connect.com:3478" },
         { url: "stun:stun.12voip.com:3478" },
       ],
+      iceTransportPolicy: "relay",
     },
   });
 
