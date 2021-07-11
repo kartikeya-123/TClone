@@ -1,19 +1,8 @@
-# THRIVE
+# TEAMS CLONE -WEB
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Microsoft_Office_Teams_%282018%E2%80%93present%29.svg/1200px-Microsoft_Office_Teams_%282018%E2%80%93present%29.svg.png" width="300px" height="170px" align="center"/>
 
-**_One stop solution for students for college activities_**
-
-Since the second wave of Covid-19 is resurfacing, we need to think twice before interacting with someone. The colleges have been shut down and the student interactions with their peers and seniors have been hampereed. This has also posted a problem effective study material and assignment managements.
-
-**_This portal servers as a solution to the problems_**
-
-<!-- The portal enables students to discover the students in the college who share common interests, post projects open for collaboration and ask questions about college.
-It also has a classroom management system where teachers and students activities can be managed, teachers can post, study materials and assignments,which the students can submit before given deadlines. Classroom also has the facility to chat in realtime. -->
-
-**THRIVE** is a one stop solution for having eve efficient online education to quality student life. We provide solutions to classroom management, improving student interactions, project collaborations, college activities and many more. The portal allows both students and faculty to manage their activities.
-
-The main aim of the portal is to provide an easy-to-use all-in-one solution for dealing all activities associated with any educational institution online without any limitations.
+**_A web application similar to Teams having features like video conferencing, team chat, meeting conversations, file storage and many more team related features.**
 
 ## Technologies used
 
@@ -36,14 +25,14 @@ $ npm install npm@latest-g
 Fork this repo and clone it
 
 ```
-$ git clone https://github.com/<Your User Name>/THRIVE.git
+$ git clone https://github.com/<Your User Name>/TClone.git
 ```
 
-Open the folder THRIVE and install the dependencies.<br/>
+Open the folder TClone and install the dependencies.<br/>
 Ask us for the environment variables and create a .env file.
 
 ```
-$ cd ./THRIVE
+$ cd ./TClone
 $ npm install
 $ npm start
 ```
@@ -51,7 +40,7 @@ $ npm start
 Open the client folder in different terminal and install the dependencies
 
 ```
-$ cd ./THRIVE/client
+$ cd ./TClone/client
 $ npm i
 $ npm start
 ```
@@ -61,29 +50,36 @@ The backend server and client server run at ports 3000 and 3001 i.e. http://loca
 
 ## Features
 
-The portal majorly consists of two parts:
+The major features of the project are:
 
-- Student Interaction
-- Classroom Management
+- Authentication
+- Teams
+- One to One video conversations
+- Live Notifications
 
-### Student Interaction
+### Authentication
+
+The application uses Google OAuth for signing in. The authentication is done using jwt auth, server sends a jwt token to the client which is used to keep the user logged in.
+![image](https://user-images.githubusercontent.com/56500864/125186749-cf19da00-e249-11eb-9964-38fe1e54abdc.png)
+
+### Teams
 
 Getting the right people to discuss and collaborate at the right time is often tough, more so when the semester goes on virtually.
 We provide three forum to reduce this gap.
 
-#### Discover
+#### Create Team
 
 A directory of our students which supports search based on skills, positions of responsibilities, student activities and, of course, branch and year.
 
-#### Project Panel
+#### Team layout
 
 A platform where students can post there projects with relevant details and supporting tags and ask for collaborators by provding necessary communication details. Students are notified when a project's tag matches one in their profile.
 
-#### Discussion Forum
+#### Team related functions
 
 A forum where students can ask questions to each other and their seniors. The forum also allows anonymous questions and answers to allow free expression of views.
 
-### Classroom Management
+### Team chat
 
 The portal is to promote effective classroom interaction and assginment management.
 
