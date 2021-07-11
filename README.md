@@ -2,7 +2,7 @@
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Microsoft_Office_Teams_%282018%E2%80%93present%29.svg/1200px-Microsoft_Office_Teams_%282018%E2%80%93present%29.svg.png" width="300px" height="170px" align="center"/>
 
-**A web application similar to Teams having features like video conferencing, team chat, meeting conversations, file storage and many more team related features.**
+**A web application similar to Teams having features like video conferencing, team chat, meeting conversations, file storage and many more team related features.**</br>
 **Link for the application https://teamclone-web.herokuapp.com/ **
 
 ## Technologies used
