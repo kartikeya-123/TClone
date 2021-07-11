@@ -2,13 +2,15 @@
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Microsoft_Office_Teams_%282018%E2%80%93present%29.svg/1200px-Microsoft_Office_Teams_%282018%E2%80%93present%29.svg.png" width="300px" height="170px" align="center"/>
 
-**_A web application similar to Teams having features like video conferencing, team chat, meeting conversations, file storage and many more team related features.**
+**A web application similar to Teams having features like video conferencing, team chat, meeting conversations, file storage and many more team related features.**
+**Link for the application https://teamclone-web.herokuapp.com/ **
 
 ## Technologies used
 
 - **NodeJs** -      Evented I/O for the backend
 - **Express** -     Fast node.js network app framework
-- **Socket.io** -   Package used to create real-time chats.
+- **Socket.io** -   Package used to create real-time calls and chats.
+- **WebRTC**  -     Open-source project for real time communication.
 - **MongoDB** -     NoSQL Database
 - **React.js** -    Javascript llibrary to build user frameworks.
 - **GoogleOAuth** - Open Authorization from Google
@@ -29,7 +31,6 @@ $ git clone https://github.com/<Your User Name>/TClone.git
 ```
 
 Open the folder TClone and install the dependencies.<br/>
-Ask us for the environment variables and create a .env file.
 
 ```
 $ cd ./TClone
@@ -73,7 +74,7 @@ The home pages shows list of teams that a user is in as a member and the teams o
 
 A user can create a new team by clicking on Create a new team button. User should specify a team name, team description and privacy. Privacy of a team specifies whether only team owner or any team member can add other people into the team.
 
-![image](https://user-images.githubusercontent.com/56500864/125187484-8106d580-e24d-11eb-845d-7e23beccd03f.png)
+![image](https://user-images.githubusercontent.com/56500864/125191843-2a57c680-e262-11eb-925a-33295bdb68af.png)
 
 
 #### Team layout
@@ -105,7 +106,7 @@ Team members can start group chat with all the team members. Chat also includes 
 ### Files
 Team members can upload files and only members of the team can view the uploaded files. Select a file by clicking on upload button and then click on submit to upload the file.
 
-![image](https://user-images.githubusercontent.com/56500864/125190353-4bb4b480-e25a-11eb-8353-fafca2350d0e.png)
+![image](https://user-images.githubusercontent.com/56500864/125191868-3ba0d300-e262-11eb-8159-411d25c7ab53.png)
 
 
 ## Team Meeting
@@ -131,7 +132,7 @@ Users can share their screen anytime by clicking on the third button. To stop sc
 #### Group Chat
 Members currently in the team meeting can start a group chat by clicking on the fourth button. Once the meeting is ended (meeting ends when the number of members in the meeting becomes 0) the meeting chat will be visible along with the meeting history in the general team chat.
 
-![image](https://user-images.githubusercontent.com/56500864/125191048-17db8e00-e25e-11eb-8423-2f0ae6feb1e2.png)
+![image](https://user-images.githubusercontent.com/56500864/125191712-7b1aef80-e261-11eb-9e45-cd9a06ab8566.png)
 
 #### Blue Board
 Another interesting feature of the project is blue board. Users can open the blue board by clicking on the last button. We should first open the blue board and if someone starts drawing then we can see what others are drawing on it and viceversa.
