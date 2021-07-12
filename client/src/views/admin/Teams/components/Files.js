@@ -35,7 +35,7 @@ import DescriptionIcon from "@material-ui/icons/Description";
 import axios from "axios";
 import folderImage from "assets/img/Logo/folderImg.png";
 import componentStyles from "assets/theme/views/admin/dashboard.js";
-
+import { getDate } from "components/Custom/Date";
 const useStyles = makeStyles(componentStyles);
 
 const Files = ({ user, teamId }) => {
@@ -165,10 +165,7 @@ const Files = ({ user, teamId }) => {
                       >
                         {file.originalName}
                       </TableCell>
-                      <TableCell>
-                        {new Date(file.createdAt).toLocaleDateString() ||
-                          "29 May,2021"}
-                      </TableCell>
+                      <TableCell>{getDate(file.createdAt)}</TableCell>
                       <TableCell>
                         <Typography style={{ padding: "0px" }}>
                           &nbsp;{file.submittedBy.name}
