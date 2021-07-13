@@ -18,7 +18,7 @@ exports.getMyTeamsAsMember = catchAsync(async (req, res, next) => {
     ref: "User",
     select: "name email image",
   });
-  // console.log(myTeams);
+  // //console.log(myTeams);
   res.status(200).json({
     status: "Success",
     data: myTeams,
@@ -147,7 +147,7 @@ exports.addMembersToTeam = catchAsync(async (req, res, next) => {
   }
 
   const memberIds = req.body;
-  console.log(req.body);
+  //console.log(req.body);
   if (memberIds.length === 0) {
     return next(new AppError("Atleast one member should be present", 404));
   }
@@ -273,7 +273,7 @@ exports.meetingNotification = async ({
   if (!teamId) {
     return new AppError("Team Id is not mentioned", 404);
   }
-  console.log(teamId);
+  //console.log(teamId);
 
   const teamMeetingData = {
     roomId: roomId,
@@ -287,7 +287,7 @@ exports.meetingNotification = async ({
     notificationType: "New Meeting",
     teamId: teamId,
   };
-  console.log(ownerId);
+  //console.log(ownerId);
   await User.updateMany(
     {
       _id: { $ne: ownerId },
@@ -312,7 +312,7 @@ exports.meetingNotification = async ({
 
 exports.submitFile = catchAsync(async (req, res, next) => {
   const teamId = req.params.teamId;
-  console.log(teamId);
+  //console.log(teamId);
   let fileName = "";
   let originalName = "";
   if (req.file) {
@@ -341,7 +341,7 @@ exports.submitFile = catchAsync(async (req, res, next) => {
     { new: true }
   );
 
-  console.log(team);
+  //console.log(team);
   res.status(200).json({
     status: "success",
     file: fileData,
@@ -365,12 +365,12 @@ exports.finishTeamMeeting = catchAsync(async ({ roomId }) => {
   if (!roomId) {
     return new AppError("RoomId is not mentioned", 404);
   }
-  console.log("Hi");
-  console.log(roomId);
+  //console.log("Hi");
+  //console.log(roomId);
   const chatMessages = await Chat.find({ roomId: roomId })
     .select("userName userImage message createdAt")
     .sort({ createdAt: 1 });
-  console.log(chatMessages);
+  //console.log(chatMessages);
   // const d = new Date();
   // const endedAt =
   //   d.getFullYear() +
@@ -411,7 +411,7 @@ exports.leaveTeam = catchAsync(async (req, res, next) => {
     (team) => team.toString() !== teamId
   );
 
-  // console.log(typeof teamsEnrolled[0]);
+  // //console.log(typeof teamsEnrolled[0]);
 
   await User.findByIdAndUpdate(req.user.id, { teamsEnrolled: teamsEnrolled });
 

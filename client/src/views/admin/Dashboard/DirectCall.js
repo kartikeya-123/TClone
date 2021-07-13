@@ -10,8 +10,8 @@ import ConversationButtons from "./components/ConversationButtons/ConversationBu
 import componentStyles from "assets/theme/views/admin/videoLayout";
 import DirectMessages from "./components/directMessages";
 import { Grid, Button } from "@material-ui/core";
-import { callStates } from "store/actions/videoActions";
-import { acceptIncomingCallRequest } from "utils/websocketclient/clientSocket";
+import { videoStates } from "store/actions/videoActions";
+import { acceptCall } from "utils/websocketclient/clientSocket";
 const useStyles = makeStyles(componentStyles);
 
 const DirectCall = (props) => {
@@ -34,7 +34,7 @@ const DirectCall = (props) => {
     recieverUsername,
     callState,
   } = props;
-  // console.log(callerUsername);
+  // //console.log(callerUsername);
 
   const getLocalStreamGrid = () => {
     const localVideoStream = localStreamRef.current;
@@ -88,11 +88,11 @@ const DirectCall = (props) => {
   );
 
   const joinCall = () => {
-    acceptIncomingCallRequest();
+    acceptCall();
   };
   return (
     <>
-      {callState === callStates.CALL_REQUESTED ? (
+      {callState === videoStates.REQUESTED ? (
         <Grid xs={6}>
           <Button onClick={joinCall} className={classes.button}>
             ACCEPT
@@ -107,7 +107,7 @@ const DirectCall = (props) => {
           hideCallRejectedDialog={hideCallRejectedDialog}
         />
       ) : null}
-      {/* {callState === callStates.CALL_REQUESTED ? (
+      {/* {callState === videoStates.REQUESTED ? (
         <IncomingCallDialog caller={callerUsername} show={true} />
       ) : null} */}
       {directCallModal ? (

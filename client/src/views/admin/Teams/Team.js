@@ -42,7 +42,7 @@ function Team({ user, cookies, history, ...props }) {
   const [tab, setTab] = useState("Chat");
 
   const checkIfCallStarted = (teamId) => {
-    console.log(teamId);
+    //console.log(teamId);
     const activeTeam = activeTeams.find((active) => active.teamId === teamId);
     if (activeTeam) {
       setMeetingStarted(true);
@@ -52,7 +52,7 @@ function Team({ user, cookies, history, ...props }) {
 
   const redirectToMeet = () => {
     let meet = activeTeams.find((team) => team.teamId == Team._id);
-    console.log(meet);
+    //console.log(meet);
     let url = `/call/${meet.roomId}`;
     history.push({ pathname: url, state: { teamId: Team._id } });
   };
@@ -70,7 +70,7 @@ function Team({ user, cookies, history, ...props }) {
       .then((res) => {
         const team = res.data.data;
         setTeam(team);
-        console.log(res.data);
+        //console.log(res.data);
       })
       .catch((err) => {
         console.log(err);

@@ -95,7 +95,7 @@ export default function ParticipantModal({ show, close, currentUser }) {
   };
 
   const filterResults = () => {
-    // console.log(search);
+    // //console.log(search);
     let filterUsers = users.filter((user) => {
       return (
         user.name.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||

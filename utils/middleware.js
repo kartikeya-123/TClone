@@ -2,20 +2,20 @@ const AppError = require("../utils/appError");
 const config = require("./config");
 
 const requestLogger = (request, response, next) => {
-  //console.log('request method: ' + request.method);
-  //console.log('request path: ' + request.path);
-  //console.log('request body: ');
-  //console.log(request.body);
-  //console.log('--------------------------------------------------');
+  ////console.log('request method: ' + request.method);
+  ////console.log('request path: ' + request.path);
+  ////console.log('request body: ');
+  ////console.log(request.body);
+  ////console.log('--------------------------------------------------');
   next();
 };
 const unknownEndpoint = (req, res, next) => {
   return next(new AppError("Unknown endpoint", 404));
 };
 const showError = (err) => {
-  //console.log('--------------------------------------------------');
+  ////console.log('--------------------------------------------------');
   console.log(err);
-  //console.log('--------------------------------------------------');
+  ////console.log('--------------------------------------------------');
 };
 
 const handleCastErrorDB = (err) => {
@@ -25,7 +25,7 @@ const handleCastErrorDB = (err) => {
 
 const handleDuplicateFieldsDB = (err) => {
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-  //console.log(value);
+  ////console.log(value);
 
   const message = `Duplicate field value: ${value}. Please use another value!`;
   return new AppError(message, 400);

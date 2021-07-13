@@ -49,11 +49,11 @@ const Files = ({ user, teamId }) => {
   const [submittedFile, setSubmittedFile] = useState("");
 
   const getFiles = () => {
-    console.log(teamId);
+    //console.log(teamId);
     axios
       .get(`/api/v1/team/files/${teamId}`)
       .then((res) => {
-        console.log(res.data);
+        //console.log(res.data);
         let data = res.data.files.files;
         for (let i of Object.keys(data)) {
           data[i].fileUrl = "";
@@ -77,7 +77,7 @@ const Files = ({ user, teamId }) => {
     axios
       .post(`/api/v1/team/submitFile/${teamId}`, formData)
       .then((res) => {
-        console.log(res.data);
+        //console.log(res.data);
         // setSubmittedFile(res.data.data);
         // setSubmitted(true);
         let fileData = res.data.file;
@@ -97,8 +97,8 @@ const Files = ({ user, teamId }) => {
         responseType: "arraybuffer",
       })
       .then((response) => {
-        //console.log(response.data);
-        // //console.log(response);
+        ////console.log(response.data);
+        // ////console.log(response);
         const file = new Blob([response.data], {
           type: response.headers["content-type"],
         });
@@ -126,7 +126,7 @@ const Files = ({ user, teamId }) => {
     "Dec",
   ];
   useEffect(() => {
-    console.log(teamId);
+    //console.log(teamId);
     getFiles();
   }, []);
 

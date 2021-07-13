@@ -16,7 +16,7 @@ let screenShare;
 
 export const connectWithPeer = () => {
   //Creating a new Peer
-  console.log("connecting with peer");
+  //console.log("connecting with peer");
   const turnServers = getTurnServers();
   myPeer = new window.Peer(undefined, {
     // path: "/api/v1/peerjs",
@@ -36,7 +36,7 @@ export const connectWithPeer = () => {
   });
 
   myPeer.on("open", (id) => {
-    console.log("succesfully connected with peer server");
+    //console.log("succesfully connected with peer server");
     myPeerId = id;
   });
 
@@ -86,9 +86,7 @@ export const joinGroupMeeting = (roomId) => {
   };
   joinGroupCall(userData);
 
-  store.dispatch(
-    callActions.setCallState(callActions.callStates.CALL_IN_PROGRESS)
-  );
+  store.dispatch(callActions.setCallState(callActions.videoStates.ONGOING));
   store.dispatch(callActions.setisTeamMeetingPresent(true));
 };
 
@@ -138,8 +136,8 @@ export const deleteVideoStream = (data) => {
 };
 
 export const addGroupShareScreen = () => {
-  console.log(myPeer.connections);
-  if (!store.getState().Video.screenSharingActive) {
+  //console.log(myPeer.connections);
+  if (!store.getState().Video.screenSharing) {
     navigator.mediaDevices
       .getDisplayMedia({
         video: true,
@@ -155,7 +153,7 @@ export const addGroupShareScreen = () => {
         }
         // console.log(currentPeer.getSenders());
 
-        store.dispatch(callActions.setScreenSharingActive(true));
+        store.dispatch(callActions.setscreenSharing(true));
       })
       .catch((err) => console.log(err));
   } else {
@@ -168,7 +166,7 @@ export const addGroupShareScreen = () => {
       );
       sender.replaceTrack(localStream.getVideoTracks()[0]);
     }
-    store.dispatch(callActions.setScreenSharingActive(false));
+    store.dispatch(callActions.setscreenSharing(false));
     screenShare.getTracks().forEach((track) => track.stop());
   }
 };

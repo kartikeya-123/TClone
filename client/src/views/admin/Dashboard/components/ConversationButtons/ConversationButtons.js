@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { BiChalkboard } from "react-icons/bi";
 import { BsChatDots } from "react-icons/bs";
-import { callStates } from "store/actions/videoActions";
+import { videoStates } from "store/actions/videoActions";
 import {
   MdCallEnd,
   MdMic,
@@ -15,7 +15,7 @@ import {
 } from "react-icons/md";
 
 import {
-  endCall,
+  closeCall,
   switchForScreenSharingStream,
 } from "utils/websocketclient/clientSocket.js";
 import {
@@ -28,10 +28,7 @@ import ParticipantModal from "../ParticipantModal/ParticpantModal";
 import { makeStyles } from "@material-ui/core";
 import componentStyles from "assets/theme/components/coversationButtons";
 import { connect } from "react-redux";
-import {
-  setLocalMicrophoneEnabled,
-  setLocalCameraEnabled,
-} from "store/actions/videoActions";
+import { setlocalMicrophone, setlocalCamera } from "store/actions/videoActions";
 
 const useStyles = makeStyles(componentStyles);
 
@@ -40,9 +37,9 @@ const ConversationButtons = (props) => {
 
   const {
     localStream,
-    localCameraEnabled,
-    localMicrophoneEnabled,
-    screenSharingActive,
+    localCamera,
+    localMicrophone,
+    screenSharing,
     callState,
     handleMicrophone,
     handleCamera,
@@ -58,13 +55,13 @@ const ConversationButtons = (props) => {
   const [show, setShowModal] = useState(false);
 
   const onClickMicrophoneButton = () => {
-    localStream.getAudioTracks()[0].enabled = !localMicrophoneEnabled;
-    handleMicrophone(!localMicrophoneEnabled);
+    localStream.getAudioTracks()[0].enabled = !localMicrophone;
+    handleMicrophone(!localMicrophone);
   };
 
   const onClickCameraButton = () => {
-    localStream.getVideoTracks()[0].enabled = !localCameraEnabled;
-    handleCamera(!localCameraEnabled);
+    localStream.getVideoTracks()[0].enabled = !localCamera;
+    handleCamera(!localCamera);
   };
 
   const onClickShareButton = () => {
@@ -73,7 +70,7 @@ const ConversationButtons = (props) => {
   };
 
   const onClickEndButton = () => {
-    if (!isTeamMeetingPresent) endCall();
+    if (!isTeamMeetingPresent) closeCall();
     else {
       const roomId = window.location.pathname.split("/")[2];
       leaveMeeting(roomId);
@@ -88,23 +85,23 @@ const ConversationButtons = (props) => {
   return (
     <div className={classes.buttons}>
       <IconButton onClick={onClickMicrophoneButton}>
-        {localMicrophoneEnabled ? (
+        {localMicrophone ? (
           <MdMic className={classes.icon} />
         ) : (
           <MdMicOff className={classes.icon} />
         )}
       </IconButton>
       <IconButton onClick={onClickCameraButton}>
-        {localCameraEnabled ? (
+        {localCamera ? (
           <MdVideocam className={classes.icon} />
         ) : (
           <MdVideocamOff className={classes.icon} />
         )}
       </IconButton>
-      {callState === callStates.CALL_IN_PROGRESS ? (
+      {callState === videoStates.ONGOING ? (
         <>
           <IconButton onClick={onClickShareButton}>
-            {screenSharingActive ? (
+            {screenSharing ? (
               <MdScreenShare className={classes.icon} />
             ) : (
               <MdStopScreenShare className={classes.icon} />
@@ -124,7 +121,7 @@ const ConversationButtons = (props) => {
           ) : null}
         </>
       ) : null}
-      {!groupCall && callState !== callStates.CALL_IN_PROGRESS ? (
+      {!groupCall && callState !== videoStates.ONGOING ? (
         <IconButton onClick={onClickAddParticipant}>
           <AiOutlineUsergroupAdd className={classes.icon} />
         </IconButton>
@@ -141,8 +138,8 @@ const ConversationButtons = (props) => {
 
 function mapDispatchToProps(dispatch) {
   return {
-    handleCamera: (show) => dispatch(setLocalCameraEnabled(show)),
-    handleMicrophone: (on) => dispatch(setLocalMicrophoneEnabled(on)),
+    handleCamera: (show) => dispatch(setlocalCamera(show)),
+    handleMicrophone: (on) => dispatch(setlocalMicrophone(on)),
   };
 }
 

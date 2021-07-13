@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { callStates } from "store/actions/videoActions";
+import { videoStates } from "store/actions/videoActions";
 import { connect } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -37,7 +37,7 @@ function Teams({ user, history, ...props }) {
     axios
       .get("/api/v1/team/memberTeams")
       .then((res) => {
-        console.log(res.data);
+        //console.log(res.data);
         setMemberTeams(res.data.data);
         setLoading(false);
       })
@@ -50,7 +50,7 @@ function Teams({ user, history, ...props }) {
     axios
       .get("/api/v1/team/ownerTeams")
       .then((res) => {
-        console.log(res.data);
+        //console.log(res.data);
         setOwnerTeams(res.data.data);
         setLoading(false);
       })
@@ -71,7 +71,7 @@ function Teams({ user, history, ...props }) {
       .post("/api/v1/team/createTeam", data, { withCredentials: true })
       .then((response) => {
         let team = response.data.data;
-        console.log(team);
+        //console.log(team);
         setOwnerTeams((ownerTeams) => [...ownerTeams, team]);
       })
       .catch((err) => console.log(err));
@@ -80,7 +80,7 @@ function Teams({ user, history, ...props }) {
     getTeamsAsMember();
     getTeamsAsOwner();
     if (localStream) {
-      console.log("hello");
+      //console.log("hello");
       stopLocaleStream();
     }
   }, []);

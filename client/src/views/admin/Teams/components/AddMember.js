@@ -62,7 +62,7 @@ export default function AddMember({ show, handleEvent, Team }) {
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   const handleChange = (event) => {
-    console.log(event.target.value);
+    //console.log(event.target.value);
     setValues({
       ...values,
       [event.target.name]: event.target.value,
@@ -73,14 +73,14 @@ export default function AddMember({ show, handleEvent, Team }) {
   };
 
   const filterResults = () => {
-    // console.log(search);
+    // //console.log(search);
     let filterUsers = currentUsers.filter((user) => {
       return (
         user.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
         user.email.toLowerCase().indexOf(search.toLowerCase()) !== -1
       );
     });
-    console.log(filterUsers);
+    //console.log(filterUsers);
     setUsers(filterUsers);
   };
 
@@ -111,7 +111,7 @@ export default function AddMember({ show, handleEvent, Team }) {
 
   const addToSelect = (user) => {
     if (!selectedUsers.includes(user)) {
-      console.log("hello");
+      //console.log("hello");
       let newSelectedUsers = [...selectedUsers, user];
       setSelectedUsers(newSelectedUsers);
     }

@@ -35,20 +35,20 @@ export const connectWithWebSocket = (user) => {
     handlePreofferAnswer(data);
   });
 
-  socket.on("webRTC-offer", (data) => {
+  socket.on("web-rtc-offer", (data) => {
     handleWebRTCOffer(data);
   });
 
-  socket.on("webRTC-answer", (data) => {
+  socket.on("web-rtc-answer", (data) => {
     handleWebRTCAnswer(data);
   });
 
-  socket.on("webRTC-candidate", (data) => {
+  socket.on("web-rtc-candidate", (data) => {
     handleWebRTCCandidate(data);
   });
 
-  socket.on("user-hanged-up", () => {
-    resetCallDataAfterHangUp();
+  socket.on("user-ended-call", () => {
+    resetCall();
   });
 
   socket.on("team-meeting-request", (data) => {
@@ -114,16 +114,16 @@ const createPeerConnection = () => {
         candidate: event.candidate,
         recieverSocketId: recieverSocketId,
       };
-      socket.emit("webRTC-candidate", candidateData);
+      socket.emit("web-rtc-candidate", candidateData);
     }
   };
 
-  peerConnection.onconnectionstatechange = (event) => {
-    if (peerConnection.connectionState === "connected") {
-      console.log("succesfully connected with other peer");
-    }
-    console.log(peerConnection.connectionState);
-  };
+  // peerConnection.onconnectionstatechange = (event) => {
+  //   if (peerConnection.connectionState === "connected") {
+  //     //console.log("succesfully connected with other peer");
+  //   }
+  //   //console.log(peerConnection.connectionState);
+  // };
 };
 
 // Registering new User
@@ -156,7 +156,7 @@ export const getLocaleStream = () => {
 //STOP LOCALE STREAM FROM USER
 export const stopLocaleStream = () => {
   let stream = store.getState().Video.localStream;
-  // console.log(stream);
+  // //console.log(stream);
   if (stream) {
     stream.getTracks().forEach(function (track) {
       track.stop();
@@ -168,9 +168,7 @@ export const stopLocaleStream = () => {
 
 //DIRECT CALL TO OTHER USER
 export const callOtherUser = (recieverDetails) => {
-  store.dispatch(
-    videoActions.setCallState(videoActions.callStates.CALL_IN_PROGRESS)
-  );
+  store.dispatch(videoActions.setCallState(videoActions.videoStates.ONGOING));
   store.dispatch(videoActions.setRecieverUsername(recieverDetails.name));
   store.dispatch(videoActions.setDirectCallModal(true));
   const user = store.getState().User.user;
@@ -191,14 +189,14 @@ const handlePreOffer = (data) => {
   // const localStream = store.getState().Video.localStream;
   const callState = store.getState().Video.callState;
 
-  let enableCall = callState !== videoActions.callStates.CALL_IN_PROGRESS;
+  let enableCall = callState !== videoActions.videoStates.ONGOING;
 
   if (enableCall === true) {
     recieverSocketId = data.callerSocketId;
     store.dispatch(videoActions.setConnectedUserId(recieverSocketId));
     store.dispatch(videoActions.setCallerUsername(data.callerUsername));
     store.dispatch(
-      videoActions.setCallState(videoActions.callStates.CALL_REQUESTED)
+      videoActions.setCallState(videoActions.videoStates.REQUESTED)
     );
   } else {
     // If call not possible reciever sends preoffer answer to sender
@@ -230,7 +228,7 @@ const handlePreofferAnswer = (data) => {
       break;
     }
     default: {
-      recieverSocketId = data.calleeSocketId;
+      recieverSocketId = data.reciverSocketId;
       store.dispatch(videoActions.setConnectedUserId(recieverSocketId));
       sendOffer();
     }
@@ -252,31 +250,29 @@ const sendOffer = async () => {
   const offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
   const data = {
-    calleeSocketId: recieverSocketId,
+    reciverSocketId: recieverSocketId,
     offer: offer,
   };
 
-  socket.emit("webRTC-offer", data);
+  socket.emit("web-rtc-offer", data);
 };
 
 const sendWebRTCCandidate = (data) => {
-  socket.emit("webRTC-candidate", data);
+  socket.emit("web-rtc-candidate", data);
 };
 
-export const acceptIncomingCallRequest = () => {
+export const acceptCall = () => {
   const acceptedData = {
     callerSocketId: recieverSocketId,
     answer: preOfferAnswers.ACCEPTED,
   };
 
-  store.dispatch(
-    videoActions.setCallState(videoActions.callStates.CALL_IN_PROGRESS)
-  );
+  store.dispatch(videoActions.setCallState(videoActions.videoStates.ONGOING));
 
   socket.emit("pre-offer-answer", acceptedData);
 };
 
-export const rejectIncomingCallRequest = () => {
+export const rejectCall = () => {
   const rejectedData = {
     callerSocketId: recieverSocketId,
     answer: preOfferAnswers.REJECTED,
@@ -288,9 +284,7 @@ export const rejectIncomingCallRequest = () => {
 
 export const resetCallData = () => {
   recieverSocketId = null;
-  store.dispatch(
-    videoActions.setCallState(videoActions.callStates.CALL_AVAILABLE)
-  );
+  store.dispatch(videoActions.setCallState(videoActions.videoStates.AVAILABLE));
 };
 
 //Handling WebRTC offer by the callee
@@ -305,7 +299,7 @@ const handleWebRTCOffer = async (data) => {
     answer: answer,
   };
 
-  socket.emit("webRTC-answer", webRTCdata);
+  socket.emit("web-rtc-answer", webRTCdata);
 };
 
 const handleWebRTCAnswer = async (data) => {
@@ -314,29 +308,28 @@ const handleWebRTCAnswer = async (data) => {
 
 const handleWebRTCCandidate = async (data) => {
   try {
-    console.log("adding ice candidates");
+    //console.log("adding ice candidates");
     await peerConnection.addIceCandidate(data.candidate);
   } catch (err) {
-    console.error(err);
+    console.log(err);
   }
 };
 
-export const endCall = () => {
-  console.log(store.getState().Video.callState);
-  if (
-    store.getState().Video.callState !== videoActions.callStates.CALL_REQUESTED
-  ) {
-    socket.emit("user-hanged-up", {
+export const closeCall = () => {
+  //console.log(store.getState().Video.callState);
+  const presentState = store.getState().Video.callState;
+  if (presentState !== videoActions.videoStates.REQUESTED) {
+    socket.emit("user-ended-call", {
       recieverSocketId: recieverSocketId,
     });
-    resetCallDataAfterHangUp();
+    resetCall();
   } else {
     resetCallData();
-    store.dispatch(videoActions.resetCallDataState());
+    store.dispatch(videoActions.resetCallState());
   }
 };
 
-const resetCallDataAfterHangUp = () => {
+const resetCall = () => {
   peerConnection.close();
   peerConnection = null;
   createPeerConnection();
@@ -347,13 +340,15 @@ const resetCallDataAfterHangUp = () => {
   localStream.getVideoTracks()[0].enabled = true;
   localStream.getAudioTracks()[0].enabled = true;
 
-  if (store.getState().Video.screenSharingActive) {
+  const screenSharingActive = store.getState().Video.screenSharing;
+
+  if (screenSharingActive) {
     screenSharingStream.getTracks().forEach((track) => {
       track.stop();
     });
   }
 
-  store.dispatch(videoActions.resetCallDataState());
+  store.dispatch(videoActions.resetCallState());
 };
 
 // Disconnecting with socket
@@ -371,7 +366,7 @@ export const connectWithTeam = (teamId) => {
 
 //Screen Sharing
 export const switchForScreenSharingStream = () => {
-  if (!store.getState().Video.screenSharingActive) {
+  if (!store.getState().Video.screenSharing) {
     navigator.mediaDevices
       .getDisplayMedia({
         video: true,
@@ -379,13 +374,13 @@ export const switchForScreenSharingStream = () => {
       .then((stream) => {
         screenSharingStream = stream;
         videoTrack = stream.getVideoTracks()[0];
-        console.log(peerConnection.getSenders());
+        //console.log(peerConnection.getSenders());
         let sender = peerConnection
           .getSenders()
           .find((s) => s.track.kind === videoTrack.kind);
         sender.replaceTrack(videoTrack);
-        console.log(sender);
-        store.dispatch(videoActions.setScreenSharingActive(true));
+        //console.log(sender);
+        store.dispatch(videoActions.setscreenSharing(true));
       })
       .catch((err) => console.log(err));
   } else {
@@ -395,7 +390,7 @@ export const switchForScreenSharingStream = () => {
       (sender) => sender.track.kind === localStream.getVideoTracks()[0].kind
     );
     sender.replaceTrack(localStream.getVideoTracks()[0]);
-    store.dispatch(videoActions.setScreenSharingActive(false));
+    store.dispatch(videoActions.setscreenSharing(false));
     screenSharingStream.getTracks().forEach((track) => track.stop());
   }
 };

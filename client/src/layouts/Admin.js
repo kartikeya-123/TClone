@@ -20,13 +20,13 @@ import NavbarDropdown from "../components/Dropdowns/NavbarDropdown.js";
 import IncomingCallDialog from "./../views/admin/Dashboard/components/IncomingCallDialog/IncomingCallDialog";
 import routes from "routes.js";
 import {
-  acceptIncomingCallRequest,
-  rejectIncomingCallRequest,
+  acceptCall,
+  rejectCall,
   getLocaleStream,
 } from "utils/websocketclient/clientSocket";
 
 import componentStyles from "assets/theme/layouts/admin.js";
-import { callStates } from "store/actions/videoActions";
+import { videoStates } from "store/actions/videoActions";
 import { setNotification } from "store/actions/userActions.js";
 import { setTeamMeetingData } from "store/actions/videoActions.js";
 const useStyles = makeStyles(componentStyles);
@@ -89,7 +89,7 @@ const Admin = ({ userdata, cookies, getUserAgain, logOut, ...props }) => {
     }
   };
   const rejectDirectCall = () => {
-    rejectIncomingCallRequest();
+    rejectCall();
   };
 
   const acceptTeamMeeting = () => {
@@ -152,7 +152,7 @@ const Admin = ({ userdata, cookies, getUserAgain, logOut, ...props }) => {
               setNotification={setNotification}
             />
           </Box>
-          {callState === callStates.CALL_REQUESTED ? (
+          {callState === videoStates.REQUESTED ? (
             <IncomingCallDialog
               message={`Call from ${callerUsername} `}
               show={true}

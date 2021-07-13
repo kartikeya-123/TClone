@@ -2,7 +2,6 @@ import * as callActions from "../actions/videoActions";
 
 const initState = {
   localStream: null,
-  callState: callActions.callStates.CALL_AVAILABLE,
   callerUsername: "",
   recieverUsername: "",
   directCallModal: false,
@@ -10,11 +9,14 @@ const initState = {
     rejected: false,
     reason: "",
   },
+  callState: callActions.videoStates.AVAILABLE,
   remoteStream: null,
-  localCameraEnabled: true,
-  localMicrophoneEnabled: true,
-  screenSharingActive: false,
+
+  localMicrophone: true,
+  screenSharing: false,
   isTeamMeetingPresent: false,
+  localCamera: true,
+
   teamMeetingStreams: [],
   activeTeams: [],
   groupMessages: [],
@@ -64,26 +66,26 @@ const reducer = (state = initState, action) => {
     case "ENABLE_CAMERA":
       return {
         ...state,
-        localCameraEnabled: action.enabled,
+        localCamera: action.enabled,
       };
     case "ENABLE_MICROPHONE":
       return {
         ...state,
-        localMicrophoneEnabled: action.enabled,
+        localMicrophone: action.enabled,
       };
     case "SET_SCREEN_SHARE_ACTIVE":
       return {
         ...state,
-        screenSharingActive: action.active,
+        screenSharing: action.active,
       };
     case "RESET_CALL_DATA":
       return {
         ...state,
         remoteStream: null,
-        screenSharingActive: false,
+        screenSharing: false,
         callerUsername: "",
-        localMicrophoneEnabled: true,
-        localCameraEnabled: true,
+        localMicrophone: true,
+        localCamera: true,
         directCallModal: false,
         recieverUsername: "",
         directMessages: [],
@@ -94,9 +96,9 @@ const reducer = (state = initState, action) => {
         ...state,
         isTeamMeetingPresent: false,
         teamMeetingStreams: [],
-        callState: callActions.callStates.CALL_AVAILABLE,
-        localMicrophoneEnabled: true,
-        localCameraEnabled: true,
+        callState: callActions.videoStates.AVAILABLE,
+        localMicrophone: true,
+        localCamera: true,
         groupMessages: [],
         imageData: null,
       };

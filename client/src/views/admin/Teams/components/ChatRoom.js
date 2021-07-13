@@ -35,9 +35,9 @@ const ChatRoom = ({ user, Team }) => {
       .get(`/api/v1/team/chat-room/${Team._id}`)
       .then((response) => {
         setLoading(false);
-        //console.log(response);
+        ////console.log(response);
         if (response.status === 200) {
-          console.log(response.data.data.results);
+          //console.log(response.data.data.results);
           setChatMessages(response.data.data.results);
         }
       })
@@ -50,7 +50,7 @@ const ChatRoom = ({ user, Team }) => {
   useEffect(() => {
     getPreviousMessages();
     socket.on("new-message", (newMessage) => {
-      console.log("Received new message");
+      //console.log("Received new message");
       setChatMessages((messages) => [...messages, newMessage]);
     });
   }, []);
@@ -67,7 +67,7 @@ const ChatRoom = ({ user, Team }) => {
         teamId: Team._id,
         createdAt: new Date(),
       };
-      //   console.log(socket);
+      //   //console.log(socket);
       if (socket)
         socket.emit("message", data, () => {
           setMessage("");

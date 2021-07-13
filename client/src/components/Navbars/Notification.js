@@ -93,10 +93,10 @@ const Notification = ({ user, history, color, show, setNotification }) => {
       format: ["mp3", "aac"],
     });
     Sounds.play();
-    console.log("sound");
+    //console.log("sound");
   };
 
-  // //console.log(status);
+  // ////console.log(status);
   const handleClick = (event) => {
     getNotifications();
     setAnchorEl(event.currentTarget);

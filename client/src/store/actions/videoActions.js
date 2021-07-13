@@ -1,7 +1,7 @@
-export const callStates = {
-  CALL_AVAILABLE: "CALL_AVAILABLE",
-  CALL_REQUESTED: "CALL_REQUESTED",
-  CALL_IN_PROGRESS: "CALL_IN_PROGRESS",
+export const videoStates = {
+  AVAILABLE: "AVAILABLE",
+  REQUESTED: "REQUESTED",
+  ONGOING: "ONGOING",
 };
 
 export const setLocalStream = (localStream) => {
@@ -53,21 +53,21 @@ export const setRemoteStream = (remoteStream) => {
   };
 };
 
-export const setLocalMicrophoneEnabled = (enabled) => {
+export const setlocalMicrophone = (enabled) => {
   return {
     type: "ENABLE_MICROPHONE",
     enabled,
   };
 };
 
-export const setLocalCameraEnabled = (enabled) => {
+export const setlocalCamera = (enabled) => {
   return {
     type: "ENABLE_CAMERA",
     enabled,
   };
 };
 
-export const resetCallDataState = () => {
+export const resetCallState = () => {
   return {
     type: "RESET_CALL_DATA",
   };
@@ -113,7 +113,7 @@ export const setDirectMessage = (directMessages) => {
     directMessages: directMessages,
   };
 };
-export const setScreenSharingActive = (active) => {
+export const setscreenSharing = (active) => {
   return {
     type: "SET_SCREEN_SHARE_ACTIVE",
     active,

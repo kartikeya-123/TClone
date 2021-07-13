@@ -29,11 +29,6 @@ module.exports.socketSetup = (server) => {
   let peers = [];
   let activeTeams = [];
 
-  const broadcastEventTypes = {
-    ACTIVE_USERS: "ACTIVE_USERS",
-    GROUP_CALL_ROOMS: "GROUP_CALL_ROOMS",
-  };
-
   io.on("connection", (socket) => {
     socket.emit("connection", null);
     // console.log("new user connected");
@@ -50,7 +45,7 @@ module.exports.socketSetup = (server) => {
 
     socket.on("disconnect", () => {
       console.log("user disconnected");
-      console.log(socket.id);
+      // console.log(socket.id);
       peers = peers.filter((peer) => peer.socketId !== socket.id);
     });
 
@@ -59,7 +54,7 @@ module.exports.socketSetup = (server) => {
     socket.on("pre-offer", (data) => {
       console.log("pre-offer handled");
       const reciever = peers.find((peer) => peer.email === data.reciever.email);
-      console.log(peers);
+      // console.log(peers);
       if (reciever) {
         io.to(reciever.socketId).emit("pre-offer", {
           callerUsername: data.caller.username,
@@ -73,36 +68,35 @@ module.exports.socketSetup = (server) => {
     });
 
     socket.on("pre-offer-answer", (data) => {
-      console.log("handling pre offer answer");
       io.to(data.callerSocketId).emit("pre-offer-answer", {
-        calleeSocketId: socket.id,
+        reciverSocketId: socket.id,
         answer: data.answer,
       });
     });
 
-    socket.on("webRTC-offer", (data) => {
-      console.log("handling webRTC offer");
-      io.to(data.calleeSocketId).emit("webRTC-offer", {
-        offer: data.offer,
+    socket.on("web-rtc-offer", (data) => {
+      const offer = data.offer;
+      io.to(data.reciverSocketId).emit("web-rtc-offer", {
+        offer: offer,
       });
     });
 
-    socket.on("webRTC-answer", (data) => {
+    socket.on("web-rtc-answer", (data) => {
       console.log("handling webRTC answer");
 
-      io.to(data.callerSocketId).emit("webRTC-answer", {
+      io.to(data.callerSocketId).emit("web-rtc-answer", {
         answer: data.answer,
       });
     });
 
-    socket.on("webRTC-candidate", (data) => {
-      io.to(data.recieverSocketId).emit("webRTC-candidate", {
+    socket.on("web-rtc-candidate", (data) => {
+      io.to(data.recieverSocketId).emit("web-rtc-candidate", {
         candidate: data.candidate,
       });
     });
 
-    socket.on("user-hanged-up", (data) => {
-      io.to(data.recieverSocketId).emit("user-hanged-up");
+    socket.on("user-ended-call", (data) => {
+      io.to(data.recieverSocketId).emit("user-ended-call");
     });
 
     socket.on("create-meeting", async (data) => {

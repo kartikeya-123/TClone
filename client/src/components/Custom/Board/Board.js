@@ -23,9 +23,9 @@ const Board = ({ imageData, user }) => {
     // ----------------------- Colors --------------------------------------------------
 
     const colors = document.getElementsByClassName("color");
-    console.log(colors);
-    // console.log(colors, "the colors");
-    // console.log(test);
+    //console.log(colors);
+    // //console.log(colors, "the colors");
+    // //console.log(test);
     // set the current color
     const current = {
       color: "black",
@@ -33,7 +33,7 @@ const Board = ({ imageData, user }) => {
 
     // helper that will update the current color
     const onColorUpdate = (e) => {
-      console.log(e);
+      //console.log(e);
       current.color = e.target.className.split(" ")[1];
     };
 
@@ -86,7 +86,7 @@ const Board = ({ imageData, user }) => {
     const onMouseDown = (e) => {
       drawing = true;
 
-      // console.log(e.clientY);
+      // //console.log(e.clientY);
       current.x = e.clientX || e.touches[0].clientX;
       current.y = e.clientY || e.touches[0].clientY;
     };
@@ -95,9 +95,9 @@ const Board = ({ imageData, user }) => {
       if (!drawing) {
         return;
       }
-      //   console.log("Moving down");
+      //   //console.log("Moving down");
       var rect = canvas.getBoundingClientRect();
-      // console.log(rect);
+      // //console.log(rect);
       drawLine(
         current.x,
         current.y,
@@ -115,9 +115,9 @@ const Board = ({ imageData, user }) => {
         return;
       }
       var rect = canvas.getBoundingClientRect();
-      //   console.log(current.x);
-      //   console.log(current.y);
-      // console.log(e);
+      //   //console.log(current.x);
+      //   //console.log(current.y);
+      // //console.log(e);
 
       drawing = false;
       drawLine(
@@ -165,7 +165,7 @@ const Board = ({ imageData, user }) => {
       if (document.getElementById("cardContent")) {
         var width = document.getElementById("cardContent").clientWidth;
         var height = document.getElementById("cardContent").clientHeight;
-        // console.log(height);
+        // //console.log(height);
         canvas.width = width;
         canvas.height = height;
       }
@@ -179,7 +179,7 @@ const Board = ({ imageData, user }) => {
       const w = canvas.width;
       const h = canvas.height;
       drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color);
-      // console.log("Drawing again");
+      // //console.log("Drawing again");
       // var image = new Image();
       // image.onload = function () {
       //   context.drawImage(image, 0, 0);

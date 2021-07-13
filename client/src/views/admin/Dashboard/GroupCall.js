@@ -39,7 +39,7 @@ const GroupCall = (props) => {
 
   const joinMeet = () => {
     const roomId = window.location.pathname.split("/")[2];
-    console.log(roomId);
+    //console.log(roomId);
     joinGroupMeeting(roomId);
   };
 

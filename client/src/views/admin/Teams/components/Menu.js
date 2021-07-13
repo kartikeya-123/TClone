@@ -66,7 +66,7 @@ const MenuBox = ({ Team, user }) => {
     axios
       .patch(`/api/v1/team/leaveTeam/${Team.id}`)
       .then((response) => {
-        console.log(response);
+        //console.log(response);
         history.push("/teams");
       })
       .catch((err) => console.log(err));
@@ -76,7 +76,7 @@ const MenuBox = ({ Team, user }) => {
     axios
       .patch(`/api/v1/team/deleteTeam/${Team.id}`)
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         history.push("/teams");
       })
       .catch((err) => console.log(err));

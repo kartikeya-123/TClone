@@ -34,7 +34,7 @@ const VideoLayout = ({ user, history }) => {
     axios
       .get("/api/v1/turnCredentials")
       .then((response) => {
-        console.log(response.data.token.iceServers);
+        //console.log(response.data.token.iceServers);
         setTurnServers(response.data.token.iceServers);
         getLocaleStream();
         checkIfGroupCall();
