@@ -27,14 +27,8 @@ const menuItems = [
   },
   {
     icon: <QueueIcon />,
-    itemName: "Edit Team",
-    id: 2,
-    privacy: true,
-  },
-  {
-    icon: <QueueIcon />,
     itemName: "Delete Team",
-    id: 3,
+    id: 2,
     privacy: true,
   },
 ];
@@ -58,7 +52,7 @@ const MenuBox = ({ Team, user }) => {
     } else if (menuItemId === 1) {
       // Leave Team
       setShowLeaveTeam((showLeaveTeam) => !showLeaveTeam);
-    } else if (menuItemId === 3) {
+    } else if (menuItemId === 2) {
       //Delete Team
       setShowDeleteTeam((showDeleteTeam) => !showDeleteTeam);
     }
@@ -102,7 +96,7 @@ const MenuBox = ({ Team, user }) => {
     <AlertDialog
       title="Delete Team"
       description="Confirmation to delete team"
-      handleClose={() => handleEvent(3)}
+      handleClose={() => handleEvent(2)}
       accept={deleteTeam}
       open={showDeleteTeam}
     />
@@ -125,7 +119,7 @@ const MenuBox = ({ Team, user }) => {
             if (Team.privacy && Team.Owner.email !== user.email) return null;
           }
           if (menuItem.id === 1 && Team.Owner.email === user.email) return null;
-          if (menuItem.id === 3 && Team.Owner.email !== user.email) return null;
+          if (menuItem.id === 2 && Team.Owner.email !== user.email) return null;
 
           return (
             <MenuItem

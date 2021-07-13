@@ -6,11 +6,12 @@ import { callStates } from "store/actions/videoActions";
 import {
   MdCallEnd,
   MdMic,
-  MdCamera,
+  MdStopScreenShare,
   MdMicOff,
   MdVideocam,
   MdVideocamOff,
   MdVideoLabel,
+  MdScreenShare,
 } from "react-icons/md";
 
 import {
@@ -104,9 +105,9 @@ const ConversationButtons = (props) => {
         <>
           <IconButton onClick={onClickShareButton}>
             {screenSharingActive ? (
-              <MdCamera className={classes.icon} />
+              <MdScreenShare className={classes.icon} />
             ) : (
-              <MdVideoLabel className={classes.icon} />
+              <MdStopScreenShare className={classes.icon} />
             )}
           </IconButton>
           <IconButton onClick={onClickEndButton}>
