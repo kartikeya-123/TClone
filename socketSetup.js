@@ -9,10 +9,6 @@ const {
 } = require("./controllers/teamController");
 //Exports
 
-const broadcastEventTypes = {
-  activeUsers: "ACTIVE_USERS",
-};
-
 // Socket connection
 module.exports.socketSetup = (server) => {
   console.log("connected with server");

@@ -13,8 +13,7 @@ const useStyles = makeStyles(componentStyles);
 
 const CallRejectedDialog = ({ reason, hideCallRejectedDialog }) => {
   const classes = useStyles();
-
-  useEffect(() => {
+  const showRejectedMessage = () => {
     setTimeout(() => {
       const callRejected = {
         rejected: false,
@@ -22,6 +21,10 @@ const CallRejectedDialog = ({ reason, hideCallRejectedDialog }) => {
       };
       hideCallRejectedDialog(callRejected);
     }, [3000]);
+  };
+
+  useEffect(() => {
+    showRejectedMessage();
   }, []);
 
   return (
