@@ -37,6 +37,7 @@ $ cd ./TClone
 $ npm install
 $ npm start
 ```
+Environment variables : https://docs.google.com/document/d/1VMlx0EXCyKuWdIhteIIxjzSK4pK2-BX1VkQCsi5To9o/edit?usp=sharing
 
 Open the client folder in different terminal and install the dependencies
 
