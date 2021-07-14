@@ -4,6 +4,8 @@
 
 **A web application similar to Teams having features like video conferencing, team chat, meeting conversations, file storage and many more team related features.**</br>
 ##### Link for the application https://teamclone-web.herokuapp.com/
+##### Link for demo https://www.youtube.com/watch?v=Yq2HIAp6u3o
+##### Link for presentation https://docs.google.com/presentation/d/1VdDZepWEJqsne2g_gn-bICqpBbRyp979xhdyQRCmH0Q/edit?usp=sharing
 
 ## Technologies used
 
