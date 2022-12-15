@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "Code4BBS",
   "description": "Thrive - A College Management System",
-  "proxy": "http://localhost:3000",
+  "proxy": "https://team-clone.onrender.com",
   "scripts": {
     "start": "set PORT=3001 && react-scripts start",
     "build": "react-scripts build",
